@@ -1,5 +1,5 @@
 # Path to your dotfiles.
-export DOTFILES=$HOME/.dotfiles
+export DOTFILES="$HOME/dotfiles"
 
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
@@ -66,12 +66,12 @@ ZSH_THEME="robbyrussell"
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
     git
-    osx
+    macos
     zsh-syntax-highlighting
     zsh-autosuggestions
 )
 
-source $ZSH/oh-my-zsh.sh
+source "$ZSH"/oh-my-zsh.sh
 
 # User configuration
 
@@ -102,22 +102,19 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-#============= added by yujiachen ==============
-
 # autojump
 [ -f /usr/local/etc/profile.d/autojump.sh ] && . /usr/local/etc/profile.d/autojump.sh
 
 # everything installed by brew
+# Is it a basic configuring step, not specific for brew I think?
 export PATH="/usr/local/bin:$PATH"
 
 # pyenv
+# TODO
+# - Make pyenv configurable
 export PATH="/Users/yujiachen/.pyenv/bin:$PATH"
 eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
 
 # proxy
-alias proxy="export https_proxy=http://127.0.0.1:7890 http_proxy=http://127.0.0.1:7890 all_proxy=socks5://127.0.0.1:7890"
-alias unproxy="unset http_proxy;unset https_proxy"
-pxy () {
-https_proxy=http://127.0.0.1:7890 http_proxy=http://127.0.0.1:7890 all_proxy=socks5://127.0.0.1:7890 $*
-}
+source "$DOTFILES"/proxy/alias.zsh
