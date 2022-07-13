@@ -1,0 +1,29 @@
+[user]
+	name = jiachen 
+	email = yu.jiachen@outlook.com 
+[init]
+	defaultBranch = main
+
+[core]
+    pager = delta
+
+[interactive]
+    diffFilter = delta --color-only
+[add.interactive]
+    useBuiltin = false # required for git 2.37.0
+
+[delta]
+    navigate = true    # use n and N to move between diff sections
+    light = false      # set to true if you're in a terminal w/ a light background color (e.g. the default macOS terminal)
+    line-numbers = true
+    side-by-side = true
+	file-style = "#6495ED"
+	hunk-header-style = "#6495ED"
+	line-numbers-minus-style = "#FA8072"
+	line-numbers-zero-style = "#708090"
+
+[merge]
+    conflictstyle = diff3
+
+[diff]
+    colorMoved = default

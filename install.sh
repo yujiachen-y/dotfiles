@@ -3,13 +3,18 @@ echo "🍉 Setting up your machine"
 
 DOTFILES="$HOME/dotfiles"
 
-. "$DOTFILES"/zsh/install.sh
-
 echo "🍉 Setting up vim"
-VIMFILE="$HOME/.vimrc"
-rm "$VIMFILE"
-ln -s "$DOTFILES"/.vimrc "$VIMFILE"
+VIMRC="$HOME/.vimrc"
+rm "$VIMRC"
+ln -s "$DOTFILES"/.vimrc "$VIMRC"
 
 if [ "$(uname)" = "Darwin" ]; then
   . "$DOTFILES"/macos/install.sh
 fi
+
+. "$DOTFILES"/zsh/install.sh
+
+echo "🍉 Setting up git"
+GITCONFIG="$HOME/.gitconfig"
+rm "$GITCONFIG"
+ln -s "$DOTFILES"/.gitconfig "$GITCONFIG"

@@ -1,6 +1,7 @@
 # Jiachen's Dotfiles
 
-![screenshot](screenshot.png)
+![setup](screenshot/setup.png)
+![delta-diff](screenshot/delta-diff.png)
 
 ## Pre Requirements
 
