@@ -1,15 +1,15 @@
 #!/bin/sh
-# Please note this script has never been ran yet, it's just wrote in advance.
+echo "🍉 Setting up your machine"
 
-echo "Setting up your machine..."
+DOTFILES="$HOME/dotfiles"
 
-DOTFILES=$(dirname "$0")
+. "$DOTFILES"/zsh/install.sh
 
-# Removes .zshrc from $HOME (if it exists) and symlinks the .zshrc file from the .dotfiles
-rm -rf "$HOME"/.zshrc
-ln -s "$HOME"/.dotfiles/.zshrc "$HOME"/.zshrc
+echo "🍉 Setting up vim"
+VIMFILE="$HOME/.vimrc"
+rm "$VIMFILE"
+ln -s "$DOTFILES"/.vimrc "$VIMFILE"
 
-# Set macOS preferences - we will run this last because this will reload the shell
 if [ "$(uname)" = "Darwin" ]; then
   . "$DOTFILES"/macos/install.sh
 fi
