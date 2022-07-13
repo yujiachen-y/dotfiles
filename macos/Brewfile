@@ -1,0 +1,45 @@
+# Taps
+tap "homebrew/bundle"
+tap "homebrew/cask"
+tap "homebrew/core"
+
+# Binaries
+brew "autojump"
+brew "coreutils"
+brew "git"
+brew "gnupg"
+brew "imagemagick"
+brew "mackup"
+brew "mas"
+brew "pyenv"
+brew "tldr"
+
+# Apps
+cask "1password"
+cask "appcleaner"
+cask "cheatsheet"
+cask "docker"
+cask "google-chrome"
+cask "iina"
+cask "iterm2"
+cask "notion"
+cask "the-unarchiver"
+cask "visual-studio-code"
+
+# Quicklook
+cask "qlmarkdown"
+cask "qlstephen"
+cask "quicklook-json"
+
+# Mac App Store
+mas "GoodNotes", id: 1444383602
+mas "Hidden Bar", id: 1452453066
+mas "iShot", id: 1485844094
+mas "Magnet", id: 441258766
+mas "Microsoft Outlook", id: 985367838
+mas "QQ", id: 451108668
+mas "Ulysses", id: 1225570693
+mas "微信", id: 836500024
+mas "欧路词典", id: 434350458
+mas "滴答清单", id: 966085870
+mas "飞书", id: 1551632588

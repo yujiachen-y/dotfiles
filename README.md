@@ -1,7 +1,13 @@
-The repo is still under slowly development.
+# Jiachen's Dotfiles
 
-The repo is mainly inspired by [dotfiles.github.io](https://dotfiles.github.io/) and [driesvints/dotfiles](https://github.com/driesvints/dotfiles).
+![screenshot](screenshot.png)
 
-# Pre Requirement
+## Pre Requirements
+
 This repo assume the user put the repo under the home fold.
 This assumption makes scripts to locate files easier.
+
+## References
+
+- [dotfiles.github.io](https://dotfiles.github.io/)
+- [driesvints/dotfiles](https://github.com/driesvints/dotfiles)
