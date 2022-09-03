@@ -20,12 +20,6 @@ fi
 brew update
 brew bundle --file "$MACOS_FOLDER"/Brewfile
 
-echo "🍉     Setting up mackup"
-MACKUP_CFG_FILE="$HOME/.mackup.cfg"
-rm "$MACKUP_CFG_FILE"
-ln -s "$MACOS_FOLDER"/.mackup.cfg "$MACKUP_CFG_FILE"
-mackup restore
-
 # I need more time to learn macos before I can use this script confidently.
 # echo "🍉     Setting up system preference"
 # . "$MACOS_FOLDER"/sys_prefer.sh
