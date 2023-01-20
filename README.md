@@ -9,7 +9,8 @@
 
 - Download this repo via git or other ways.
 - Some mac configurations
-(e.g. iCloud / Mac App Store account) still need manual operations.
+(e.g. iCloud / Mac App Store account / keyboard shortcuts)
+still need manual operations.
 
 ### Folder Structure
 
