@@ -14,6 +14,7 @@ brew "imagemagick"
 brew "jq"
 brew "mas"
 brew "pyenv"
+brew "pyenv-virtualenv"
 brew "shellcheck"
 brew "tldr"
 brew "tree"
@@ -40,6 +41,7 @@ cask "notion"
 cask "postman"
 cask "qq"
 cask "raycast"
+cask "snipaste"
 cask "the-unarchiver"
 cask "visual-studio-code"
 
@@ -52,10 +54,11 @@ cask "quicklook-json"
 cask "quicklookapk"
 cask "webpquicklook"
 
+# Fonts
+cask "font-meslo-lg-nerd-font"
+
 # Mac App Store
-mas "iShot", id: 1485844094
 mas "Magnet", id: 441258766
-mas "Maipo for 微博", id: 789066512
 mas "Ulysses", id: 1225570693
 mas "滴答清单", id: 966085870
 mas "微信", id: 836500024
