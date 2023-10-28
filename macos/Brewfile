@@ -1,15 +1,13 @@
 # Taps
 tap "homebrew/bundle"
-tap "homebrew/cask"
 tap "homebrew/cask-fonts"
-tap "homebrew/core"
 
 # Binaries
 brew "autojump"
 brew "coreutils"
 brew "git"
 brew "git-delta"
-brew "go"
+brew "go@1.18", conflicts_with: ["go"], link: true
 brew "imagemagick"
 brew "jq"
 brew "mas"
@@ -29,17 +27,11 @@ cask "arc"
 cask "appcleaner"
 cask "cheatsheet"
 cask "docker"
-cask "eudic"
-cask "feishu"
-cask "google-chrome"
+cask "easydict"
 cask "hiddenbar"
 cask "iina"
 cask "iterm2"
-cask "microsoft-outlook"
 cask "monitorcontrol"
-cask "notion"
-cask "postman"
-cask "qq"
 cask "raycast"
 cask "snipaste"
 cask "the-unarchiver"
@@ -58,7 +50,6 @@ cask "webpquicklook"
 cask "font-meslo-lg-nerd-font"
 
 # Mac App Store
-mas "Magnet", id: 441258766
 mas "Ulysses", id: 1225570693
 mas "滴答清单", id: 966085870
 mas "微信", id: 836500024
