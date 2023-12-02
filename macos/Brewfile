@@ -1,6 +1,5 @@
 # Taps
 tap "homebrew/bundle"
-tap "homebrew/cask-fonts"
 
 # Binaries
 brew "autojump"
@@ -11,6 +10,7 @@ brew "go@1.18", conflicts_with: ["go"], link: true
 brew "imagemagick"
 brew "jq"
 brew "mas"
+brew "nvm"
 brew "pyenv"
 brew "pyenv-virtualenv"
 brew "shellcheck"
@@ -18,24 +18,25 @@ brew "tldr"
 brew "tree"
 brew "wget"
 brew "yq"
-brew "zsh-autosuggestions"
-brew "zsh-syntax-highlighting"
 
 # Apps
 cask "1password"
 cask "arc"
 cask "appcleaner"
+cask "baidunetdisk"
 cask "cheatsheet"
 cask "docker"
 cask "easydict"
 cask "hiddenbar"
 cask "iina"
-cask "iterm2"
 cask "monitorcontrol"
 cask "raycast"
+cask "rewind"
 cask "snipaste"
+cask "telegram"
 cask "the-unarchiver"
 cask "visual-studio-code"
+cask "warp"
 
 # Quicklook
 cask "provisionql"
@@ -45,9 +46,6 @@ cask "qlvideo"
 cask "quicklook-json"
 cask "quicklookapk"
 cask "webpquicklook"
-
-# Fonts
-cask "font-meslo-lg-nerd-font"
 
 # Mac App Store
 mas "Ulysses", id: 1225570693

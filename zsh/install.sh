@@ -4,7 +4,20 @@ ZSH_DIR="$HOME/dotfiles/zsh"
 
 echo "🍉   Setting up oh-my-zsh"
 if [ ! -d "$HOME/.oh-my-zsh" ]; then
-  /bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/HEAD/tools/install.sh)"
+  REPO=${REPO:-ohmyzsh/ohmyzsh}
+  REMOTE=${REMOTE:-https://github.com/${REPO}.git}
+  BRANCH=${BRANCH:-master}
+  git init --quiet "$HOME/.oh-my-zsh" && cd "$HOME/.oh-my-zsh" \
+  && git config core.eol lf \
+  && git config core.autocrlf false \
+  && git config fsck.zeroPaddedFilemode ignore \
+  && git config fetch.fsck.zeroPaddedFilemode ignore \
+  && git config receive.fsck.zeroPaddedFilemode ignore \
+  && git config oh-my-zsh.remote origin \
+  && git config oh-my-zsh.branch "$BRANCH" \
+  && git remote add origin "$REMOTE" \
+  && git fetch --depth=1 origin \
+  && git checkout -b "$BRANCH" "origin/$BRANCH"
 fi
 
 echo "🍉   Setting up zshrc"
@@ -18,12 +31,3 @@ if [ "$(uname)" = "Darwin" ]; then
   rm "$PROXY_FILE"
   ln -s "$ZSH_DIR"/.proxy.zsh "$PROXY_FILE"
 fi
-
-echo "🍉   Setting up powerlevel10k"
-P10K_DIR="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"/themes/powerlevel10k
-if [ ! -d "$P10K_DIR" ]; then
-  git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "$P10K_DIR"
-fi
-P10K_FILE="$HOME"/.p10k.zsh
-rm "$P10K_FILE"
-ln -s "$ZSH_DIR"/.p10k.zsh "$P10K_FILE"
