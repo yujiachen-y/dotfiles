@@ -1,13 +1,3 @@
-# You may need to manually set your language environment
-# export LANG=en_US.UTF-8
-
-# Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='mvim'
-# fi
-
 export PATH="/usr/local/bin:$PATH"
 
 # proxy
@@ -29,5 +19,7 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
 
 # oh-my-zsh plugins
+source ~/.oh-my-zsh/lib/directories.zsh
+source ~/.oh-my-zsh/lib/git.zsh
 source ~/.oh-my-zsh/plugins/git/git.plugin.zsh
 source ~/.oh-my-zsh/plugins/z/z.plugin.zsh
