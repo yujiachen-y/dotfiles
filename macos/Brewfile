@@ -49,5 +49,4 @@ cask "webpquicklook"
 
 # Mac App Store
 mas "Ulysses", id: 1225570693
-mas "滴答清单", id: 966085870
 mas "微信", id: 836500024
