@@ -6,7 +6,6 @@ brew "autojump"
 brew "coreutils"
 brew "git"
 brew "git-delta"
-brew "go@1.18", conflicts_with: ["go"], link: true
 brew "imagemagick"
 brew "jq"
 brew "mas"
