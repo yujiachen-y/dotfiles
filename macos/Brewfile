@@ -2,7 +2,6 @@
 tap "homebrew/bundle"
 
 # Binaries
-brew "autojump"
 brew "coreutils"
 brew "git"
 brew "git-delta"
@@ -20,6 +19,7 @@ brew "yq"
 
 # Apps
 cask "1password"
+cask "alt-tab"
 cask "arc"
 cask "appcleaner"
 cask "baidunetdisk"

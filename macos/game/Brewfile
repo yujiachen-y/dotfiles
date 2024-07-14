@@ -1,0 +1,12 @@
+# Crossover
+#   After install Crossover, you will need to use cxpatcher to install gptk2.
+#   Run this command below to install cxpatcher, it requires login password.
+#   `brew install --cask --no-quarantine italomandara/CXPatcher/cxpatcher`
+cask "crossover"
+
+# DualSence related
+# - https://www.reddit.com/r/macgaming/comments/196mx0b/ultimate_dualsense_controller_tutorial/
+cask "blackhole-2ch"
+cask "switchaudio-osx"
+mas "DualSenseM", id: 1598693570
+mas "LadioCast", id: 411213048
