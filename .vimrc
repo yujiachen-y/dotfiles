@@ -53,6 +53,9 @@ set smartcase
 " Enable searching as you type, rather than waiting till you press enter.
 set incsearch
 
+" Hightlight search
+set hlsearch
+
 " Unbind some useless/annoying default key bindings.
 nmap Q <Nop> " 'Q' in normal mode enters Ex mode. You almost never want this.
 
@@ -78,3 +81,9 @@ inoremap <Left>  <ESC>:echoe "Use h"<CR>
 inoremap <Right> <ESC>:echoe "Use l"<CR>
 inoremap <Up>    <ESC>:echoe "Use k"<CR>
 inoremap <Down>  <ESC>:echoe "Use j"<CR>
+
+# Integrate with the system clipboard.
+set clipboard=unnamedplus
+
+" Set ruler for displaying cursor line number.
+set ruler
