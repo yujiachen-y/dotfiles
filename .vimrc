@@ -82,8 +82,5 @@ inoremap <Right> <ESC>:echoe "Use l"<CR>
 inoremap <Up>    <ESC>:echoe "Use k"<CR>
 inoremap <Down>  <ESC>:echoe "Use j"<CR>
 
-# Integrate with the system clipboard.
-set clipboard=unnamedplus
-
 " Set ruler for displaying cursor line number.
 set ruler

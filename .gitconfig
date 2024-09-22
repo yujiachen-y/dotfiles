@@ -4,6 +4,9 @@
 [init]
 	defaultBranch = main
 
+[includeIf "gitdir:~/Workspace/"]
+    path = ~/Workspace/.gitconfig
+
 [core]
     pager = delta
 

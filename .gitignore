@@ -1,2 +1,3 @@
 macos/Brewfile.lock.json
 .DS_Store
+zsh/.non_public_commands.sh

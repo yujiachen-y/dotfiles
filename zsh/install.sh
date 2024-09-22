@@ -24,10 +24,3 @@ echo "🍉   Setting up zshrc"
 ZSHRC="$HOME"/.zshrc
 rm "$ZSHRC"
 ln -s "$ZSH_DIR"/.zshrc "$ZSHRC"
-
-if [ "$(uname)" = "Darwin" ]; then
-  echo "  Setting up proxy"
-  PROXY_FILE="$HOME/.proxy.zsh"
-  rm "$PROXY_FILE"
-  ln -s "$ZSH_DIR"/.proxy.zsh "$PROXY_FILE"
-fi
