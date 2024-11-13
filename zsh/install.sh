@@ -19,6 +19,7 @@ if [ ! -d "$HOME/.oh-my-zsh" ]; then
   && git fetch --depth=1 origin \
   && git checkout -b "$BRANCH" "origin/$BRANCH"
 fi
+cd "$HOME/.oh-my-zsh" && git pull --quiet
 
 echo "🍉   Setting up zshrc"
 ZSHRC="$HOME"/.zshrc
