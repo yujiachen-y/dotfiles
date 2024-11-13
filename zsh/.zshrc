@@ -1,8 +1,17 @@
 export PATH="/usr/local/bin:$PATH"
 
+# pyenv
 export PYENV_ROOT="$HOME/.pyenv"
 command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
 eval "$(pyenv init -)"
+
+# poetry
+if [ ! -f ~/.zfunc/_poetry ]; then
+  mkdir -p ~/.zfunc
+fi
+poetry completions zsh > ~/.zfunc/_poetry
+fpath+=~/.zfunc
+autoload -Uz compinit && compinit
 
 # nvm
 export NVM_DIR="$HOME/.nvm"
