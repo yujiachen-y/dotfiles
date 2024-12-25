@@ -84,3 +84,7 @@ inoremap <Down>  <ESC>:echoe "Use j"<CR>
 
 " Set ruler for displaying cursor line number.
 set ruler
+
+" Set for ideavim
+nnoremap gh :action ShowHoverInfo<cr>
+set clipboard+=unnamed
