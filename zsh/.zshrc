@@ -18,6 +18,23 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
 [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
 
+klnd() {
+  echo "Searching for running Node.js processes..."
+  local NODE_PROCESSES=$(ps aux | grep node | grep -v grep)
+
+  if [ -z "$NODE_PROCESSES" ]; then
+    echo "No running Node.js processes found."
+    return 0
+  fi
+
+  echo "Found the following Node.js processes:"
+  ps aux | grep node | grep -v grep | awk '{printf "%-10s %.64s...\n", $2, $11}'
+
+  echo "Terminating Node.js processes..."
+  ps aux | grep node | grep -v grep | awk '{print $2}' | xargs kill -9
+  echo "All Node.js processes have been terminated."
+}
+
 # oh-my-zsh plugins
 source ~/.oh-my-zsh/lib/directories.zsh
 source ~/.oh-my-zsh/lib/git.zsh
@@ -26,7 +43,11 @@ source ~/.oh-my-zsh/plugins/z/z.plugin.zsh
 
 source ~/.non_public_commands.sh
 
-alias gbdd="git branch | grep -vF "main" | xargs git branch -D"
+alias gbdd='
+  git branch --format="%(refname:short)" \
+  | grep -vx "main" \
+  | xargs git branch -D
+'
 alias godd="find . -type f -name '*.orig' -delete"
 
 # Run `gcsh <$KEYWORD>` to ssh into files
