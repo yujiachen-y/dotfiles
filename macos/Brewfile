@@ -2,6 +2,7 @@
 tap "homebrew/bundle"
 
 # Binaries
+brew "codex"
 brew "coreutils"
 brew "fzf"
 brew "htop"
@@ -16,6 +17,7 @@ brew "poetry"
 brew "pyenv"
 brew "pyenv-virtualenv"
 brew "redis"
+brew "ripgrep"
 brew "shellcheck"
 brew "temporal"
 brew "tldr"
@@ -30,6 +32,7 @@ cask "arc"
 cask "appcleaner"
 cask "cheatsheet"
 cask "cursor"
+cask "cursor-cli"
 cask "docker"
 cask "easydict"
 cask "google-cloud-sdk"
@@ -58,8 +61,3 @@ cask "qlvideo"
 cask "quicklook-json"
 cask "quicklookapk"
 cask "webpquicklook"
-
-# Mac App Store
-mas "Ulysses", id: 1225570693
-mas "Xcode", id: 497799835
-mas "微信", id: 836500024
