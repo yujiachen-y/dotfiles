@@ -62,3 +62,10 @@ gcsh() {
     gcloud compute ssh ${NAME} --zone=${ZONE} --tunnel-through-iap -- -t sudo -i;
   fi
 }
+
+# Added by Antigravity
+export PATH="$HOME/.antigravity/antigravity/bin:$PATH"
+
+# codex
+eval "$(codex completion zsh)"
+
