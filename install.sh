@@ -16,6 +16,10 @@ if [ "$(uname)" = "Darwin" ]; then
   . "$DOTFILES"/macos/install.sh
 fi
 
+echo "🍉 Setting up codex agents"
+# shellcheck source=/dev/null
+. "$DOTFILES"/agents/install.sh
+
 echo "🍉 Setting up zsh"
 NPC="$HOME/.non_public_commands.sh"
 echo "🍉     Setting up non publich commands"
