@@ -35,14 +35,13 @@ Start by understanding the current project context, then ask questions one at a 
 ## After the Design
 
 **Documentation:**
-- Write the validated design to `docs/plans/YYYY-MM-DD-<topic>-design.md`
-- Use elements-of-style:writing-clearly-and-concisely skill if available
-- Commit the design document to git
+- Only write a design doc if the user explicitly asks for it.
+- Follow existing repo conventions for design docs; if none are documented, ask the user where to place it.
+- Commit the design document to git.
 
 **Implementation (if continuing):**
 - Ask: "Ready to set up for implementation?"
-- Use superpowers:using-git-worktrees to create isolated workspace
-- Use superpowers:writing-plans to create detailed implementation plan
+- If yes, ask whether to create an implementation plan and where to track it (repo conventions first; otherwise ask).
 
 ## Key Principles
 
