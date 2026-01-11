@@ -28,6 +28,7 @@
 ## Workflow Preferences
 - Ask early about non‑modifiable files/dirs and required reuse targets.
 - Check repo-specific AGENTS.md/OpenSpec instructions early; call out conflicts.
+- Do not make changes on the `main` branch; always switch to a new branch before doing related work.
 - When the user explicitly requests a brainstorm/design discussion, follow the "Brainstorming Ideas Into Designs" flow (one question at a time, 2–3 options with a recommendation, 200–300 word sections with validation, then doc/commit if requested).
 - Clarify branch strategy (rebase/cherry‑pick/merge) before doing multi‑commit work.
 - For long‑running workers/processes, ask whether to keep them running or stop afterward.
