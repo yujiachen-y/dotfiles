@@ -21,14 +21,18 @@
 
 ## Testing Expectations
 - Run relevant tests whenever possible; prioritize unit/CI‑critical checks.
+- Before running tests, install module dev dependencies (e.g., `pip install -e "path[dev]"`) to avoid missing tools.
+- If pre-commit/CI/lint/coverage gates exist (e.g., file-length limits), check or run them before committing to avoid late failures.
 - If a logical gap needs tests, add them proactively.
 - If tests can’t run (env/permissions), explain why and suggest alternatives.
 - For long-running workers/e2e loops, capture runId/output paths and confirm whether to stop the worker afterward.
+- Do not change or relax pre-commit/CI/lint/coverage gates to bypass failures unless the user explicitly authorizes config changes.
 
 ## Workflow Preferences
 - Ask early about non‑modifiable files/dirs and required reuse targets.
 - Check repo-specific AGENTS.md/OpenSpec instructions early; call out conflicts.
-- Do not make changes on the `main` branch; always switch to a new branch before doing related work.
+- Default to rebasing when integrating back to `main`; for small changes, it's OK to commit directly on `main` without creating a new branch.
+- Default merge-back command: `git rebase main` (or `git pull --rebase` on `main`) before fast-forwarding, unless committing directly on `main` for small changes.
 - When the user explicitly requests a brainstorm/design discussion, follow the "Brainstorming Ideas Into Designs" flow (one question at a time, 2–3 options with a recommendation, 200–300 word sections with validation, then doc/commit if requested).
 - Clarify branch strategy (rebase/cherry‑pick/merge) before doing multi‑commit work.
 - For long‑running workers/processes, ask whether to keep them running or stop afterward.
