@@ -31,6 +31,7 @@
 ## Workflow Preferences
 - Ask early about non‑modifiable files/dirs and required reuse targets.
 - Check repo-specific AGENTS.md/OpenSpec instructions early; call out conflicts.
+- When introducing new tool integrations, confirm directory/placement constraints first (e.g., no new top‑level folders) before creating files.
 - Default to rebasing when integrating back to `main`; for small changes, it's OK to commit directly on `main` without creating a new branch.
 - Default merge-back command: `git rebase main` (or `git pull --rebase` on `main`) before fast-forwarding, unless committing directly on `main` for small changes.
 - When the user explicitly requests a brainstorm/design discussion, follow the "Brainstorming Ideas Into Designs" flow (one question at a time, 2–3 options with a recommendation, 200–300 word sections with validation, then doc/commit if requested).
@@ -41,5 +42,6 @@
 ## Output Format Preferences
 - Provide concise summaries with concrete file paths.
 - List the exact commands run and their outcomes.
+- If a request could be interpreted in multiple ways (e.g., "merge" vs "apply"), restate the intended action in one sentence and ask for confirmation before proceeding.
 - When suggesting next steps, keep them minimal and actionable.
 - When touching Markdown, watch for markdownlint pitfalls (H1 on line 1, ordered list numbering).
