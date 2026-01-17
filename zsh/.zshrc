@@ -70,7 +70,7 @@ gcsh() {
   fi
 }
 
-# Added by Antigravity
+# antigravity
 export PATH="$HOME/.antigravity/antigravity/bin:$PATH"
 
 # codex
