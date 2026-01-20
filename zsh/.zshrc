@@ -70,9 +70,26 @@ gcsh() {
   fi
 }
 
+agents_link() {
+  local TARGET_DIR="${1:-$PWD}"
+  local AGENTS_FILE="${TARGET_DIR}/AGENTS.md"
+
+  if [ ! -d "${TARGET_DIR}" ]; then
+    echo "Directory not found: ${TARGET_DIR}"
+    return 1
+  fi
+
+  if [ ! -f "${AGENTS_FILE}" ]; then
+    echo "AGENTS.md not found in ${TARGET_DIR}"
+    return 1
+  fi
+
+  ln -snf "${AGENTS_FILE}" "${TARGET_DIR}/GEMINI.md"
+  ln -snf "${AGENTS_FILE}" "${TARGET_DIR}/CLAUDE.md"
+}
+
 # antigravity
 export PATH="$HOME/.antigravity/antigravity/bin:$PATH"
 
 # codex
 eval "$(codex completion zsh)"
-
