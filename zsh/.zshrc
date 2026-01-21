@@ -72,20 +72,22 @@ gcsh() {
 
 agents_link() {
   local TARGET_DIR="${1:-$PWD}"
-  local AGENTS_FILE="${TARGET_DIR}/AGENTS.md"
 
   if [ ! -d "${TARGET_DIR}" ]; then
     echo "Directory not found: ${TARGET_DIR}"
     return 1
   fi
 
-  if [ ! -f "${AGENTS_FILE}" ]; then
+  if [ ! -f "${TARGET_DIR}/AGENTS.md" ]; then
     echo "AGENTS.md not found in ${TARGET_DIR}"
     return 1
   fi
 
-  ln -snf "${AGENTS_FILE}" "${TARGET_DIR}/GEMINI.md"
-  ln -snf "${AGENTS_FILE}" "${TARGET_DIR}/CLAUDE.md"
+  (
+    cd "${TARGET_DIR}" \
+      && ln -snf "AGENTS.md" "GEMINI.md" \
+      && ln -snf "AGENTS.md" "CLAUDE.md"
+  )
 }
 
 # antigravity
