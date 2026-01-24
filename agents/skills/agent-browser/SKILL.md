@@ -22,6 +22,20 @@ agent-browser close             # Close browser
 3. Interact using refs from the snapshot
 4. Re-snapshot after navigation or significant DOM changes
 
+## Setup notes (avoid common pitfalls)
+
+- Apple Silicon (arm64) may still look for `mac-x64` headless shell and fail to launch.
+  - Fix: export `PLAYWRIGHT_HOST_PLATFORM_OVERRIDE=mac-arm64` before running `agent-browser`.
+  - Alternate: set `AGENT_BROWSER_EXECUTABLE_PATH` to the arm64 headless shell, e.g.
+    `/Users/<you>/Library/Caches/ms-playwright/chromium_headless_shell-1200/chrome-headless-shell-mac-arm64/chrome-headless-shell`
+- If you pass `--executable-path` and it says "daemon already running", run `agent-browser close` first.
+- Install matching browsers for agent-browser (playwright-core@1.57.0) from a clean temp dir:
+  ```bash
+  cd /tmp
+  npx --yes playwright@1.57.0 install chromium
+  ```
+  Running from a repo that pins an older Playwright version may download the wrong build.
+
 ## Commands
 
 ### Navigation

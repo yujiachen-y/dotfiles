@@ -95,3 +95,6 @@ export PATH="$HOME/.antigravity/antigravity/bin:$PATH"
 
 # codex
 eval "$(codex completion zsh)"
+
+# added by claude-code
+export PATH="$HOME/.local/bin:$PATH"
