@@ -32,6 +32,7 @@
 - Ask early about non‑modifiable files/dirs and required reuse targets.
 - Check repo-specific AGENTS.md/OpenSpec instructions early; call out conflicts.
 - When introducing new tool integrations, confirm directory/placement constraints first (e.g., no new top‑level folders) before creating files.
+- If the repo has no specific requirements for commit messages, use Conventional Commits format.
 - Default to rebasing when integrating back to `main`; for small changes, it's OK to commit directly on `main` without creating a new branch.
 - Default merge-back command: `git rebase main` (or `git pull --rebase` on `main`) before fast-forwarding, unless committing directly on `main` for small changes.
 - When the user explicitly requests a brainstorm/design discussion, follow the "Brainstorming Ideas Into Designs" flow (one question at a time, 2–3 options with a recommendation, 200–300 word sections with validation, then doc/commit if requested).
