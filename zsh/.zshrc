@@ -78,16 +78,51 @@ agents_link() {
     return 1
   fi
 
-  if [ ! -f "${TARGET_DIR}/AGENTS.md" ]; then
-    echo "AGENTS.md not found in ${TARGET_DIR}"
-    return 1
+  # Link AGENTS.md -> GEMINI.md, CLAUDE.md
+  if [ -f "${TARGET_DIR}/AGENTS.md" ]; then
+    (
+      cd "${TARGET_DIR}" \
+        && ln -snf "AGENTS.md" "GEMINI.md" \
+        && ln -snf "AGENTS.md" "CLAUDE.md"
+    )
+    echo "Linked: AGENTS.md -> GEMINI.md, CLAUDE.md"
+  else
+    echo "Warning: AGENTS.md not found in ${TARGET_DIR}"
   fi
 
-  (
-    cd "${TARGET_DIR}" \
-      && ln -snf "AGENTS.md" "GEMINI.md" \
-      && ln -snf "AGENTS.md" "CLAUDE.md"
-  )
+  # Link .agent/ -> .gemini/, .claude/
+  if [ -d "${TARGET_DIR}/.agent" ]; then
+    (
+      cd "${TARGET_DIR}" \
+        && ln -snf ".agent" ".gemini" \
+        && ln -snf ".agent" ".claude"
+    )
+    echo "Linked: .agent/ -> .gemini/, .claude/"
+
+    # Special handling for .codex
+    local CODEX_CREATED=0
+    if [ -d "${TARGET_DIR}/.agent/commands" ]; then
+      mkdir -p "${TARGET_DIR}/.codex"
+      CODEX_CREATED=1
+      (
+        cd "${TARGET_DIR}/.codex" \
+          && ln -snf "../.agent/commands" "prompts"
+      )
+      echo "Linked: .agent/commands/ -> .codex/prompts/"
+    fi
+    if [ -d "${TARGET_DIR}/.agent/skills" ]; then
+      if [ $CODEX_CREATED -eq 0 ]; then
+        mkdir -p "${TARGET_DIR}/.codex"
+      fi
+      (
+        cd "${TARGET_DIR}/.codex" \
+          && ln -snf "../.agent/skills" "skills"
+      )
+      echo "Linked: .agent/skills/ -> .codex/skills/"
+    fi
+  else
+    echo "Warning: .agent/ not found in ${TARGET_DIR}, skipping folder links"
+  fi
 }
 
 # antigravity
