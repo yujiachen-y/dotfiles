@@ -1,0 +1,12 @@
+# Dependencies
+node_modules/
+
+# Bun lockfile (binary format)
+bun.lock
+bun.lockb
+
+# Logs
+*.log
+
+# OS files
+.DS_Store

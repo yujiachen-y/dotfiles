@@ -1,0 +1,12 @@
+{
+  "name": "mermaid-viewer-server",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "bun run server.ts",
+    "install-deps": "bun install"
+  },
+  "dependencies": {
+    "beautiful-mermaid": "^0.1.3"
+  }
+}
