@@ -1,10 +1,3 @@
-# OPENSPEC:START
-# OpenSpec shell completions configuration
-fpath=("/Users/yujiachen/.oh-my-zsh/custom/completions" $fpath)
-autoload -Uz compinit
-compinit
-# OPENSPEC:END
-
 export PATH="/usr/local/bin:$PATH"
 
 # pyenv
@@ -133,3 +126,13 @@ eval "$(codex completion zsh)"
 
 # added by claude-code
 export PATH="$HOME/.local/bin:$PATH"
+
+alias ccyl="claude --dangerously-skip-permissions"
+alias cxyl="codex --yolo"
+
+# bun completions
+[ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
