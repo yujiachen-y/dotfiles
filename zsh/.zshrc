@@ -1,3 +1,8 @@
+# Enable Powerlevel10k instant prompt. Keep this near the top of ~/.zshrc.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
 export PATH="/usr/local/bin:$PATH"
 
 # pyenv
@@ -40,6 +45,15 @@ source ~/.oh-my-zsh/lib/directories.zsh
 source ~/.oh-my-zsh/lib/git.zsh
 source ~/.oh-my-zsh/plugins/git/git.plugin.zsh
 source ~/.oh-my-zsh/plugins/z/z.plugin.zsh
+
+# powerlevel10k
+P10K_THEME="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k/powerlevel10k.zsh-theme"
+if [ -r "$P10K_THEME" ]; then
+  source "$P10K_THEME"
+fi
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 source ~/.non_public_commands.sh
 

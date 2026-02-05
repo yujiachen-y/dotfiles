@@ -25,3 +25,14 @@ echo "🍉   Setting up zshrc"
 ZSHRC="$HOME"/.zshrc
 rm "$ZSHRC"
 ln -s "$ZSH_DIR"/.zshrc "$ZSHRC"
+
+echo "🍉   Setting up powerlevel10k"
+P10K_DIR="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k"
+if [ ! -d "$P10K_DIR" ]; then
+  git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "$P10K_DIR"
+elif [ -d "$P10K_DIR/.git" ]; then
+  git -C "$P10K_DIR" pull --quiet --ff-only
+fi
+P10K_FILE="$HOME"/.p10k.zsh
+rm "$P10K_FILE"
+ln -s "$ZSH_DIR"/.p10k.zsh "$P10K_FILE"
