@@ -38,7 +38,11 @@
 - When the user explicitly requests a brainstorm/design discussion, follow the "Brainstorming Ideas Into Designs" flow (one question at a time, 2–3 options with a recommendation, 200–300 word sections with validation, then doc/commit if requested).
 - Clarify branch strategy (rebase/cherry‑pick/merge) before doing multi‑commit work.
 - For long‑running workers/processes, ask whether to keep them running or stop afterward.
+- If a script runs for a long time, ensure it prints periodic progress so external observers can track status.
+- If a run fails due to missing prerequisites (e.g., missing archives, Statsig not initialized), label it as “needs fix” with the reason and stop; wait for user direction before retrying.
 - Surface assumptions and risks explicitly; keep changes reversible.
+- Before writing architecture docs, lock these decisions: control plane ownership, execution model, snapshot semantics, file transfer rules, and component access boundaries.
+- Before writing the API/Schema section, lock endpoint shape (merge vs split) and return type (handle vs id) to prevent rework.
 
 ## Output Format Preferences
 - Provide concise summaries with concrete file paths.
