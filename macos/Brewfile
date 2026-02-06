@@ -24,6 +24,7 @@ brew "tldr"
 brew "tree"
 brew "wget"
 brew "yq"
+brew "zsh-autosuggestions"
 
 # Apps
 cask "1password"
