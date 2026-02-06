@@ -46,6 +46,13 @@ source ~/.oh-my-zsh/lib/git.zsh
 source ~/.oh-my-zsh/plugins/git/git.plugin.zsh
 source ~/.oh-my-zsh/plugins/z/z.plugin.zsh
 
+# zsh autosuggestions (history-based inline suggestions)
+if command -v brew >/dev/null 2>&1; then
+  ZSH_AUTOSUGGESTIONS_FILE="$(brew --prefix zsh-autosuggestions 2>/dev/null)/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
+  [ -r "$ZSH_AUTOSUGGESTIONS_FILE" ] && source "$ZSH_AUTOSUGGESTIONS_FILE"
+  unset ZSH_AUTOSUGGESTIONS_FILE
+fi
+
 # powerlevel10k
 P10K_THEME="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k/powerlevel10k.zsh-theme"
 if [ -r "$P10K_THEME" ]; then
