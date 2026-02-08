@@ -1,52 +1,56 @@
-# Collaboration Guide (Repo‑agnostic)
+# Collaboration Guide (Repo-agnostic)
 
-## Engineering Preferences
-- Preserve architecture boundaries; avoid moving app logic into libs unless explicitly asked.
-- Prefer minimal diffs and reuse existing workflows/activities/scripts over new ones.
-- Avoid introducing new env vars/config unless necessary; prefer inline constants or existing config patterns.
-- Keep interfaces simple: remove redundant params, avoid scattering mock values.
-- When removing CLI/config params, also remove schema fields, runner args, and docs; make schemas strict when possible.
-- Readability matters: avoid dense inline function calls; favor named helpers when logic is non‑trivial.
-- Logging should be intentional and minimal; add debug logs only when requested.
-- Respect “do‑not‑touch” areas or shared libs; ask before changing them.
+## Priority
+- Repo-local `AGENTS.md` (or equivalent) has priority.
+- This file is a fallback for cross-repo work.
+- If precedence is unclear, stop and confirm with the user.
 
-## TypeScript / Type Safety
-- Type safety first: avoid `as` casts when possible; prefer zod/explicit types.
-- Prefer schema-level narrowing for `unknown` instead of helper wrappers or casts.
-- Code style: avoid `for...of`, reduce `let`, prefer functional patterns and readable control flow.
+## Engineering Defaults
+- Keep diffs minimal and reuse existing workflows/scripts.
+- Preserve architecture boundaries; do not move app logic into shared libs unless asked.
+- Avoid new env vars/config unless necessary; prefer existing patterns.
+- Keep interfaces simple; remove redundant params and avoid scattered mock values.
+- When removing CLI/config params, also update schema fields, runner args, and docs.
+- Keep code readable; avoid dense inline logic and add debug logging only when requested.
+- Respect do-not-touch areas and shared libs.
+- Prefer explicit types and schema-level narrowing; avoid `as` casts when possible.
+- Prefer functional, readable control flow; avoid `for...of` and reduce mutable `let`.
+- For generated data modules, require a generator plus verifier script; avoid manual edits.
+- For large datasets, split into per-ID modules with stable index order and `sourcePath` metadata.
 
-## Data & Generated Modules
-- For generated data modules, require a generator + verifier script; avoid manual edits.
-- For large datasets, split into per-ID modules with a stable index order and sourcePath metadata.
+## Validation and Quality Gates
+- Run relevant tests and `pre-commit run --all-files` before PR when the repo supports them.
+- Add missing tests when there is a clear logical gap.
+- If tests cannot run, explain the blocker and suggest alternatives.
+- Treat configured gates as hard requirements in pre-commit and CI: cyclomatic complexity, unit-test coverage, max function length, max file length, duplicate function detection.
+- Do not disable/skip/weaken gates to force merge unless the user explicitly authorizes config changes.
+- For long-running workers/e2e loops, capture runId/output paths and confirm whether to stop afterward.
 
-## Testing Expectations
-- Run relevant tests whenever possible; prioritize unit/CI‑critical checks.
-- Before running tests, install module dev dependencies (e.g., `pip install -e "path[dev]"`) to avoid missing tools.
-- If pre-commit/CI/lint/coverage gates exist (e.g., file-length limits), check or run them before committing to avoid late failures.
-- If a logical gap needs tests, add them proactively.
-- If tests can’t run (env/permissions), explain why and suggest alternatives.
-- For long-running workers/e2e loops, capture runId/output paths and confirm whether to stop the worker afterward.
-- Do not change or relax pre-commit/CI/lint/coverage gates to bypass failures unless the user explicitly authorizes config changes.
+## Delivery Workflow (Fallback)
+1. Start from `main` and use a short-lived feature branch.
+2. Keep PRs focused; include summary, validation evidence, and merge plan.
+3. Rebase on latest `main` before merge (`git rebase main`).
+4. Wait for CI, fix root causes, and rerun until green.
+5. Use squash merge by default after required checks pass.
+6. Post-merge: switch to `main`, `git pull --rebase`, and delete the merged local branch.
 
-## Workflow Preferences
-- Ask early about non‑modifiable files/dirs and required reuse targets.
-- Check repo-specific AGENTS.md/OpenSpec instructions early; call out conflicts.
-- When introducing new tool integrations, confirm directory/placement constraints first (e.g., no new top‑level folders) before creating files.
-- If the repo has no specific requirements for commit messages, use Conventional Commits format.
-- Default to rebasing when integrating back to `main`; for small changes, it's OK to commit directly on `main` without creating a new branch.
-- Default merge-back command: `git rebase main` (or `git pull --rebase` on `main`) before fast-forwarding, unless committing directly on `main` for small changes.
-- When the user explicitly requests a brainstorm/design discussion, follow the "Brainstorming Ideas Into Designs" flow (one question at a time, 2–3 options with a recommendation, 200–300 word sections with validation, then doc/commit if requested).
-- Clarify branch strategy (rebase/cherry‑pick/merge) before doing multi‑commit work.
-- For long‑running workers/processes, ask whether to keep them running or stop afterward.
-- If a script runs for a long time, ensure it prints periodic progress so external observers can track status.
-- If a run fails due to missing prerequisites (e.g., missing archives, Statsig not initialized), label it as “needs fix” with the reason and stop; wait for user direction before retrying.
+## Language, Artifacts, and Coordination
+- Before introducing a new language, add pre-commit hooks, CI checks, and hard-gate coverage first.
+- Only then add production source files in that language.
+- Default repo-facing artifacts to English (comments, commit messages, PR metadata, docs, governance files), unless repo-local rules say otherwise.
+- If the repo has no commit message requirement, use Conventional Commits.
+- Ask early about non-modifiable paths and required reuse targets.
+- Confirm placement constraints before adding new integrations/files.
+- Clarify branch strategy before multi-commit work.
+- For long-running scripts, ensure periodic progress output.
+- If a run fails due to missing prerequisites, label it as "needs fix", state why, and wait for direction before retrying.
 - Surface assumptions and risks explicitly; keep changes reversible.
-- Before writing architecture docs, lock these decisions: control plane ownership, execution model, snapshot semantics, file transfer rules, and component access boundaries.
-- Before writing the API/Schema section, lock endpoint shape (merge vs split) and return type (handle vs id) to prevent rework.
+- Before architecture/API docs, lock key decisions first (ownership, execution model, snapshot semantics, transfer rules, access boundaries, endpoint shape, return type).
+- For explicit brainstorm/design requests, follow the "Brainstorming Ideas Into Designs" flow.
 
-## Output Format Preferences
+## Output Format
 - Provide concise summaries with concrete file paths.
-- List the exact commands run and their outcomes.
-- If a request could be interpreted in multiple ways (e.g., "merge" vs "apply"), restate the intended action in one sentence and ask for confirmation before proceeding.
-- When suggesting next steps, keep them minimal and actionable.
-- When touching Markdown, watch for markdownlint pitfalls (H1 on line 1, ordered list numbering).
+- List exact commands and outcomes.
+- If a request is ambiguous (for example, "merge" vs "apply"), restate intended action and confirm first.
+- Keep next steps minimal and actionable.
+- For Markdown edits, watch markdownlint basics (H1 on line 1, ordered list numbering).
