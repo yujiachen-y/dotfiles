@@ -102,3 +102,34 @@ if [ -e "$CLAUDE_SKILLS_TARGET" ] || [ -L "$CLAUDE_SKILLS_TARGET" ]; then
   rm -rf "$CLAUDE_SKILLS_TARGET"
 fi
 ln -s "$SKILLS_SOURCE" "$CLAUDE_SKILLS_TARGET"
+
+echo "🍉     Setting up claude statusline"
+CLAUDE_STATUSLINE_SOURCE="$AGENTS_DIR/statusline-command.sh"
+CLAUDE_STATUSLINE_TARGET="$CLAUDE_DIR/statusline-command.sh"
+if [ -e "$CLAUDE_STATUSLINE_TARGET" ] || [ -L "$CLAUDE_STATUSLINE_TARGET" ]; then
+  rm -rf "$CLAUDE_STATUSLINE_TARGET"
+fi
+ln -s "$CLAUDE_STATUSLINE_SOURCE" "$CLAUDE_STATUSLINE_TARGET"
+
+echo "🍉     Updating claude settings"
+CLAUDE_SETTINGS="$CLAUDE_DIR/settings.json"
+CLAUDE_SETTINGS_TMP="$CLAUDE_DIR/settings.json.tmp"
+CLAUDE_STATUSLINE_COMMAND="bash $CLAUDE_STATUSLINE_TARGET"
+
+if [ ! -f "$CLAUDE_SETTINGS" ]; then
+  echo '{}' > "$CLAUDE_SETTINGS"
+fi
+
+if command -v jq >/dev/null 2>&1; then
+  if jq \
+    --arg command "$CLAUDE_STATUSLINE_COMMAND" \
+    '.statusLine = ((.statusLine // {}) + {type: "command", command: $command, padding: 0})' \
+    "$CLAUDE_SETTINGS" > "$CLAUDE_SETTINGS_TMP"; then
+    mv "$CLAUDE_SETTINGS_TMP" "$CLAUDE_SETTINGS"
+  else
+    rm -f "$CLAUDE_SETTINGS_TMP"
+    echo "⚠️     Failed to update $CLAUDE_SETTINGS, please check JSON format"
+  fi
+else
+  echo "⚠️     jq not found, skipped updating $CLAUDE_SETTINGS"
+fi
