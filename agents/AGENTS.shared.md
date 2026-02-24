@@ -24,6 +24,7 @@
 - If tests cannot run, explain the blocker and suggest alternatives.
 - Treat configured gates as hard requirements in pre-commit and CI: cyclomatic complexity, unit-test coverage, max function length, max file length, duplicate function detection.
 - Do not disable/skip/weaken gates to force merge unless the user explicitly authorizes config changes.
+- When editing files subject to line-count or format gates, run the formatter first to see the final shape before counting lines; never assume hand-compressed formatting will survive auto-formatting.
 - For long-running workers/e2e loops, capture runId/output paths and confirm whether to stop afterward.
 
 ## Delivery Workflow (Fallback)
