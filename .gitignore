@@ -3,3 +3,4 @@ macos/Brewfile.lock.json
 zsh/.non_public_commands.sh
 .env
 agents/skills/.system
+agents/skills/.system 2
