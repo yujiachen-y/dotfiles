@@ -17,6 +17,8 @@
 - Prefer functional, readable control flow; avoid `for...of` and reduce mutable `let`.
 - For generated data modules, require a generator plus verifier script; avoid manual edits.
 - For large datasets, split into per-ID modules with stable index order and `sourcePath` metadata.
+- Before deep-diving into vendored/dependency source code, search the upstream repo's issues/PRs first for existing fix attempts and maintainer context.
+- When modifying shared code paths that dispatch across multiple providers/backends, first enumerate all dispatch targets and confirm which ones the change should affect; gate by type/identity field, not by payload field presence.
 
 ## Validation and Quality Gates
 - Run relevant tests and `pre-commit run --all-files` before PR when the repo supports them.
@@ -26,6 +28,7 @@
 - Do not disable/skip/weaken gates to force merge unless the user explicitly authorizes config changes.
 - When editing files subject to line-count or format gates, run the formatter first to see the final shape before counting lines; never assume hand-compressed formatting will survive auto-formatting.
 - For long-running workers/e2e loops, capture runId/output paths and confirm whether to stop afterward.
+- When a required environment variable is missing, try `infisical export --env=dev --format=dotenv` to retrieve it before asking the user.
 
 ## Delivery Workflow (Fallback)
 1. Start from `main` and use a short-lived feature branch.
