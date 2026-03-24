@@ -28,7 +28,11 @@ eval "$(echo "$input" | jq -r '
   @sh "cost_usd=\(.cost.total_cost_usd // "")",
   @sh "total_input=\(.context_window.total_input_tokens // "")",
   @sh "total_output=\(.context_window.total_output_tokens // "")",
-  @sh "cache_read=\(.context_window.current_usage.cache_read_input_tokens // "")"
+  @sh "cache_read=\(.context_window.current_usage.cache_read_input_tokens // "")",
+  @sh "five_h_pct=\(.rate_limits.five_hour.used_percentage // "")",
+  @sh "five_h_reset=\(.rate_limits.five_hour.resets_at // "")",
+  @sh "seven_d_pct=\(.rate_limits.seven_day.used_percentage // "")",
+  @sh "seven_d_reset=\(.rate_limits.seven_day.resets_at // "")"
 ' 2>/dev/null)"
 
 # ── Terminal width (use parent process TTY like ccstatusline) ────────────────
@@ -83,6 +87,21 @@ build_ctx_bar() {
   echo -n "${dim}[${reset}${blink}${c}${bf}${unblink}${dim}${be} ${pct}%]${reset}"
 }
 
+format_countdown() {
+  local epoch="$1"
+  if [ -z "$epoch" ] || [ "$epoch" = "0" ]; then return; fi
+  local now
+  now=$(date +%s)
+  local diff=$(( epoch - now ))
+  if (( diff <= 0 )); then echo -n "${dim}now${reset}"; return; fi
+  local h=$(( diff / 3600 ))
+  local m=$(( (diff % 3600) / 60 ))
+  if (( h > 0 )); then   echo -n "${dim}${h}h${m}m${reset}"
+  elif (( m > 0 )); then echo -n "${dim}${m}m${reset}"
+  else                    echo -n "${dim}<1m${reset}"
+  fi
+}
+
 format_duration() {
   local ms="$1"
   if [ -z "$ms" ] || [ "$ms" = "0" ]; then echo -n "${dim}0s${reset}"; return; fi
@@ -120,6 +139,16 @@ format_tokens() {
     echo -n "${color}${k}.${r}k${reset}"
   else
     echo -n "${color}${n}${reset}"
+  fi
+}
+
+usage_color() {
+  local pct="$1"
+  if [ -z "$pct" ]; then echo -n "$dim"; return; fi
+  local int_pct=${pct%.*}
+  if   (( int_pct <= 50 )); then echo -n "$bgreen"
+  elif (( int_pct <= 80 )); then echo -n "$byellow"
+  else                            echo -n "$bred"
   fi
 }
 
@@ -271,6 +300,28 @@ l1_left+=" ${dim}cache:${reset}$(format_tokens "$cache_hit" "$bmagenta")"
 l1_left+=" ${dim}out:${reset}$(format_tokens "$total_output" "$byellow")"
 
 l1_left+="${sep}$(format_cost "$cost_usd")"
+
+# 5h / 7d usage percentages
+if [ -n "$five_h_pct" ] || [ -n "$seven_d_pct" ]; then
+  l1_left+="${sep}"
+  if [ -n "$five_h_pct" ]; then
+    local_5h=${five_h_pct%.*}
+    l1_left+="${dim}5h:${reset}$(usage_color "$five_h_pct")${local_5h}%${reset}"
+    countdown_5h=$(format_countdown "$five_h_reset")
+    [ -n "$countdown_5h" ] && l1_left+="${dim}(${reset}${countdown_5h}${dim})${reset}"
+  else
+    l1_left+="${dim}5h:--%${reset}"
+  fi
+  l1_left+=" "
+  if [ -n "$seven_d_pct" ]; then
+    local_7d=${seven_d_pct%.*}
+    l1_left+="${dim}7d:${reset}$(usage_color "$seven_d_pct")${local_7d}%${reset}"
+    countdown_7d=$(format_countdown "$seven_d_reset")
+    [ -n "$countdown_7d" ] && l1_left+="${dim}(${reset}${countdown_7d}${dim})${reset}"
+  else
+    l1_left+="${dim}7d:--%${reset}"
+  fi
+fi
 
 if [ -n "$agent_name" ]; then
   l1_left+="${sep}${bmagenta}⚡${agent_name}${reset}"
