@@ -1,0 +1,11 @@
+# Global mise configuration.
+# Tracked in dotfiles for reproducibility across machines.
+# Project-specific overrides go in each project's own mise.toml.
+
+[tools]
+"npm:@anthropic-ai/claude-code" = "latest"
+"npm:defuddle" = "latest"
+
+[settings]
+# Auto-install missing tool versions when entering a project with mise.toml
+auto_install = true

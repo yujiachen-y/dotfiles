@@ -16,6 +16,10 @@ if [ "$(uname)" = "Darwin" ]; then
   . "$DOTFILES"/macos/install.sh
 fi
 
+echo "🍉 Setting up mise"
+# shellcheck source=/dev/null
+. "$DOTFILES"/mise/install.sh
+
 echo "🍉 Setting up codex agents"
 # shellcheck source=/dev/null
 . "$DOTFILES"/agents/install.sh
