@@ -76,8 +76,14 @@ eval "$(codex completion zsh)"
 # added by claude-code
 export PATH="$HOME/.local/bin:$PATH"
 
-alias ccyl="claude --dangerously-skip-permissions --effort max"
+# obsidian cli
+export PATH="$PATH:/Applications/Obsidian.app/Contents/MacOS"
+
+alias ccyl="CLAUDE_CODE_NO_FLICKER=1 claude --dangerously-skip-permissions --effort max --disallowedTools \"Agent(Explore)\" \"Agent(claude-code-guide)\""
 alias cxyl="codex --yolo"
+
+# screenpipe (built from source)
+export PATH="$HOME/3rd/screenpipe/target/release:$PATH"
 
 # bun completions
 [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
