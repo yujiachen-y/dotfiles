@@ -23,6 +23,9 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
 [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
 
+# mise (global npm tool manager; keeps nvm/pyenv untouched)
+command -v mise >/dev/null 2>&1 && eval "$(mise activate zsh)"
+
 # oh-my-zsh plugins
 source ~/.oh-my-zsh/lib/directories.zsh
 source ~/.oh-my-zsh/lib/git.zsh
