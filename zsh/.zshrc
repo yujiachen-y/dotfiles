@@ -79,9 +79,6 @@ eval "$(codex completion zsh)"
 # added by claude-code
 export PATH="$HOME/.local/bin:$PATH"
 
-# obsidian cli
-export PATH="$PATH:/Applications/Obsidian.app/Contents/MacOS"
-
 alias ccyl="CLAUDE_CODE_NO_FLICKER=1 claude --dangerously-skip-permissions --effort max --disallowedTools \"Agent(Explore)\" \"Agent(claude-code-guide)\""
 alias cxyl="codex --yolo"
 
