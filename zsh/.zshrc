@@ -13,8 +13,8 @@ eval "$(pyenv init -)"
 # poetry
 if [ ! -f ~/.zfunc/_poetry ]; then
   mkdir -p ~/.zfunc
+  poetry completions zsh > ~/.zfunc/_poetry
 fi
-poetry completions zsh > ~/.zfunc/_poetry
 fpath+=~/.zfunc
 autoload -Uz compinit && compinit
 
