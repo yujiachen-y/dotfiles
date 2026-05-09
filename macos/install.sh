@@ -17,5 +17,14 @@ if [ -e "$GHOSTTY_CONFIG" ] || [ -L "$GHOSTTY_CONFIG" ]; then
 fi
 ln -s "$MACOS_FOLDER/ghostty/config" "$GHOSTTY_CONFIG"
 
+echo "🍉     Setting up zed"
+ZED_DIR="$HOME/.config/zed"
+mkdir -p "$ZED_DIR"
+ZED_CONFIG="$ZED_DIR/settings.json"
+if [ -e "$ZED_CONFIG" ] || [ -L "$ZED_CONFIG" ]; then
+  rm "$ZED_CONFIG"
+fi
+ln -s "$MACOS_FOLDER/zed/settings.json" "$ZED_CONFIG"
+
 echo "🍉     Setting up system settings"
 "$MACOS_FOLDER"/system_settings.sh
