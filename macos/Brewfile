@@ -27,7 +27,6 @@ brew "yq"
 brew "zsh-autosuggestions"
 
 # Apps
-cask "1password"
 cask "alt-tab"
 cask "appcleaner"
 cask "cheatsheet"
@@ -47,7 +46,7 @@ cask "raycast"
 cask "redis-insight"
 cask "snipaste"
 cask "the-unarchiver"
-cask "visual-studio-code"
+cask "zed"
 cask "zoom"
 
 # Quicklook
