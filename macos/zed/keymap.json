@@ -1,0 +1,9 @@
+[
+  {
+    "context": "Workspace",
+    "bindings": {
+      "cmd-alt-shift-c": "workspace::CopyRelativePath",
+      "cmd-alt-c": "workspace::CopyPath"
+    }
+  }
+]
