@@ -18,6 +18,12 @@
 - Before deep-diving into vendored/dependency source code, search the upstream repo's issues/PRs first for existing fix attempts and maintainer context.
 - When modifying shared code paths that dispatch across multiple providers/backends, first enumerate all dispatch targets and confirm which ones the change should affect; gate by type/identity field, not by payload field presence.
 
+## Local Toolchain
+- The user manages tool versions with **mise** (`~/dotfiles/mise/config.toml`, symlinked to `~/.config/mise/config.toml`). Treat mise as the single source of truth for installing global CLI tools.
+- For any globally-available CLI that ships as a language package (npm, PyPI, RubyGems, crates.io, Go modules, GitHub binary releases), pin it via the matching mise backend in `~/dotfiles/mise/config.toml` — e.g. `"npm:<pkg>" = "latest"`, `"pipx:<pkg>"`, `"cargo:<pkg>"`, `"gem:<pkg>"`, `"go:<host/path>"`, `"ubi:<owner/repo>"`.
+- **Never suggest or run** `npm install -g`, `pip install --user`, `pipx install`, `gem install --user-install`, `cargo install`, `go install` directly. These bind the tool to a specific runtime version's bin dir, so when mise switches Node/Python/etc. per-project the tool disappears or version-mismatches.
+- When you find an existing tool installed via the language-native global path (e.g. under `~/.local/share/mise/installs/<lang>/<version>/lib/...`), migrate it: add the mise entry, run `mise install`, then uninstall the old copy with the language's native uninstaller so PATH precedence resolves to the mise-managed copy.
+
 ## Validation and Quality Gates
 - Run relevant tests and `pre-commit run --all-files` before PR when the repo supports them.
 - Add missing tests when there is a clear logical gap.
