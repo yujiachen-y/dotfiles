@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>__TITLE__</title>
+<style>
+  :root {
+    --ivory:    #FAF9F5;
+    --paper:    #FFFFFF;
+    --slate:    #141413;
+    --clay:     #D97757;
+    --clay-d:   #B85C3E;
+    --oat:      #E3DACC;
+    --olive:    #788C5D;
+    --rust:     #B04A3F;
+    --sky:      #6A8CAF;
+    --g100:     #F0EEE6;
+    --g200:     #E6E3DA;
+    --g300:     #D1CFC5;
+    --g500:     #87867F;
+    --g700:     #3D3D3A;
+
+    --serif: ui-serif, Georgia, "Times New Roman", Times, serif;
+    --sans:  system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --mono:  ui-monospace, "SF Mono", Menlo, Monaco, Consolas, monospace;
+
+    --border:       1.5px solid var(--g300);
+    --radius-panel: 12px;
+    --radius-row:   8px;
+    --radius-pill:  999px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--ivory);
+    color: var(--g700);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    padding: 56px 24px 120px;
+  }
+  .page { max-width: 920px; margin: 0 auto; }
+
+  h1 {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 38px;
+    line-height: 1.15;
+    letter-spacing: -0.012em;
+    color: var(--slate);
+    margin-bottom: 14px;
+  }
+  h2 {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 24px;
+    letter-spacing: -0.01em;
+    color: var(--slate);
+  }
+  h3 {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 19px;
+    color: var(--slate);
+    margin-bottom: 6px;
+  }
+  p { max-width: 680px; margin-bottom: 12px; }
+  a { color: var(--clay); text-decoration-color: var(--oat); text-underline-offset: 3px; }
+  a:hover { text-decoration-color: var(--clay); }
+  code, pre { font-family: var(--mono); font-size: 13px; }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--g500);
+    margin-bottom: 10px;
+  }
+
+  .lead {
+    font-size: 16.5px;
+    color: var(--g700);
+    max-width: 640px;
+    margin-bottom: 8px;
+  }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    background: var(--g100);
+    border: var(--border);
+    border-radius: var(--radius-pill);
+    padding: 4px 10px;
+    color: var(--g500);
+  }
+
+  header.page-head {
+    margin-bottom: 48px;
+    padding-bottom: 28px;
+    border-bottom: var(--border);
+  }
+
+  section { margin-bottom: 56px; }
+  .sec-head {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 10px;
+  }
+  .sec-head .num {
+    font-family: var(--mono);
+    font-size: 12px;
+    background: var(--oat);
+    color: var(--slate);
+    padding: 3px 9px;
+    border-radius: 8px;
+  }
+  .sec-intro {
+    font-size: 14.5px;
+    color: var(--g500);
+    max-width: 720px;
+    margin-bottom: 24px;
+  }
+
+  .card {
+    background: var(--paper);
+    border: var(--border);
+    border-radius: var(--radius-panel);
+    padding: 22px 24px;
+  }
+
+  .summary-band {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-bottom: 48px;
+  }
+  @media (max-width: 720px) { .summary-band { grid-template-columns: repeat(2, 1fr); } }
+  .stat-card {
+    background: var(--paper);
+    border: var(--border);
+    border-radius: var(--radius-panel);
+    padding: 20px 22px 18px;
+  }
+  .stat-card .label {
+    font-family: var(--mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--g500);
+    margin-bottom: 8px;
+  }
+  .stat-card .value {
+    font-family: var(--serif);
+    font-size: 38px;
+    font-weight: 500;
+    line-height: 1;
+    color: var(--slate);
+  }
+  .stat-card .delta {
+    font-family: var(--mono);
+    font-size: 11px;
+    margin-top: 6px;
+    color: var(--g500);
+  }
+  .stat-card.accent { border-left: 4px solid var(--clay); padding-left: 19px; }
+
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+  }
+
+  table.data {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: var(--paper);
+    border: var(--border);
+    border-radius: var(--radius-panel);
+    overflow: hidden;
+  }
+  table.data thead th {
+    text-align: left;
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--g500);
+    background: var(--g100);
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--g300);
+  }
+  table.data tbody td {
+    padding: 13px 16px;
+    border-bottom: 1px solid var(--g100);
+    font-size: 14px;
+    vertical-align: middle;
+  }
+  table.data tbody tr:last-child td { border-bottom: none; }
+  table.data tbody tr:hover { background: var(--ivory); }
+
+  .callout {
+    background: var(--oat);
+    border-radius: var(--radius-panel);
+    padding: 18px 22px;
+    font-size: 14.5px;
+  }
+  .callout .callout-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--g700);
+    margin-bottom: 6px;
+  }
+
+  footer {
+    margin-top: 64px;
+    padding-top: 20px;
+    border-top: 1px solid var(--g300);
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--g500);
+  }
+</style>
+</head>
+<body>
+  <div class="page">
+
+    <header class="page-head">
+      <div class="eyebrow">__EYEBROW__</div>
+      <h1>__TITLE__</h1>
+      <p class="lead">__LEAD__</p>
+    </header>
+
+    <!-- Optional summary band — keep, replace, or delete to match the content
+    <section class="summary-band">
+      <div class="stat-card">
+        <div class="label">Metric A</div>
+        <div class="value">12</div>
+        <div class="delta">+3</div>
+      </div>
+      <div class="stat-card accent">
+        <div class="label">Metric B</div>
+        <div class="value">5</div>
+      </div>
+    </section>
+    -->
+
+    <section>
+      <div class="sec-head">
+        <span class="num">01</span>
+        <h2>__SECTION_TITLE__</h2>
+      </div>
+      <p class="sec-intro">__SECTION_INTRO__</p>
+      <p>__SECTION_BODY__</p>
+    </section>
+
+    <footer>__FOOTER__</footer>
+
+  </div>
+</body>
+</html>
