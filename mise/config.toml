@@ -3,8 +3,18 @@
 # Project-specific overrides go in each project's own mise.toml.
 
 [tools]
+node = "latest"
+pnpm = "latest"
+python = "latest"
+uv = "latest"
+
+# CLI tools that ship as npm packages: pin via mise's `npm:` backend rather than
+# `npm install -g`. mise installs them under their own bin dir on PATH, so they
+# remain available regardless of which Node version mise has activated for the
+# current project.
 "npm:@anthropic-ai/claude-code" = "latest"
 "npm:defuddle" = "latest"
+"npm:@larksuite/cli" = "latest"
 
 [settings]
 # Auto-install missing tool versions when entering a project with mise.toml

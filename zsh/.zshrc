@@ -18,12 +18,7 @@ fi
 fpath+=~/.zfunc
 autoload -Uz compinit && compinit
 
-# nvm
-export NVM_DIR="$HOME/.nvm"
-[ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
-[ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
-
-# mise (global npm tool manager; keeps nvm/pyenv untouched)
+# mise (manages node/pnpm and global npm tools)
 command -v mise >/dev/null 2>&1 && eval "$(mise activate zsh)"
 
 # oh-my-zsh plugins
@@ -91,4 +86,3 @@ export PATH="$HOME/3rd/screenpipe/target/release:$PATH"
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
-

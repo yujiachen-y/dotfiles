@@ -19,17 +19,7 @@ if [ -e "$MISE_CONFIG" ] || [ -L "$MISE_CONFIG" ]; then
 fi
 ln -s "$MISE_DOTFILES/config.toml" "$MISE_CONFIG"
 
-# Load nvm so mise's npm backend can find node/npm.
-# nvm is loaded in .zshrc at interactive-shell runtime, but this script
-# runs in /bin/sh where .zshrc hasn't been sourced.
-export NVM_DIR="$HOME/.nvm"
-if [ -s "/opt/homebrew/opt/nvm/nvm.sh" ]; then
-  . "/opt/homebrew/opt/nvm/nvm.sh" >/dev/null 2>&1
-fi
-
-if command -v npm >/dev/null 2>&1; then
-  echo "🍉   Installing mise-declared tools"
-  mise install
-else
-  echo "🍉   npm not found (nvm or node missing). Run 'mise install' manually after first 'nvm install --lts'."
-fi
+# mise resolves core tools (node) before npm-backend tools in a single pass,
+# so this works on a fresh machine without nvm/node pre-installed.
+echo "🍉   Installing mise-declared tools"
+mise install
