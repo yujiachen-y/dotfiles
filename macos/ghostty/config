@@ -1,29 +1,42 @@
-theme = iTerm2 Tango Dark
-font-size = 14
+# Theme — auto switch with macOS appearance
+theme = dark:Catppuccin Mocha,light:Catppuccin Latte
+window-theme = system
+
+# Font
+font-family = JetBrainsMono Nerd Font
+font-size = 16
+font-thicken = true
+
+# Cursor
 cursor-style-blink = true
 cursor-opacity = 0.7
+
+# Mouse
 mouse-hide-while-typing = true
 
-background-opacity = 0.72
-background-blur = 50
-background-opacity-cells = true
-
-desktop-notifications = true
-macos-titlebar-style = tabs
-macos-window-shadow = false
-macos-icon = blueprint
+# Window
+background-opacity = 1
+background-blur = macos-glass-regular
+window-padding-x = 16
+window-padding-y = 12
 window-padding-balance = true
 window-padding-color = extend
-window-width = 140
-window-height = 40
-window-save-state = always
 window-colorspace = display-p3
+window-save-state = always
 
-window-theme = auto
+# Splits
+unfocused-split-opacity = 0.65
 
-unfocused-split-opacity = 0.7
-
+# Notifications & links
+desktop-notifications = true
 link-url = true
 link-previews = true
 
+# macOS
+macos-titlebar-style = transparent
+macos-window-shadow = false
+macos-icon = blueprint
 macos-option-as-alt = left
+
+# cmux integration — cmux renders its own vertical sidebar
+window-show-tab-bar = never
