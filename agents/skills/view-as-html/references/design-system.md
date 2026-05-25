@@ -1,7 +1,7 @@
 # Design System — Anthropic-style HTML Output
 
-The design tokens and component CSS below are the canonical Anthropic look used across the reference
-gallery (`~/3rd/html-effectiveness/`). Copy directly into the `<style>` block of any HTML you
+The design tokens and component CSS below are the canonical Anthropic look used across the bundled
+reference gallery ([`gallery/`](gallery/)). Copy directly into the `<style>` block of any HTML you
 generate. The whole system fits in roughly 200 lines of CSS, which is the point — the visual
 distinctiveness comes from consistent use of a small palette and a strict type stack, not from
 volume.
@@ -397,8 +397,10 @@ footer {
 
 ## When to break the system
 
-The gallery does occasionally deviate — `09-slide-deck.html` uses larger type and full-bleed
-layouts; `18-editor-triage-board.html` uses a column-flow Kanban grid. Deviation is fine **when the
-content shape demands it** — slides want fullscreen, kanban wants columns. But the palette, the type
-families, and the mono-label signature stay the same across every deviation. That consistency is
-what makes 20 different page types still feel like one product.
+The gallery does occasionally deviate — [`gallery/09-slide-deck.html`](gallery/09-slide-deck.html)
+uses larger type and full-bleed layouts;
+[`gallery/18-editor-triage-board.html`](gallery/18-editor-triage-board.html) uses a column-flow
+Kanban grid. Deviation is fine **when the content shape demands it** — slides want fullscreen,
+kanban wants columns. But the palette, the type families, and the mono-label signature stay the
+same across every deviation. That consistency is what makes 21 different page types still feel
+like one product.
