@@ -27,3 +27,24 @@ speed.
 - [dotfiles.github.io](https://dotfiles.github.io/)
 - [driesvints/dotfiles](https://github.com/driesvints/dotfiles)
 - [mathiasbynens/dotfiles/.macos](https://github.com/mathiasbynens/dotfiles/blob/main/.macos)
+
+
+## Golang Environment
+
+This dotfiles setup manages Go via `mise`.
+
+1. Install/refresh dotfiles setup:
+   ```sh
+   ./install.sh
+   ```
+2. Verify Go is available:
+   ```sh
+   mise which go
+   go version
+   ```
+
+If you only want to refresh language/tool versions without running full setup:
+
+```sh
+./mise/install.sh
+```
