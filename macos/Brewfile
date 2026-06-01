@@ -4,6 +4,7 @@ tap "manaflow-ai/cmux"
 # Binaries
 brew "coreutils"
 brew "fzf"
+brew "gh"
 brew "git"
 brew "git-delta"
 brew "imagemagick"
