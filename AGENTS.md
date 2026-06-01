@@ -16,8 +16,12 @@ Shell scripts are POSIX `sh` with 2-space indentation. Keep scripts idempotent a
 There is no automated test suite. Validate changes by running the specific script you touched, or run the full setup on a disposable machine. If available, static checks are useful:
 `shellcheck install.sh macos/*.sh zsh/*.sh agents/install.sh`.
 
-## Commit & Pull Request Guidelines
-Commit messages follow Conventional Commits (examples in history: `feat: ...`, `docs: ...`, `chore: ...`, and date-stamped `chore: YY-MM-DD`). PRs should summarize impacted areas (for example, `macos/Brewfile` or `zsh/.zshrc`), list any manual steps, and call out OS-specific effects. Add screenshots only when updating `screenshot/` assets.
+## Commit & Branching Workflow
+This is a personal, single-maintainer dotfiles repo. **Work directly on `main`** — do not create feature branches or pull requests for routine changes; commit straight to `main` and push. This repo-local rule intentionally overrides the branch-based "Delivery Workflow" in the global `agents/AGENTS.shared.md`, which already defers to repo-local guidance.
+
+Commit messages follow Conventional Commits, scoped by area (examples in history: `feat(mise): ...`, `chore(macos): ...`, `fix(zsh): ...`, and date-stamped `chore: YY-MM-DD`). Split unrelated changes into separate semantic commits; in the body, note impacted areas, any manual steps, and OS-specific effects. Add screenshots only when updating `screenshot/` assets.
+
+Keep the dotfiles portable: never commit machine-specific or hardcoded absolute paths (for example `/Users/<name>/...` or auto-injected tool `PATH` lines). Prefer `$HOME`/`~`, `PATH`-based discovery, or an untracked machine-local include.
 
 ## Security & Configuration Notes
 Install scripts remove existing `~/.vimrc`, `~/.gitconfig`, `~/.zshrc`, and `~/.non_public_commands.sh` before linking. Highlight destructive changes in PRs. `macos/install.sh` uses a Homebrew install script via curl; reviewers should verify the URL and permissions.
