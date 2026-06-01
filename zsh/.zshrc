@@ -21,6 +21,10 @@ autoload -Uz compinit && compinit
 # mise (manages node/pnpm and global npm tools)
 command -v mise >/dev/null 2>&1 && eval "$(mise activate zsh)"
 
+# Default editor for terminal tools that use $VISUAL/$EDITOR.
+export VISUAL="zed --wait"
+export EDITOR="zed --wait"
+
 # oh-my-zsh plugins
 source ~/.oh-my-zsh/lib/directories.zsh
 source ~/.oh-my-zsh/lib/git.zsh
