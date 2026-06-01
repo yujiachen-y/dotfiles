@@ -9,6 +9,7 @@
 
 [core]
     pager = delta
+	quotepath = false
 
 [interactive]
     diffFilter = delta --color-only --features=interactive
@@ -18,11 +19,11 @@
 
 [merge]
     conflictstyle = diff3
-	tool = vscode
+	tool = opendiff
 
 [diff]
     colorMoved = default
-	tool = vscode
+	tool = zed
 
 [delta]
     features = decorations
@@ -42,10 +43,8 @@
     hunk-header-line-number-style = "#067a00"
     hunk-header-style = file line-number syntax
 
-[mergetool "vscode"]
-	cmd = code --wait --merge $REMOTE $LOCAL $BASE $MERGED
-[difftool "vscode"]
-	cmd = code --wait --diff $LOCAL $REMOTE
+[difftool "zed"]
+	cmd = zed --wait --diff $LOCAL $REMOTE
 [credential "https://github.com"]
 	helper = 
 	helper = !/opt/homebrew/bin/gh auth git-credential
