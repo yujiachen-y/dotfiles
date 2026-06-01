@@ -7,6 +7,7 @@ node = "latest"
 pnpm = "latest"
 python = "latest"
 uv = "latest"
+go = "latest"
 
 # CLI tools that ship as npm packages: pin via mise's `npm:` backend rather than
 # `npm install -g`. mise installs them under their own bin dir on PATH, so they
@@ -15,6 +16,19 @@ uv = "latest"
 "npm:@anthropic-ai/claude-code" = "latest"
 "npm:defuddle" = "latest"
 "npm:@larksuite/cli" = "latest"
+
+# Go tools: pin via mise's `go:` backend rather than `go install`. Same reasoning
+# as the npm: block — mise owns the install dir so the binary survives Go
+# version switches per project.
+"go:golang.org/x/tools/gopls" = "latest"
+"go:golang.org/x/tools/cmd/goimports" = "latest"
+# Kitex codegen — pinned to match weaver/rpc_gen's go.mod version. Newer kitex
+# tool versions emit large drift in generated files (200K-line diffs in
+# archon_server.go etc.) which is hard to review against the actual IDL change.
+"go:github.com/cloudwego/kitex/tool/cmd/kitex" = "0.10.3"
+
+# Lint tooling used by MiniMax Go repos. v2 cannot read the shared v1 config.
+golangci-lint = "1.64.8"
 
 [settings]
 # Auto-install missing tool versions when entering a project with mise.toml
