@@ -20,6 +20,10 @@ echo "🍉 Setting up mise"
 # shellcheck source=/dev/null
 . "$DOTFILES"/mise/install.sh
 
+echo "🍉 Setting up zed"
+# shellcheck source=/dev/null
+. "$DOTFILES"/zed/install.sh
+
 echo "🍉 Setting up coding agents"
 # shellcheck source=/dev/null
 . "$DOTFILES"/agents/install.sh
