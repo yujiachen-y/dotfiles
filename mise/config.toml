@@ -30,6 +30,10 @@ go = "latest"
 # Lint tooling used by shared Go repos. v2 cannot read the shared v1 config.
 golangci-lint = "1.64.8"
 
+# GitHub release tools: pin via mise's `github:` backend rather than ad hoc
+# install scripts, so the binary is managed by the global mise toolchain.
+"github:can1357/oh-my-pi" = "15.8.3"
+
 [settings]
 # Auto-install missing tool versions when entering a project with mise.toml
 auto_install = true
