@@ -7,6 +7,6 @@ cask "crossover"
 # DualSence related
 # - https://www.reddit.com/r/macgaming/comments/196mx0b/ultimate_dualsense_controller_tutorial/
 cask "blackhole-2ch"
-cask "switchaudio-osx"
+brew "switchaudio-osx"
 mas "DualSenseM", id: 1598693570
 mas "LadioCast", id: 411213048
