@@ -17,6 +17,9 @@ go = "latest"
 "npm:defuddle" = "latest"
 "npm:@larksuite/cli" = "latest"
 
+# Python CLI tools: pin via mise's `pipx:` backend rather than ad hoc pip installs.
+"pipx:pre-commit" = "latest"
+
 # Go tools: pin via mise's `go:` backend rather than `go install`. Same reasoning
 # as the npm: block — mise owns the install dir so the binary survives Go
 # version switches per project.
