@@ -31,6 +31,7 @@
   },
   "agent": {
     "dock": "left",
+    "terminal_init_command": "codex",
     "favorite_models": [],
     "model_parameters": []
   },
