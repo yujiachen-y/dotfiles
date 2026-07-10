@@ -1,0 +1,55 @@
+{
+  "skill_name": "dev",
+  "note": "/dev is an explicit-invocation orchestrator. Prompts name it directly. expected_behavior describes a good orchestration run, not a code artifact.",
+  "evals": [
+    {
+      "id": 1,
+      "name": "build-vs-buy-iso8601-duration",
+      "prompt": "用 /dev 走一遍：我在一个 TS 项目里要加个函数，把 ISO 8601 duration 字符串（像 PT1H30M、P3DT4H、PT0.5S）解析成总秒数。",
+      "expected_behavior": [
+        "Runs the Step 0 dependency preflight before anything else",
+        "Uses the current harness checklist for preflight and does not run a generic dependency script",
+        "Grills to surface ambiguity (negative durations? P with months/years which aren't fixed-length seconds? fractional seconds? bare PT? weeks PnW?) instead of assuming",
+        "Makes an EXPLICIT build-vs-buy decision via managing-dependencies (weighs a maintained lib like tinyduration / iso8601-duration vs a hand-rolled regex) rather than silently hand-rolling",
+        "Invokes pm-execution:test-scenarios with PRODUCT, USER_STORY, and CONTEXT before writing code, then writes the approved scenarios next to the ADR as <adr-stem>.test-scenarios.md, or to <target-project-root>/docs/dev/<run-slug>/test-scenarios.md when no ADR exists",
+        "Delegates implementation to a subagent; the orchestrator itself does not write the feature code",
+        "Passes the exact scenario contract path and the TDD skill edge to the implementation subagent, and asks it to update scenario status/evidence",
+        "Stops instead of continuing when required dependencies such as subagent delegation or ponytail are missing",
+        "Delegates review to a separate review subagent; the review subagent must invoke the review skill edge and may run controlled validation but must not edit source files",
+        "Spawns a separate fix subagent only for findings the orchestrator judges valid and worth fixing now",
+        "Pauses (or states an explicit assumption) at each gate"
+      ],
+      "files": []
+    },
+    {
+      "id": 2,
+      "name": "bugfix-csv-quoting",
+      "prompt": "dev pipeline 修个 bug：我们导出 CSV 时，如果某个字段里本身含逗号、双引号或换行，导出的文件就会错列/串行。",
+      "expected_behavior": [
+        "Runs preflight first",
+        "Stops and reports the exact failed check when the current harness is missing a required capability; does not emulate the missing skill inline",
+        "Grills for the real contract (RFC 4180? which consumers read the file? expected quoting?) and finds the root cause (missing field quoting/escaping), not just the reported symptom",
+        "Build-vs-buy leans toward a battle-tested CSV serializer (csv-stringify / papaparse) over hand-rolled escaping, given how many quoting edge cases exist",
+        "Uses the test-scenarios skill edge to write the scenario contract before code, using the ADR-adjacent path when an ADR exists or <target-project-root>/docs/dev/<run-slug>/test-scenarios.md otherwise, covering embedded comma, embedded double-quote (must be doubled), embedded newline, leading/trailing whitespace, empty field, unicode",
+        "Delegates implementation to a subagent, then delegates review to a separate subagent before deciding whether to spawn a fix subagent"
+      ],
+      "files": []
+    },
+    {
+      "id": 3,
+      "name": "larger-feature-oauth",
+      "prompt": "run /dev to add Google OAuth login to my Next.js app",
+      "expected_behavior": [
+        "Runs preflight first",
+        "In Codex, uses the Codex checklist and must not tell the user to restart Claude Code",
+        "Grills heavily (which auth library? session storage? existing user model? callback URLs? what 'login' must gate) and surfaces that this is large and may need scoping before code",
+        "Build-vs-buy strongly favors a mature library (Auth.js / next-auth) over hand-rolling an OAuth flow, for security reasons",
+        "Writes an ADR-adjacent <adr-stem>.test-scenarios.md before code with scenarios including error and security cases (state/CSRF param, token refresh, denied consent, callback errors)",
+        "Delegates implementation to a subagent; does not try to one-shot the whole feature in the main thread",
+        "Keeps review and fix responsibilities separated across different subagents",
+        "Uses gates to keep a fuzzy, large task from running away"
+      ],
+      "files": []
+    }
+  ]
+}
