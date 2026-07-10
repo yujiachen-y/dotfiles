@@ -11,10 +11,16 @@ if [ -f "$CONFIG_PATH" ]; then
 fi
 
 : "${AUDIO_ROUTER_HEADPHONES_OUTPUT:=}"
+: "${AUDIO_ROUTER_HEADPHONES_OUTPUTS:=}"
+: "${AUDIO_ROUTER_HEADPHONES_OUTPUT_PATTERN:=AirPods}"
 : "${AUDIO_ROUTER_PREFERRED_INPUT:=}"
 : "${AUDIO_ROUTER_FALLBACK_OUTPUT:=}"
 : "${AUDIO_ROUTER_FALLBACK_INPUT:=}"
 : "${AUDIO_ROUTER_CHECK_INTERVAL_SECONDS:=5}"
+
+if [ -z "$AUDIO_ROUTER_HEADPHONES_OUTPUTS" ] && [ -n "$AUDIO_ROUTER_HEADPHONES_OUTPUT" ]; then
+  AUDIO_ROUTER_HEADPHONES_OUTPUTS="$AUDIO_ROUTER_HEADPHONES_OUTPUT"
+fi
 
 SWITCH_AUDIO_SOURCE="$(command -v SwitchAudioSource || true)"
 
@@ -32,6 +38,37 @@ device_available() {
 
   [ -n "$device" ] || return 1
   list_devices "$type" | grep -F -x -q "$device"
+}
+
+device_matches_pattern() {
+  device="$1"
+  pattern="$2"
+
+  [ -n "$device" ] || return 1
+  [ -n "$pattern" ] || return 1
+
+  printf '%s\n' "$device" | grep -E -q "$pattern"
+}
+
+first_available_device() {
+  type="$1"
+  devices="$2"
+
+  printf '%s\n' "$devices" | while IFS= read -r device; do
+    [ -n "$device" ] || continue
+    if device_available "$type" "$device"; then
+      printf '%s\n' "$device"
+      exit 0
+    fi
+  done
+}
+
+first_matching_device() {
+  type="$1"
+  pattern="$2"
+
+  [ -n "$pattern" ] || return 1
+  list_devices "$type" | grep -E -m 1 "$pattern" || true
 }
 
 current_device() {
@@ -76,10 +113,20 @@ set_system_output() {
 }
 
 route_output() {
+  current_output="$(current_device output)"
   output="$AUDIO_ROUTER_FALLBACK_OUTPUT"
 
-  if device_available output "$AUDIO_ROUTER_HEADPHONES_OUTPUT"; then
-    output="$AUDIO_ROUTER_HEADPHONES_OUTPUT"
+  if device_matches_pattern "$current_output" "$AUDIO_ROUTER_HEADPHONES_OUTPUT_PATTERN"; then
+    output="$current_output"
+  else
+    headphones_output="$(first_available_device output "$AUDIO_ROUTER_HEADPHONES_OUTPUTS")"
+    if [ -z "$headphones_output" ]; then
+      headphones_output="$(first_matching_device output "$AUDIO_ROUTER_HEADPHONES_OUTPUT_PATTERN")"
+    fi
+
+    if [ -n "$headphones_output" ]; then
+      output="$headphones_output"
+    fi
   fi
 
   if set_device output "$output"; then
