@@ -10,6 +10,7 @@
 [core]
     pager = delta
 	quotepath = false
+	hooksPath = ~/.git-hooks
 
 [interactive]
     diffFilter = delta --color-only --features=interactive
