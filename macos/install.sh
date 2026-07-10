@@ -29,6 +29,18 @@ if [ -f "$AUDIO_ROUTER_CONFIG" ]; then
 fi
 : "${AUDIO_ROUTER_AGENT_LABEL:=local.audio-router}"
 mkdir -p "$LAUNCH_AGENTS_DIR"
+for STALE_AUDIO_ROUTER_AGENT_LABEL in com.minimax.audio-router local.audio-router; do
+  if [ "$STALE_AUDIO_ROUTER_AGENT_LABEL" = "$AUDIO_ROUTER_AGENT_LABEL" ]; then
+    continue
+  fi
+
+  STALE_AUDIO_ROUTER_AGENT="$LAUNCH_AGENTS_DIR/$STALE_AUDIO_ROUTER_AGENT_LABEL.plist"
+  if [ -e "$STALE_AUDIO_ROUTER_AGENT" ] || [ -L "$STALE_AUDIO_ROUTER_AGENT" ]; then
+    launchctl bootout "gui/$(id -u)" "$STALE_AUDIO_ROUTER_AGENT" >/dev/null 2>&1 || true
+    rm "$STALE_AUDIO_ROUTER_AGENT"
+  fi
+done
+
 AUDIO_ROUTER_AGENT="$LAUNCH_AGENTS_DIR/$AUDIO_ROUTER_AGENT_LABEL.plist"
 if [ -e "$AUDIO_ROUTER_AGENT" ] || [ -L "$AUDIO_ROUTER_AGENT" ]; then
   launchctl bootout "gui/$(id -u)" "$AUDIO_ROUTER_AGENT" >/dev/null 2>&1 || true
