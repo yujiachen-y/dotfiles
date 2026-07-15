@@ -56,22 +56,6 @@ alias gbdd='
 '
 alias godd="find . -type f -name '*.orig' -delete"
 
-# Run `gcsh <$KEYWORD>` to ssh into files
-gcsh() {
-  KEYWORD=${1}
-  shift
-  # Get all gcloud vm having the KEYWORD in name
-  HOSTLINE=$(gcloud compute instances list --filter="${KEYWORD}" | grep RUNNING | fzf -1 -0)
-  if [[ -n "${HOSTLINE}" ]]; then
-    read -r NAME ZONE NOTHING <<< "${HOSTLINE}"
-    # ssh and sudo -i
-    gcloud compute ssh ${NAME} --zone=${ZONE} --tunnel-through-iap -- -t sudo -i;
-  fi
-}
-
-# antigravity
-export PATH="$HOME/.antigravity/antigravity/bin:$PATH"
-
 # codex
 eval "$(codex completion zsh)"
 
@@ -80,9 +64,6 @@ export PATH="$HOME/.local/bin:$PATH"
 
 alias ccyl="CLAUDE_CODE_NO_FLICKER=1 claude --dangerously-skip-permissions --effort max --disallowedTools \"Agent(Explore)\" \"Agent(claude-code-guide)\""
 alias cxyl="codex --yolo"
-
-# screenpipe (built from source)
-export PATH="$HOME/3rd/screenpipe/target/release:$PATH"
 
 # bun completions
 [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
