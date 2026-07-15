@@ -1,6 +1,7 @@
 ---
 name: dev
 description: Personal end-to-end development pipeline. Drives a feature or fix from intent to reviewed code through a fixed, gated sequence — align → design → build-vs-buy → enumerate tests → implement → review — and delegates implementation to a subagent so the orchestrator's context stays clean. Explicit-invocation only; use when the user runs /dev or asks to run the dev pipeline. Not for ad-hoc one-off edits.
+disable-model-invocation: true
 ---
 
 # /dev — orchestrated development pipeline
