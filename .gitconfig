@@ -1,6 +1,6 @@
 [user]
-	name = jiachen 
-	email = yu.jiachen@outlook.com 
+	name = jiachen
+	email = yu.jiachen@outlook.com
 [init]
 	defaultBranch = main
 
@@ -47,8 +47,8 @@
 [difftool "zed"]
 	cmd = zed --wait --diff $LOCAL $REMOTE
 [credential "https://github.com"]
-	helper = 
+	helper =
 	helper = !/opt/homebrew/bin/gh auth git-credential
 [credential "https://gist.github.com"]
-	helper = 
+	helper =
 	helper = !/opt/homebrew/bin/gh auth git-credential
