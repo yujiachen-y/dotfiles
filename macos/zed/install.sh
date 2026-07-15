@@ -1,7 +1,7 @@
 #!/bin/sh
 # Sets up Zed user-level configuration.
 
-ZED_DOTFILES="$HOME/dotfiles/zed"
+ZED_DOTFILES="$HOME/dotfiles/macos/zed"
 ZED_CONFIG_DIR="$HOME/.config/zed"
 
 mkdir -p "$ZED_CONFIG_DIR"

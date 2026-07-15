@@ -1,11 +1,11 @@
 # Repository Guidelines
 
 ## Project Structure & Module Organization
-This repo is a macOS-focused dotfiles setup. Root-level dotfiles live beside the main `install.sh` orchestrator (for example, `.vimrc` and `.gitconfig`). Platform and tool-specific content is grouped under subfolders: `macos/` (Homebrew and system settings), `zsh/` (shell config), and `agents/` (Codex prompts/skills plus `agents/AGENTS.shared.md`, with all agent sync handled in `agents/install.sh`). The `screenshot/` directory stores documentation images, and `scripts/` is currently empty.
+This repo is a macOS-focused dotfiles setup. Root-level dotfiles live beside the main `install.sh` orchestrator (for example, `.vimrc` and `.gitconfig`). Platform and tool-specific content is grouped under subfolders: `macos/` (Homebrew, Zed configuration, and system settings), `zsh/` (shell config), and `agents/` (Codex prompts/skills plus `agents/AGENTS.shared.md`, with all agent sync handled in `agents/install.sh`). The `screenshot/` directory stores documentation images, and `scripts/` is currently empty.
 
 ## Build, Test, and Development Commands
-- `./install.sh` sets up vim, macOS defaults (on Darwin), Codex agents, zsh, and git symlinks. Run from the repo root; scripts assume the repo lives at `~/dotfiles`.
-- `./macos/install.sh` installs Homebrew, applies `macos/Brewfile`, and runs `macos/system_settings.sh`.
+- `./install.sh` sets up vim, macOS defaults and Zed (on Darwin), Codex agents, zsh, and git symlinks. Run from the repo root; scripts assume the repo lives at `~/dotfiles`.
+- `./macos/install.sh` installs Homebrew, applies `macos/Brewfile`, links Zed configuration, and runs `macos/system_settings.sh`.
 - `./agents/install.sh` symlinks prompts and skills into `~/.codex` and sets up Gemini CLI/antigravity symlinks under `~/.gemini`.
 - `./zsh/install.sh` installs oh-my-zsh and links `.zshrc`.
 
@@ -14,7 +14,7 @@ Shell scripts are POSIX `sh` with 2-space indentation. Keep scripts idempotent a
 
 ## Testing Guidelines
 There is no automated test suite. Validate changes by running the specific script you touched, or run the full setup on a disposable machine. If available, static checks are useful:
-`shellcheck install.sh macos/*.sh zsh/*.sh agents/install.sh`.
+`shellcheck install.sh macos/*.sh macos/zed/*.sh zsh/*.sh agents/install.sh`.
 
 ## Commit & Branching Workflow
 This is a personal, single-maintainer dotfiles repo. **Work directly on `main`** — do not create feature branches or pull requests for routine changes; commit straight to `main` and push. This repo-local rule intentionally overrides the branch-based "Delivery Workflow" in the global `agents/AGENTS.shared.md`, which already defers to repo-local guidance.

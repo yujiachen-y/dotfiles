@@ -8,5 +8,9 @@ fi
 brew update
 brew bundle --file "$MACOS_FOLDER"/Brewfile
 
+echo "🍉     Setting up zed"
+# shellcheck source=/dev/null
+. "$MACOS_FOLDER"/zed/install.sh
+
 echo "🍉     Setting up system settings"
 "$MACOS_FOLDER"/system_settings.sh
