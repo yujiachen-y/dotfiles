@@ -21,16 +21,10 @@ ln -s "$AGENTS_DIR/prompts" "$PROMPTS_TARGET"
 
 echo "🍉   Setting up skills"
 SKILLS_SOURCE="$AGENTS_DIR/skills"
-SKILLS_TARGET="$CODEX_DIR/skills"
+SKILLS_TARGET="$HOME/.agents/skills"
 
 mkdir -p "$SKILLS_SOURCE"
-
-# Migrate .system from old real dir to backup location (first-run only)
-if [ -d "$SKILLS_TARGET" ] && [ ! -L "$SKILLS_TARGET" ]; then
-  if [ -d "$SKILLS_TARGET/.system" ] && [ ! -e "$CODEX_DIR/skills.system" ]; then
-    mv "$SKILLS_TARGET/.system" "$CODEX_DIR/skills.system"
-  fi
-fi
+mkdir -p "$(dirname "$SKILLS_TARGET")"
 
 if [ -e "$SKILLS_TARGET" ] || [ -L "$SKILLS_TARGET" ]; then
   rm -rf "$SKILLS_TARGET"

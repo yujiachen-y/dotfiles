@@ -25,13 +25,13 @@ Use this skill to export cookies from an agent-browser session, store them under
 1) Ensure the session you want to export from is active.
 2) Run:
    ```bash
-   python /Users/jace/.codex/skills/agent-browser-cookies/scripts/export_cookies.py \
+   python "$HOME/.agents/skills/agent-browser-cookies/scripts/export_cookies.py" \
      --session default \
      --name default-localhost
    ```
 3) Verify output file in:
    ```
-   /Users/jace/.codex/skills/agent-browser-cookies/assets/cookies/default-localhost.local.json
+   $HOME/.agents/skills/agent-browser-cookies/assets/cookies/default-localhost.local.json
    ```
 
 ### Import cookies into a different session
@@ -39,9 +39,9 @@ Use this skill to export cookies from an agent-browser session, store them under
 1) Decide the base URL (origin) the cookies should apply to, e.g. `http://localhost:3208`.
 2) Run:
    ```bash
-   python /Users/jace/.codex/skills/agent-browser-cookies/scripts/import_cookies.py \
+   python "$HOME/.agents/skills/agent-browser-cookies/scripts/import_cookies.py" \
      --session test-cookie \
-    --file /Users/jace/.codex/skills/agent-browser-cookies/assets/cookies/default-localhost.local.json \
+    --file "$HOME/.agents/skills/agent-browser-cookies/assets/cookies/default-localhost.local.json" \
     --base-url http://localhost:3208
    ```
 3) Open the target page in that session and verify login state.
