@@ -1,0 +1,23 @@
+- source: andrew/managing-dependencies
+  plugins:
+    - managing-dependencies@managing-dependencies
+
+- source: DietrichGebert/ponytail
+  plugins:
+    - ponytail@ponytail
+
+- source: mattpocock/skills
+  plugins:
+    - mattpocock-skills@mattpocock
+
+- source: pbakaus/impeccable
+  plugins:
+    - impeccable@impeccable
+
+- source: phuryn/pm-skills
+  plugins:
+    - pm-execution@pm-skills
+
+- source: upstash/context7
+  plugins:
+    - context7@context7-marketplace

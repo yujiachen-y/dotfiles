@@ -119,3 +119,41 @@ if command -v jq >/dev/null 2>&1; then
 else
   echo "⚠️     jq not found, skipped updating $CLAUDE_SETTINGS"
 fi
+
+echo "🍉   Setting up shared agent plugins"
+PLUGINS_CONFIG="$AGENTS_DIR/plugins.yaml"
+CONFIG_QUERY='
+  (kind == "seq") and (
+    [.[] | select(
+      (.source | tag) != "!!str" or
+      (.plugins | kind) != "seq"
+    )] | length == 0
+  )
+'
+MARKETPLACE_QUERY='.[].source'
+PLUGIN_QUERY='.[].plugins[]'
+
+if ! command -v mise >/dev/null 2>&1; then
+  echo "⚠️     mise not found, skipped installing shared agent plugins"
+elif ! mise exec -- yq -e "$CONFIG_QUERY" "$PLUGINS_CONFIG" >/dev/null; then
+  echo "⚠️     Invalid plugin config: $PLUGINS_CONFIG"
+else
+  if command -v codex >/dev/null 2>&1; then
+    mise exec -- yq -r "$MARKETPLACE_QUERY" "$PLUGINS_CONFIG" |
+      xargs -n 1 codex plugin marketplace add
+    mise exec -- yq -r "$PLUGIN_QUERY" "$PLUGINS_CONFIG" |
+      xargs -n 1 codex plugin add
+  else
+    echo "⚠️     codex not found, skipped installing codex plugins"
+  fi
+
+  if command -v claude >/dev/null 2>&1 &&
+    sh -c 'env CLAUDECODE= claude --version >/dev/null 2>&1' 2>/dev/null; then
+    mise exec -- yq -r "$MARKETPLACE_QUERY" "$PLUGINS_CONFIG" |
+      xargs -n 1 env CLAUDECODE= claude plugin marketplace add --scope user
+    mise exec -- yq -r "$PLUGIN_QUERY" "$PLUGINS_CONFIG" |
+      xargs -n 1 env CLAUDECODE= claude plugin install --scope user
+  else
+    echo "⚠️     claude not available, skipped installing claude plugins"
+  fi
+fi
