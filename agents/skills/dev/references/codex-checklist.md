@@ -9,12 +9,12 @@ fails, STOP the /dev pipeline and report the failed check plus the repair needed
 |---|---|---|---|
 | Subagent delegation | `multi_agent_v1.spawn_agent` or the current Codex subagent tool | Confirm the tool is available; use tool discovery only to expose the subagent tool, then verify it appeared | Enable Codex multi-agent tools or run /dev in a Codex environment that exposes them |
 | Skill discovery | Current Codex skill list and `tool_search` when needed | Confirm required skills/tools are visible in the current session | Install or enable the missing Codex skill/plugin |
-| Intent alignment | `mattpocock-skills:grill-with-docs` | Confirm the skill is available | Install or enable `mattpocock-skills` for Codex |
+| Intent alignment | `mattpocock-skills:grilling` with `mattpocock-skills:domain-modeling` | Confirm both skills are available | Install or enable `mattpocock-skills` for Codex |
 | Design | `mattpocock-skills:codebase-design` | Confirm the skill is available | Install or enable `mattpocock-skills` for Codex |
 | Build vs. buy | A named `managing-dependencies` skill/plugin exposed in Codex | Confirm the capability is available by name | Install or expose the dependency-management skill before running /dev |
 | Test scenarios | A named PM test-scenarios skill exposed in Codex | Confirm the capability is available by name | Install or expose the PM test-scenarios skill before running /dev |
 | TDD | `mattpocock-skills:tdd` | Confirm the skill is available | Install or enable `mattpocock-skills` for Codex |
-| Review | `mattpocock-skills:review` when a fixed point/spec review fits the run, or an explicitly exposed Codex code-review capability | Confirm the skill/tool is available by name and matches the review shape needed for this run | Install or enable the review capability |
+| Review | `mattpocock-skills:code-review` | Confirm the skill is available by name and matches the review shape needed for this run | Install or enable the review capability |
 | Ponytail | Active Ponytail instructions or `ponytail:ponytail` skill | Confirm Ponytail is active in the current instructions or visible as an enabled skill | Enable Ponytail for this Codex session before running /dev |
 | Library docs | `context7:resolve-library-id` and `context7:query-docs`, or an explicitly exposed docs tool named in the Codex tool list | Confirm the docs tool is available before choosing a library | Enable the docs lookup provider required by this Codex environment |
 
@@ -25,13 +25,13 @@ Do not replace a listed provider with an inline imitation.
 
 | Pipeline step | Skill/provider to invoke |
 |---|---|
-| 1. Align intent | `mattpocock-skills:grill-with-docs` |
+| 1. Align intent | `mattpocock-skills:grilling` with `mattpocock-skills:domain-modeling` |
 | 2. Design seams | `mattpocock-skills:codebase-design` |
 | 3. Build vs. buy | `managing-dependencies` |
 | 3. Library docs | `context7:resolve-library-id`, then `context7:query-docs` when a library is chosen |
 | 4. Test scenarios | `pm-execution:test-scenarios` with `PRODUCT`, `USER_STORY`, and `CONTEXT` |
 | 5. Implement via subagent | `multi_agent_v1.spawn_agent` plus `mattpocock-skills:tdd` in the implementation subagent prompt |
-| 6. Review | `multi_agent_v1.spawn_agent` plus `mattpocock-skills:review` when fixed-point/spec review fits the run, or the selected Codex code-review provider |
+| 6. Review | `multi_agent_v1.spawn_agent` plus `mattpocock-skills:code-review` |
 
 ## Config Integrity
 
