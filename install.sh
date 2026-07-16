@@ -36,7 +36,14 @@ ln -s "$DOTFILES"/zsh/.non_public_commands.sh "$NPC"
 
 echo "🍉 Setting up git"
 GITCONFIG="$HOME/.gitconfig"
-if [ -f "$GITCONFIG" ]; then
+TRACKED_GITCONFIG="$DOTFILES/.gitconfig"
+if [ -L "$GITCONFIG" ]; then
   rm "$GITCONFIG"
 fi
-ln -s "$DOTFILES"/.gitconfig "$GITCONFIG"
+if [ ! -e "$GITCONFIG" ]; then
+  touch "$GITCONFIG"
+fi
+if ! git config --file "$GITCONFIG" --get-all include.path |
+  grep -Fqx "$TRACKED_GITCONFIG"; then
+  git config --file "$GITCONFIG" --add include.path "$TRACKED_GITCONFIG"
+fi

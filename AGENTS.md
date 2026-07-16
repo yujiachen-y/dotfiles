@@ -4,7 +4,7 @@
 This repo is a macOS-focused dotfiles setup. Root-level dotfiles live beside the main `install.sh` orchestrator (for example, `.vimrc` and `.gitconfig`). Platform and tool-specific content is grouped under subfolders: `macos/` (Homebrew, Zed configuration, and system settings), `zsh/` (shell config), and `agents/` (Codex prompts/skills plus `agents/AGENTS.shared.md`, with all agent sync handled in `agents/install.sh`). The `screenshot/` directory stores documentation images, and `scripts/` is currently empty.
 
 ## Build, Test, and Development Commands
-- `./install.sh` sets up vim, macOS defaults and Zed (on Darwin), Codex agents, zsh, and git symlinks. Run from the repo root; scripts assume the repo lives at `~/dotfiles`.
+- `./install.sh` sets up vim, macOS defaults and Zed (on Darwin), Codex agents, zsh, and Git configuration. Run from the repo root; scripts assume the repo lives at `~/dotfiles`.
 - `./macos/install.sh` installs Homebrew, applies `macos/Brewfile`, links Zed configuration, and runs `macos/system_settings.sh`.
 - `./agents/install.sh` symlinks prompts and skills into `~/.codex` and sets up Gemini CLI/antigravity symlinks under `~/.gemini`.
 - `./zsh/install.sh` installs oh-my-zsh and links `.zshrc`.
@@ -24,7 +24,7 @@ Commit messages follow Conventional Commits, scoped by area (examples in history
 Keep the dotfiles portable: never commit machine-specific or hardcoded absolute paths (for example `/Users/<name>/...` or auto-injected tool `PATH` lines). Prefer `$HOME`/`~`, `PATH`-based discovery, or an untracked machine-local include.
 
 ## Security & Configuration Notes
-Install scripts remove existing `~/.vimrc`, `~/.gitconfig`, `~/.zshrc`, and `~/.non_public_commands.sh` before linking. Highlight destructive changes in PRs. `macos/install.sh` uses a Homebrew install script via curl; reviewers should verify the URL and permissions.
+Install scripts remove existing `~/.vimrc`, `~/.zshrc`, and `~/.non_public_commands.sh` before linking. Git setup replaces an existing `~/.gitconfig` symlink with a writable machine-local file that includes the tracked `~/dotfiles/.gitconfig`; existing regular-file settings are preserved. Highlight destructive changes in PRs. `macos/install.sh` uses a Homebrew install script via curl; reviewers should verify the URL and permissions.
 
 ## Agent-Specific Instructions
 When changing Codex, Claude, or Gemini/antigravity agent behavior, update `agents/AGENTS.shared.md` and related prompt/skill files. `agents/install.sh` symlinks these into `~/.codex`, `~/.claude`, and `~/.gemini`.
