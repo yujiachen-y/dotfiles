@@ -32,6 +32,7 @@ Do not replace a listed provider with an inline imitation.
 | 4. Test scenarios | `pm-execution:test-scenarios` with `PRODUCT`, `USER_STORY`, and `CONTEXT` |
 | 5. Implement via subagent | `multi_agent_v1.spawn_agent` plus `mattpocock-skills:tdd` in the implementation subagent prompt |
 | 6. Review | `multi_agent_v1.spawn_agent` plus `mattpocock-skills:code-review` |
+| 7. Manual E2E acceptance | Orchestrator-authored — no external provider; write the verification guide per SKILL.md step 7 |
 
 ## Config Integrity
 

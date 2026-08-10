@@ -1,6 +1,6 @@
 ---
 name: dev
-description: Personal end-to-end development pipeline. Drives a feature or fix from intent to reviewed code through a fixed, gated sequence — align → design → build-vs-buy → enumerate tests → implement → review — and delegates implementation to a subagent so the orchestrator's context stays clean. Explicit-invocation only; use when the user runs /dev or asks to run the dev pipeline. Not for ad-hoc one-off edits.
+description: Personal end-to-end development pipeline. Drives a feature or fix from intent to accepted code through a fixed, gated sequence — align → design → build-vs-buy → enumerate tests → implement → review → manual E2E acceptance — and delegates implementation to a subagent so the orchestrator's context stays clean. Explicit-invocation only; use when the user runs /dev or asks to run the dev pipeline. Not for ad-hoc one-off edits.
 disable-model-invocation: true
 ---
 
@@ -63,6 +63,7 @@ Copy this checklist into your response and tick items off as you go:
 - [ ] 4. Enumerate test scenarios — user approves the scenario contract file
 - [ ] 5. Implement via subagent
 - [ ] 6. Review
+- [ ] 7. Manual E2E acceptance — user walks the guide and accepts
 ```
 
 ### 1. Align — intent alignment
@@ -190,6 +191,40 @@ relevant changed files and how to run the tests, the exact findings to fix, and 
 TDD discipline (invoke the TDD capability named by the selected harness checklist —
 a failing test first, then the minimal change). Do not fix in the main thread, and
 do not let the review subagent edit code.
+
+### 7. Accept — guided manual E2E verification
+Everything up to here is the agent checking its own work; acceptance is the
+user checking it with their own hands and eyes. Close the loop by writing a
+short **manual verification guide** the user can follow end to end, then wait
+for their verdict.
+
+This step is orchestrator work — write the guide yourself from the artifacts
+you already hold (the scenario contract, the implementation summary, the review
+conclusion). No subagent and no external skill; the checklist's skill graph
+intentionally lists no provider for it.
+
+The guide contains:
+- **Setup** — how to get to a runnable state: branch, build/start command, env
+  vars, seed data. Concrete commands, not descriptions.
+- **Walkthrough** — numbered steps from the user's point of view: what to run,
+  click, or enter, and after each action the exact observable result that means
+  "working" (what the screen, response, log, or file should show). A step
+  without an observable expectation isn't verifiable — every step gets one.
+- **Coverage map** — which scenario IDs from the step 4 contract each
+  walkthrough step exercises. Prioritize P0 scenarios, anything typed `e2e`,
+  and anything marked `skipped` — those are precisely what the automated tests
+  did not prove.
+- **Not manually verifiable** — what only the automated tests cover, so the
+  user knows where their acceptance leans on the suite rather than their own
+  observation.
+
+Keep it walkable in minutes, not an afternoon: few steps, real commands,
+observable outcomes.
+
+**Gate:** the user walks the guide and either accepts the change or reports a
+mismatch. A mismatch is a finding — route it through the step 6 fix flow (a
+scoped fix subagent), then update the guide and re-verify only the affected
+steps. The pipeline ends when the user accepts.
 
 ## Operating principles
 - **Fixed order, hard gates.** Don't let momentum skip a gate; the user's sign-off

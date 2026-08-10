@@ -33,6 +33,7 @@ explicitly names the built-in orchestrator as the provider.
 | 4. Test scenarios | Built-in orchestrator scenario contract writer using the /dev table shape |
 | 5. Implement via subagent | MiniMax Code subagent delegation path verified in preflight, with explicit /dev TDD instructions |
 | 6. Review | MiniMax Code review-only delegation path verified in preflight |
+| 7. Manual E2E acceptance | Orchestrator-authored — no external provider; write the verification guide per SKILL.md step 7 |
 
 For step 4, use `PRODUCT` = the project or area under change; `USER_STORY` = the
 approved spec and acceptance criteria from step 1; `CONTEXT` = the design note,
