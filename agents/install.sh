@@ -26,6 +26,12 @@ SKILLS_TARGET="$HOME/.agents/skills"
 mkdir -p "$SKILLS_SOURCE"
 mkdir -p "$(dirname "$SKILLS_TARGET")"
 
+# Old layout symlinked $CODEX_DIR/skills into the repo, so Codex wrote its
+# bundled .system skills straight into dotfiles. Drop the stale link only.
+if [ -L "$CODEX_DIR/skills" ]; then
+  rm -f "$CODEX_DIR/skills"
+fi
+
 if [ -e "$SKILLS_TARGET" ] || [ -L "$SKILLS_TARGET" ]; then
   rm -rf "$SKILLS_TARGET"
 fi
