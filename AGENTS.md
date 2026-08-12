@@ -6,7 +6,7 @@ This repo is a macOS-focused dotfiles setup. Root-level dotfiles live beside the
 ## Build, Test, and Development Commands
 - `./install.sh` sets up vim, macOS defaults and Zed (on Darwin), Codex agents, zsh, and Git configuration. Run from the repo root; scripts assume the repo lives at `~/dotfiles`.
 - `./macos/install.sh` installs Homebrew, applies `macos/Brewfile`, links Zed configuration, and runs `macos/system_settings.sh`.
-- `./agents/install.sh` symlinks prompts and skills into `~/.codex` and sets up Gemini CLI/antigravity symlinks under `~/.gemini`.
+- `./agents/install.sh` symlinks prompts and skills into `~/.codex` and `~/.claude`, and installs the shared plugins from `agents/plugins.yaml` into both CLIs.
 - `./zsh/install.sh` installs oh-my-zsh and links `.zshrc`.
 
 ## Coding Style & Naming Conventions
@@ -27,4 +27,4 @@ Keep the dotfiles portable: never commit machine-specific or hardcoded absolute 
 Install scripts remove existing `~/.vimrc`, `~/.zshrc`, and `~/.non_public_commands.sh` before linking. Git setup replaces an existing `~/.gitconfig` symlink with a writable machine-local file that includes the tracked `~/dotfiles/.gitconfig`; existing regular-file settings are preserved. Highlight destructive changes in PRs. `macos/install.sh` uses a Homebrew install script via curl; reviewers should verify the URL and permissions.
 
 ## Agent-Specific Instructions
-When changing Codex, Claude, or Gemini/antigravity agent behavior, update `agents/AGENTS.shared.md` and related prompt/skill files. `agents/install.sh` symlinks these into `~/.codex`, `~/.claude`, and `~/.gemini`.
+When changing Codex or Claude agent behavior, update `agents/AGENTS.shared.md` and related prompt/skill files. `agents/install.sh` symlinks these into `~/.codex` and `~/.claude`.
