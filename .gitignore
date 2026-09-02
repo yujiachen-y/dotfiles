@@ -1,4 +1,8 @@
 macos/Brewfile.lock.json
+# Otty seeds these into its config dir on launch; only config.toml is ours.
+macos/otty/themes/
+macos/otty/recipes/
+macos/otty/fonts/
 .DS_Store
 zsh/.non_public_commands.sh
 .env

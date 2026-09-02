@@ -8,6 +8,10 @@ fi
 brew update
 brew bundle --file "$MACOS_FOLDER"/Brewfile
 
+echo "🍉     Setting up otty"
+# shellcheck source=/dev/null
+. "$MACOS_FOLDER"/otty/install.sh
+
 echo "🍉     Setting up zed"
 # shellcheck source=/dev/null
 . "$MACOS_FOLDER"/zed/install.sh
