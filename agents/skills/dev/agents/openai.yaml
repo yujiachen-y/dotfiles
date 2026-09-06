@@ -1,2 +1,15 @@
+interface:
+  display_name: "Dev Pipeline"
+  short_description: "Run the gated end-to-end development workflow"
+  default_prompt: "Use $dev to take this feature or fix through the gated development pipeline."
+
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "context7"
+      description: "Current library documentation from Context7"
+      transport: "streamable_http"
+      url: "https://mcp.context7.com/mcp"
+
 policy:
   allow_implicit_invocation: false

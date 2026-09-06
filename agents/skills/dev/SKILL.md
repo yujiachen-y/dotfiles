@@ -1,10 +1,10 @@
 ---
 name: dev
-description: Personal end-to-end development pipeline. Drives a feature or fix from intent to accepted code through a fixed, gated sequence — align → design → build-vs-buy → enumerate tests → implement → review → manual E2E acceptance — and delegates implementation to a subagent so the orchestrator's context stays clean. Explicit-invocation only; use when the user runs /dev or asks to run the dev pipeline. Not for ad-hoc one-off edits.
+description: Personal end-to-end development pipeline. Drives a feature or fix from intent to accepted code through a fixed, gated sequence — align → design → build-vs-buy → enumerate tests → optional reviewable proposal → implement → review → manual E2E acceptance — and delegates implementation to a subagent so the orchestrator's context stays clean. Explicit-invocation only; use when the user selects the dev skill to run the complete pipeline. Not for ad-hoc one-off edits.
 disable-model-invocation: true
 ---
 
-# /dev — orchestrated development pipeline
+# dev — orchestrated development pipeline
 
 Drive a feature or fix from intent to reviewed code through a fixed sequence of
 specialist skills. You are the **orchestrator**: you own the sequence and the
@@ -18,9 +18,9 @@ the user's sign-off before spending effort on the next step.
 
 ## Step 0 — Preflight: choose the harness checklist
 
-/dev is an interactive pipeline, not single-prompt automation. A gate can stop
-the pipeline while the conversation stays open for repairs, user confirmation, or
-an explicit change to the run's requirements.
+The dev skill is an interactive pipeline, not single-prompt automation. A gate
+can stop the pipeline while the conversation stays open for repairs, user
+confirmation, or an explicit change to the run's requirements.
 
 Before doing any work, identify the current agent harness and read the matching
 checklist directly from `SKILL.md`:
@@ -51,6 +51,9 @@ delegation, intent alignment, design, build vs. buy, test scenarios, TDD, review
 Ponytail, and library docs. Harness-specific checks may add rows, but they do
 not replace the required capability set.
 
+The reviewable-proposal providers are optional at preflight. Verify them only if
+the user opts into step 5; once selected, a missing provider is a hard failure.
+
 ## The pipeline
 
 Copy this checklist into your response and tick items off as you go:
@@ -61,16 +64,20 @@ Copy this checklist into your response and tick items off as you go:
 - [ ] 2. Design seams
 - [ ] 3. Build vs. buy
 - [ ] 4. Enumerate test scenarios — user approves the scenario contract file
-- [ ] 5. Implement via subagent
-- [ ] 6. Review
-- [ ] 7. Manual E2E acceptance — user walks the guide and accepts
+- [ ] 5. Offer a reviewable proposal — user chooses; if yes, approves its path and content
+- [ ] 6. Implement via subagent
+- [ ] 7. Review
+- [ ] 8. Manual E2E acceptance — user walks the guide and accepts
 ```
 
 ### 1. Align — intent alignment
 Invoke the intent-alignment capability named by the selected harness checklist
-and let it interrogate the request until what's being built is unambiguous.
-Misalignment is the most expensive failure mode; this is the cheapest place to
-catch it.
+and run an information-gain interview until what's being built is unambiguous.
+Ask exactly one question per turn. Choose the highest-uncertainty question whose
+answer is most likely to change the next question, scope, or acceptance criteria.
+After each answer, update what is known and rank the remaining uncertainties
+again. Include evidence or a recommendation when useful, then wait for the
+answer; never send a questionnaire.
 Output an **approved spec**.
 **Gate:** the user confirms the resulting spec before you move on.
 
@@ -133,9 +140,42 @@ every test up front ("horizontal slicing") produces tests of imagined behavior
 that pass when things break — so keep this step a scenario contract, not an
 executable test file.
 **Gate:** the user approves and prioritizes the scenario contract file. This is
-the last gate before code.
+the last required design artifact before the proposal decision.
 
-### 5. Implement — delegate to a subagent
+### 5. Offer a reviewable proposal document
+Before implementation, ask one question: whether the user wants to use
+`mattpocock-skills:to-spec` and `personal-voice` to write the final proposal for
+collaborators or colleagues to review.
+
+If the user declines, record "proposal document skipped by user" and continue to
+step 6. If the user accepts, ask the exact destination path as the next, separate
+question. Do not write the document until the user supplies or confirms that
+path.
+
+Treat the user's acceptance as explicit selection of both skills. Invoke
+`mattpocock-skills:to-spec` to synthesize the already-approved spec, design,
+dependency decisions, docs notes, and test seams. For this pipeline, write a
+Markdown file at the user-approved path instead of publishing to an issue
+tracker or applying a triage label. Do not reopen the interview.
+
+Structure the document for readers who did not participate in the discussion:
+
+- explain the final design and its reasons, not the chronology of the discussion
+- include a **Before vs. After** comparison and the chosen design's **Pros and
+  Cons**
+- include a Mermaid current-vs-target workflow diagram and a target architecture
+  diagram; add sequence or state diagrams when runtime behavior needs them
+- retain the useful `to-spec` sections: problem, solution, user stories,
+  implementation decisions, testing decisions, out of scope, and further notes
+- avoid volatile file paths and code snippets except when a small prototype
+  excerpt is the clearest durable statement of a decision
+
+Then invoke `personal-voice` to remove AI-style phrasing without adding facts,
+changing decisions, or weakening the technical content.
+
+**Gate:** the user approves the saved document before implementation starts.
+
+### 6. Implement — delegate to a subagent
 Hand implementation to a **subagent** using the delegation mechanism named by the
 selected harness checklist. Do this for a concrete reason: the red-green loop
 reads files, runs tests, and iterates over many turns — a large amount of tokens.
@@ -149,6 +189,7 @@ conversation's context:
 - the build-vs-buy decisions and chosen libraries (step 3)
 - the docs notes (step 3)
 - the exact scenario contract path from step 4
+- the approved proposal document path from step 5, if one was created
 - TDD discipline: "Invoke the TDD capability named by the selected harness
   checklist. Write one failing test for one scenario, write the minimal code to
   pass it, repeat down the list. Never write all the tests first."
@@ -163,16 +204,17 @@ comes back.
 **If you cannot spawn a subagent in this environment, STOP — do not implement
 inline and do not continue.** The clean-orchestrator guarantee is the whole
 reason this step exists; quietly doing the work in the main thread would break
-exactly what /dev is for. Report that delegation isn't available and ask the user
-to fix the environment or explicitly waive the subagent requirement for this run.
-Wait for their decision.
+exactly what this skill is for. Report that delegation isn't available and ask
+the user to fix the environment or explicitly waive the subagent requirement for
+this run. Wait for their decision.
 
-### 6. Review — delegate review, then decide
+### 7. Review — delegate review, then decide
 Spawn a **review subagent** using the delegation mechanism named by the selected
 harness checklist. Give it the approved spec, design note, build-vs-buy
-decisions, the exact scenario contract path from step 4, implementation summary,
-changed files, and validation commands. The review subagent must invoke the
-review capability named by the selected harness checklist.
+decisions, the exact scenario contract path from step 4, the proposal document
+path from step 5 if present, implementation summary, changed files, and
+validation commands. The review subagent must invoke the review capability named
+by the selected harness checklist.
 
 The review subagent may run controlled validation, including tests that write to
 local, disposable, or project-approved state such as test databases, temp dirs,
@@ -186,13 +228,13 @@ scope. The orchestrator reviews those findings before acting on them.
 If no finding is valid and worth fixing now, report the final conclusion. If a
 finding is valid and worth fixing now, spawn a separate **fix subagent**. Scope it
 to only the approved findings, but brief it to work cold the same way the
-implementation subagent was (step 5): the approved spec, the design note, the
+implementation subagent was (step 6): the approved spec, the design note, the
 relevant changed files and how to run the tests, the exact findings to fix, and the
 TDD discipline (invoke the TDD capability named by the selected harness checklist —
 a failing test first, then the minimal change). Do not fix in the main thread, and
 do not let the review subagent edit code.
 
-### 7. Accept — guided manual E2E verification
+### 8. Accept — guided manual E2E verification
 Everything up to here is the agent checking its own work; acceptance is the
 user checking it with their own hands and eyes. Close the loop by writing a
 short **manual verification guide** the user can follow end to end, then wait
@@ -222,18 +264,18 @@ Keep it walkable in minutes, not an afternoon: few steps, real commands,
 observable outcomes.
 
 **Gate:** the user walks the guide and either accepts the change or reports a
-mismatch. A mismatch is a finding — route it through the step 6 fix flow (a
+mismatch. A mismatch is a finding — route it through the step 7 fix flow (a
 scoped fix subagent), then update the guide and re-verify only the affected
 steps. The pipeline ends when the user accepts.
 
 ## Operating principles
 - **Fixed order, hard gates.** Don't let momentum skip a gate; the user's sign-off
   at each transition is what keeps the work aimed correctly.
-- **Fail closed.** /dev is for the builder. If a required capability is missing,
-  ambiguous, broken, or cannot be verified, stop and report the exact failed
-  check plus the repair needed. Do not emulate missing capabilities inline.
+- **Fail closed.** The dev pipeline is for the builder. If a required capability
+  is missing, ambiguous, broken, or cannot be verified, stop and report the exact
+  failed check plus the repair needed. Do not emulate missing capabilities inline.
 - **One concern per gate.** Confirm the current artifact (spec, design, decisions,
-  scenario list) before opening the next step.
+  scenario list, optional proposal) before opening the next step.
 - **Stay lean.** Orchestrate and summarize; delegate the heavy lifting. Your value
   here is holding the thread end-to-end, which you can only do if your context
   doesn't fill with implementation noise.

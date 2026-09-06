@@ -31,9 +31,10 @@ explicitly names the built-in orchestrator as the provider.
 | 3. Build vs. buy | Built-in orchestrator repository inspection plus docs/search lookup |
 | 3. Library docs | `web_search`/`web_fetch` or a docs-specific provider exposed in the current MiniMax Code tool list |
 | 4. Test scenarios | Built-in orchestrator scenario contract writer using the /dev table shape |
-| 5. Implement via subagent | MiniMax Code subagent delegation path verified in preflight, with explicit /dev TDD instructions |
-| 6. Review | MiniMax Code review-only delegation path verified in preflight |
-| 7. Manual E2E acceptance | Orchestrator-authored — no external provider; write the verification guide per SKILL.md step 7 |
+| 5. Reviewable proposal, if selected | `mattpocock-skills:to-spec`, then `personal-voice` |
+| 6. Implement via subagent | MiniMax Code subagent delegation path verified in preflight, with explicit /dev TDD instructions |
+| 7. Review | MiniMax Code review-only delegation path verified in preflight |
+| 8. Manual E2E acceptance | Orchestrator-authored — no external provider; write the verification guide per SKILL.md step 8 |
 
 For step 4, use `PRODUCT` = the project or area under change; `USER_STORY` = the
 approved spec and acceptance criteria from step 1; `CONTEXT` = the design note,
