@@ -71,3 +71,6 @@ alias cxyl="codex --yolo"
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
+
+# MiniMax Code
+export PATH="$HOME/.minimax/bin:$PATH"
