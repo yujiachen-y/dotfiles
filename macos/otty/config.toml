@@ -16,8 +16,6 @@ editor-vim = true
 
 editor-visible-whitespace = true
 
-# window-layout = "tabs-top" (reset to default)
-
 # unfocused-split-opacity = 0.55 (reset to default)
 
 palette-1 = "#d73a49"
@@ -43,3 +41,7 @@ cursor-color = "#18181b"
 # cursor-text = "#f5f0f0" (reset to default)
 
 dock-icon-animate-progress = true
+
+font-size = 15
+
+window-layout = "tabs-bottom"
