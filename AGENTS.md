@@ -21,7 +21,32 @@ This is a personal, single-maintainer dotfiles repo. **Work directly on `main`**
 
 Commit messages follow Conventional Commits, scoped by area (examples in history: `feat(mise): ...`, `chore(macos): ...`, `fix(zsh): ...`, and date-stamped `chore: YY-MM-DD`). Split unrelated changes into separate semantic commits; in the body, note impacted areas, any manual steps, and OS-specific effects. Add screenshots only when updating `screenshot/` assets.
 
-Keep the dotfiles portable: never commit machine-specific or hardcoded absolute paths (for example `/Users/<name>/...` or auto-injected tool `PATH` lines). Prefer `$HOME`/`~`, `PATH`-based discovery, or an untracked machine-local include.
+## Portability (iCloud-synced, public repo)
+
+This repo lives in iCloud Drive and syncs across several machines, and it is
+pushed to a public GitHub remote. The same working copy is therefore edited by
+different users on different hosts, so a path that resolves on one machine can
+silently break on the next — and any local path that gets committed is published.
+
+Rules:
+
+- Never commit a hardcoded absolute path (for example `/Users/<name>/...`,
+  `/opt/homebrew/Cellar/<pkg>/<version>/...`, or a version-pinned toolchain dir
+  such as `.../mise/installs/node/26.1.0/...`). This includes paths auto-injected
+  by installers into `.zshrc`, `settings.json`, or any other tracked config.
+- Never reach a machine-specific absolute path via a relative path either
+  (`../../../Users/...`, `../Library/...`). The prohibition is on the destination,
+  not the spelling.
+- Prefer, in order: `$HOME`/`~`, `PATH`-based discovery (bare command name), a
+  value resolved at install time by a script, or a documented env var.
+- If a machine-specific value is genuinely unavoidable, put it in a gitignored
+  machine-local file (the pattern already used by `~/.non_public_commands.sh` and
+  the machine-local `~/.gitconfig` that includes the tracked one), and make the
+  tracked side degrade cleanly when that file is absent.
+- Any such change must work on every machine, not just the one you are on. Before
+  committing a tool path, confirm the target actually exists here and that the
+  same reference resolves on a fresh checkout; a config entry pointing at a
+  binary this machine does not have is dead config — drop it rather than commit it.
 
 ## Security & Configuration Notes
 Install scripts remove existing `~/.vimrc`, `~/.zshrc`, and `~/.non_public_commands.sh` before linking. Git setup replaces an existing `~/.gitconfig` symlink with a writable machine-local file that includes the tracked `~/dotfiles/.gitconfig`; existing regular-file settings are preserved. Highlight destructive changes in PRs. `macos/install.sh` uses a Homebrew install script via curl; reviewers should verify the URL and permissions.
