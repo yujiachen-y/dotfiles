@@ -89,6 +89,12 @@ architecture decision, write or update an ADR using the project's existing ADR
 location and naming convention, then record the ADR path. Do not create an ADR
 just to have a place for test scenarios.
 
+The design note must also declare every **external contract surface** the change
+will touch: DB schema and migrations, API request/response shapes, persisted
+file or state formats, queue/event payloads, and config schema. Write `External
+contracts: none` explicitly when nothing applies — silence is not a declaration.
+Later steps diff reality against this list.
+
 ### 3. Build vs. buy
 For each non-trivial capability the design needs, invoke the build-vs-buy
 capability named by the selected harness checklist to decide: reach for a mature
@@ -139,8 +145,10 @@ the tests themselves get written one at a time during implementation. Writing
 every test up front ("horizontal slicing") produces tests of imagined behavior
 that pass when things break — so keep this step a scenario contract, not an
 executable test file.
-**Gate:** the user approves and prioritizes the scenario contract file. This is
-the last required design artifact before the proposal decision.
+**Gate:** the user approves and prioritizes the scenario contract file. Restate
+the external contract surfaces declared in step 2 at this gate, so the user
+signs off on both the scenarios and the schema/API/format changes they cover.
+This is the last required design artifact before the proposal decision.
 
 ### 5. Offer a reviewable proposal document
 Before implementation, ask one question: whether the user wants to use
@@ -190,13 +198,18 @@ conversation's context:
 - the docs notes (step 3)
 - the exact scenario contract path from step 4
 - the approved proposal document path from step 5, if one was created
+- the declared external contract surfaces from step 2, plus this instruction:
+  "If the implementation needs an external contract change (schema, migration,
+  API shape, persisted format, config) that is not declared, stop and report
+  back before making it — never improvise contract changes."
 - TDD discipline: "Invoke the TDD capability named by the selected harness
   checklist. Write one failing test for one scenario, write the minimal code to
   pass it, repeat down the list. Never write all the tests first."
 - a request to update the scenario contract file with `covered`/`skipped` status
   and evidence as scenarios are implemented or deliberately deferred
 - a request to **return a concise summary**: what was built, which scenarios are
-  covered, how to run the tests, and anything deliberately deferred.
+  covered, how to run the tests, every external contract change actually made,
+  and anything deliberately deferred.
 
 Do **not** write feature code yourself. Launch the subagent, then review what
 comes back.
@@ -220,6 +233,14 @@ The review subagent may run controlled validation, including tests that write to
 local, disposable, or project-approved state such as test databases, temp dirs,
 fixtures, caches, or generated artifacts. It must not edit source files or
 perform irreversible or destructive side effects.
+
+The review must include an **external contract diff**: compare the actual
+schema, migration, API-shape, persisted-format, and config changes in the
+changed files against the step 2 declarations and the implementation summary.
+An undeclared external contract change is automatically a finding. When
+reporting the review conclusion, list every external contract change to the
+user explicitly, declared or not — these are the changes that hurt most when
+they slip through review.
 
 Ask the review subagent to return findings with evidence, validation run,
 confidence, whether each finding is worth fixing now, and the suggested fix
@@ -247,7 +268,8 @@ intentionally lists no provider for it.
 
 The guide contains:
 - **Setup** — how to get to a runnable state: branch, build/start command, env
-  vars, seed data. Concrete commands, not descriptions.
+  vars, schema migrations to apply, seed data. Concrete commands, not
+  descriptions.
 - **Walkthrough** — numbered steps from the user's point of view: what to run,
   click, or enter, and after each action the exact observable result that means
   "working" (what the screen, response, log, or file should show). A step
