@@ -95,6 +95,13 @@ file or state formats, queue/event payloads, and config schema. Write `External
 contracts: none` explicitly when nothing applies — silence is not a declaration.
 Later steps diff reality against this list.
 
+Likewise declare the expected **architecture impact** before any code exists:
+which modules and seams the change touches, any dependency-direction change
+(who newly depends on whom), and any boundary added, removed, or moved. When
+the project keeps an architecture baseline (`CONTEXT.md`, ADRs), check the
+declaration against it and note conflicts. Write `Architecture impact: local
+to <module>` explicitly when the change stays inside one boundary.
+
 ### 3. Build vs. buy
 For each non-trivial capability the design needs, invoke the build-vs-buy
 capability named by the selected harness checklist to decide: reach for a mature
@@ -241,6 +248,11 @@ An undeclared external contract change is automatically a finding. When
 reporting the review conclusion, list every external contract change to the
 user explicitly, declared or not — these are the changes that hurt most when
 they slip through review.
+
+Diff actual **architecture impact** against the step 2 declaration the same
+way: modules touched, dependency directions, boundaries. Undeclared drift is a
+finding. Report the outcome as a short architecture note — confirmed as
+declared, or drifted and where.
 
 Ask the review subagent to return findings with evidence, validation run,
 confidence, whether each finding is worth fixing now, and the suggested fix
