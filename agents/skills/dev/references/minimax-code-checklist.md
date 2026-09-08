@@ -4,36 +4,41 @@ Use this checklist only when the current harness is MiniMax Code. If any
 required check fails, STOP the /dev pipeline and report the failed check plus the
 repair needed.
 
+Verify skills against the current session's skill catalog (`available_skills` /
+the `skill` tool), and tools against the current session's tool list. Do not
+verify by inspecting data-directory paths on disk.
+
 ## Required Checks
 
 | Capability | Required provider | How to verify | Repair hint |
 |---|---|---|---|
-| Subagent delegation | MiniMax Code subagent delegation exposed in the current session, preferably the `task` tool or a policy-approved `mavis communication send --command spawn` path | Confirm the current tool list exposes a subagent/delegation mechanism and that current runtime policy permits the required /dev use for implementation and review | Run /dev in a MiniMax Code session that exposes delegation, or update the local runtime/policy so producer implementation subagents are explicitly allowed for /dev |
-| Intent alignment | Built-in orchestrator using the /dev alignment gate | Confirm the orchestrator can produce an approved spec and stop for user sign-off | If a dedicated alignment skill is required for this environment, install or expose it and update this checklist to name it |
-| Design | Built-in orchestrator using the /dev design gate | Confirm the orchestrator can produce a design note and ADR updates when appropriate | If a dedicated design skill is required for this environment, install or expose it and update this checklist to name it |
-| Build vs. buy | Built-in orchestrator using repository inspection plus available docs/search tools | Confirm file, grep, package-manifest inspection, and current docs/search lookup tools are available | Expose local file tools and at least one current-information/docs lookup provider |
-| Test scenarios | Built-in orchestrator writing the scenario contract file | Confirm local file write access is available for the target project root | Grant write access to the project root or choose an approved scenario contract path |
-| TDD | Implementation subagent instructed to follow /dev TDD discipline | Confirm the selected implementation delegation path can run tests, edit files, and report concise evidence | Fix delegation permissions/tooling or explicitly waive /dev's subagent requirement for this run |
-| Review | Verifier-only review worker via MiniMax Code communication spawn or local review delegation | Confirm a review-only worker can be spawned and is prohibited from editing source files | Enable MiniMax Code communication spawn or another review-only delegation path |
-| Ponytail | Current session instructions and project conventions that enforce lean, minimal, scoped code | Confirm current instructions include lean implementation discipline and that the implementation worker will receive it | Add or enable Ponytail-equivalent instructions for the session/worker |
-| Library docs | `web_search`/`web_fetch` for public docs, plus local package manifests; use any exposed docs-specific provider when available | Confirm at least one current docs lookup path is available before choosing a new library | Enable network/docs tools or avoid adding libraries whose current usage cannot be verified |
+| Subagent delegation | The `task` tool with `worker` and `verifier` agents (plus `task_append`/`task_output` for follow-up) | Confirm `task` is in the current tool list and current runtime policy permits producer implementation subagents for /dev | Run /dev in a MiniMax Code session that exposes `task`, or update the local runtime/policy so implementation subagents are explicitly allowed for /dev |
+| Intent alignment | `mattpocock-skills:grilling` with `mattpocock-skills:domain-modeling` | Confirm both skills are in the session skill catalog | Install or enable `mattpocock-skills` for MiniMax Code |
+| Design | `mattpocock-skills:codebase-design` | Confirm the skill is in the session skill catalog | Install or enable `mattpocock-skills` for MiniMax Code |
+| Build vs. buy | `managing-dependencies` | Confirm the skill is in the session skill catalog | Install or enable `managing-dependencies` for MiniMax Code |
+| Test scenarios | `test-scenarios` | Confirm the skill is in the session skill catalog | Install or enable `test-scenarios` for MiniMax Code |
+| TDD | `mattpocock-skills:tdd` | Confirm the skill is in the session skill catalog | Install or enable `mattpocock-skills` for MiniMax Code |
+| Review | `task` `verifier` agent invoking `mattpocock-skills:code-review` | Confirm `task` is available and the `code-review` skill is in the session skill catalog; the `verifier` contract is review-only by construction (reports findings, does not edit source) | Enable `task` delegation and install or enable `mattpocock-skills` for MiniMax Code |
+| Ponytail | Active Ponytail instructions or the `ponytail` skill | Confirm Ponytail is active in the current instructions or visible in the session skill catalog | Enable Ponytail for this MiniMax Code session before running /dev |
+| Library docs | Context7 MCP tools (resolve-library-id then query-documentation) when exposed; otherwise `web_search`/`web_fetch` plus local package manifests | Confirm at least one current docs lookup path is available; require a successful lookup before relying on library docs | Enable Context7 or network/docs tools, or avoid adding libraries whose current usage cannot be verified |
 
 ## Skill Graph
 
 After preflight passes, invoke these providers for the matching pipeline steps.
-Do not replace a listed provider with an inline imitation unless this checklist
-explicitly names the built-in orchestrator as the provider.
+Do not replace a listed provider with an inline imitation. If a listed skill is
+genuinely absent from the session catalog and the user explicitly waives it for
+this run, record the waiver before the orchestrator covers that step itself.
 
 | Pipeline step | Skill/provider to invoke |
 |---|---|
-| 1. Align intent | Built-in orchestrator alignment gate: produce approved spec and wait for user confirmation |
-| 2. Design seams | Built-in orchestrator design gate: produce design note and ADR path when needed |
-| 3. Build vs. buy | Built-in orchestrator repository inspection plus docs/search lookup |
-| 3. Library docs | `web_search`/`web_fetch` or a docs-specific provider exposed in the current MiniMax Code tool list |
-| 4. Test scenarios | Built-in orchestrator scenario contract writer using the /dev table shape |
+| 1. Align intent | `mattpocock-skills:grilling` with `mattpocock-skills:domain-modeling` |
+| 2. Design seams | `mattpocock-skills:codebase-design` |
+| 3. Build vs. buy | `managing-dependencies` |
+| 3. Library docs | Context7 MCP tools when a library is chosen; follow the resolve-then-query workflow. Fall back to `web_search`/`web_fetch` |
+| 4. Test scenarios | `test-scenarios` with `PRODUCT`, `USER_STORY`, and `CONTEXT` |
 | 5. Reviewable proposal, if selected | `mattpocock-skills:to-spec`, then `personal-voice` |
-| 6. Implement via subagent | MiniMax Code subagent delegation path verified in preflight, with explicit /dev TDD instructions |
-| 7. Review | MiniMax Code review-only delegation path verified in preflight |
+| 6. Implement via subagent | `task` with `agent_name: "worker"`, with `mattpocock-skills:tdd` and explicit /dev TDD instructions in the subagent prompt |
+| 7. Review | `task` with `agent_name: "verifier"`, with `mattpocock-skills:code-review` in the subagent prompt |
 | 8. Manual E2E acceptance | Orchestrator-authored — no external provider; write the verification guide per SKILL.md step 8 |
 
 For step 4, use `PRODUCT` = the project or area under change; `USER_STORY` = the
@@ -44,9 +49,15 @@ dependency decisions, docs notes, constraints, and risk areas.
 
 - Do not inspect Claude Code or Codex config as evidence for MiniMax Code readiness.
   Their plugin state does not prove MiniMax Code tool availability.
-- Treat unavailable local tools, permission-gate denial, malformed config,
-  unreadable project files, or failed delegation spawn as hard failures. Report
-  the exact failure and stop.
+- Do not inspect MiniMax Code data-directory paths on disk either — the data dir
+  has moved between releases, and stale paths from notes or memory drift. The
+  session's injected skill catalog and tool list are the primary evidence.
+- Skills load their SKILL.md on invocation. Do not fail preflight only because a
+  skill's tools or full instructions are absent before invocation; invoke the
+  named skill when the pipeline needs it, then stop on an actual loading or
+  execution failure.
+- Treat permission-gate denial, malformed config, unreadable project files, or a
+  failed `task` spawn as hard failures. Report the exact failure and stop.
 - Do not emulate missing delegation by doing /dev implementation work in the main
   orchestrator thread. The /dev pipeline requires clean orchestration.
 - If local runtime policy forbids producer implementation subagents, preflight
@@ -55,6 +66,7 @@ dependency decisions, docs notes, constraints, and risk areas.
 
 ## Completion Criteria
 
-Preflight passes only after every required capability above is verified in the
-current MiniMax Code session and current runtime policy permits the
-required /dev use.
+Preflight passes only after every required capability above is visible or active
+in the current MiniMax Code session and current runtime policy permits the
+required /dev use. Providers that load on invocation must still succeed when
+their pipeline step uses them.
