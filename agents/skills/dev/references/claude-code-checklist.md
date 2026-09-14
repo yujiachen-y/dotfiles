@@ -9,11 +9,11 @@ needed.
 | Capability | Required provider | How to verify | Repair hint |
 |---|---|---|---|
 | Subagent delegation | Claude Code Agent tool with `subagent_type: general-purpose` | Confirm the Agent tool is available in the current tool list | Enable the Agent tool or run /dev in a Claude Code environment that exposes it |
-| Intent alignment | `mattpocock-skills:grill-with-docs` | Confirm the command or skill is available | `git clone --depth 1 https://github.com/mattpocock/skills.git ~/.claude/skills/mattpocock-skills` |
-| Design | `mattpocock-skills:codebase-design` | Confirm the command or skill is available | `git clone --depth 1 https://github.com/mattpocock/skills.git ~/.claude/skills/mattpocock-skills` |
+| Intent alignment | `mattpocock-skills:grill-with-docs` | Confirm the command or skill is available | Install or enable the `mattpocock-skills@mattpocock` plugin declared in `agents/plugins.yaml` |
+| Design | `mattpocock-skills:codebase-design` | Confirm the command or skill is available | Install or enable the `mattpocock-skills@mattpocock` plugin declared in `agents/plugins.yaml` |
 | Build vs. buy | `managing-dependencies:managing-dependencies` | Confirm the plugin command or skill is available | `/plugin marketplace add andrew/managing-dependencies`; then `/plugin install managing-dependencies@managing-dependencies` |
 | Test scenarios | `/pm-execution:test-scenarios` | Confirm the PM command or skill is available | Install or enable the PM skills bundle |
-| TDD | `mattpocock-skills:tdd` | Confirm the command or skill is available | `git clone --depth 1 https://github.com/mattpocock/skills.git ~/.claude/skills/mattpocock-skills` |
+| TDD | `mattpocock-skills:tdd` | Confirm the command or skill is available | Install or enable the `mattpocock-skills@mattpocock` plugin declared in `agents/plugins.yaml` |
 | Review | `/code-review` | Confirm the command or skill is available | Enable the built-in review command or the project review skill |
 | Ponytail | `ponytail` plugin enabled and active | Inspect Claude Code plugin state and current instructions | `/plugin marketplace add https://github.com/DietrichGebert/ponytail.git`; then `/plugin install ponytail@ponytail` |
 | Library docs | `context7:resolve-library-id` and `context7:query-docs` | Confirm both context7 MCP tools are available | Add context7 to Claude Code MCP config |
