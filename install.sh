@@ -46,3 +46,6 @@ if ! git config --file "$GITCONFIG" --get-all include.path |
   grep -Fqx "$TRACKED_GITCONFIG"; then
   git config --file "$GITCONFIG" --add include.path "$TRACKED_GITCONFIG"
 fi
+
+echo "🍉 Setting up workspace"
+sh "$DOTFILES"/workspace/install.sh

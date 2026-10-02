@@ -1,0 +1,23 @@
+# Public GitHub repositories to clone and update, one owner/repo per line.
+# Add only repositories you explicitly want on every machine.
+
+Aider-AI/aider
+earendil-works/pi
+aaif-goose/goose
+charmbracelet/crush
+cline/cline
+continuedev/continue
+MiniMax-AI/minimax-code
+openai/codex
+anomalyco/opencode
+xai-org/grok-build
+bytedance/deer-flow
+deepseek-ai/deepseek-harness
+huggingface/smolagents
+NousResearch/hermes-agent
+openclaw/openclaw
+ChinaSiro/claude-code-sourcemap
+
+# Archived repositories retained for source reference.
+MoonshotAI/kimi-cli
+b-nnett/grok-bot-0.18-reconstructed
