@@ -27,6 +27,16 @@ speed.
 Run `sh ~/dotfiles/workspace/install.sh` to set up or refresh the workspace
 without running the full machine installer. The main `install.sh` also runs it.
 
+Day to day, `workspace/repos.sh` (aliased as `ws` in `.zshrc`) manages checkouts:
+
+- `ws pull` fetches every checkout under `~/Workspace` in parallel and
+  fast-forwards the clean ones. Modified, detached, ahead, and diverged
+  checkouts are fetched and otherwise left alone.
+- `ws add <repo>` clones into `~/Workspace/<host>/<path>`. `<repo>` is
+  `owner/repo` (GitHub over SSH), `host/group/repo`, or any git URL. It does
+  not edit `workspace/github-repos.txt`; add a line there yourself for a public
+  repository you want on every machine.
+
 - Creates `~/Workspace/local` and replaces `~/Workspace/AGENTS.md` with a link to
   `workspace/AGENTS.workspace.md`. The dotfiles version is authoritative.
 - Reads `workspace/github-repos.txt`: one public GitHub `owner/repo` per line,

@@ -45,3 +45,8 @@ temporary remote branches merely to update a base branch.
 Clone new repositories directly into their remote-derived paths, creating
 parent directories as needed. Keep repositories without a known `origin` in
 `local/<project>` rather than inventing an organization or group.
+
+`sh ~/dotfiles/workspace/repos.sh add <repo>` does the clone and derives the
+path for you; `<repo>` is `owner/repo` (GitHub), `host/group/repo`, or a git
+URL. `sh ~/dotfiles/workspace/repos.sh pull` applies the update rule above to
+every checkout in the workspace.

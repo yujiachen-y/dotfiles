@@ -75,36 +75,7 @@ sync_repos() {
       repo_errors=1
       continue
     fi
-    if ! GIT_TERMINAL_PROMPT=0 GIT_SSH_COMMAND="${GIT_SSH_COMMAND:-ssh -o BatchMode=yes}" \
-      git -C "$checkout" fetch origin; then
-      say "SKIP $repo: fetch failed"
-      continue
-    fi
-    if ! changes=$(git -C "$checkout" status --porcelain); then
-      say "ERROR: cannot read status of $repo; checkout preserved"
-      repo_errors=1
-      continue
-    fi
-    if [ -n "$changes" ] || ! git -C "$checkout" symbolic-ref -q HEAD >/dev/null; then
-      say "fetched $repo; kept modified or detached checkout"
-      continue
-    fi
-    upstream=$(git -C "$checkout" rev-parse --abbrev-ref --symbolic-full-name '@{upstream}' 2>/dev/null) || upstream=
-    case "$upstream" in
-      origin/*) ;;
-      *) say "fetched $repo; no origin upstream for the current branch"; continue ;;
-    esac
-    if ! git -C "$checkout" merge-base --is-ancestor HEAD "$upstream"; then
-      say "fetched $repo; kept local commits (fast-forward unavailable)"
-      continue
-    fi
-    if GIT_TERMINAL_PROMPT=0 GIT_SSH_COMMAND="${GIT_SSH_COMMAND:-ssh -o BatchMode=yes}" \
-      git -C "$checkout" pull --ff-only; then
-      say "updated $repo"
-    else
-      say "ERROR: pull failed for $repo"
-      repo_errors=1
-    fi
+    sh "$WORKSPACE_SOURCE/repos.sh" update "$checkout" || repo_errors=1
   done < "$WORKSPACE_SOURCE/github-repos.txt"
   return "$repo_errors"
 }

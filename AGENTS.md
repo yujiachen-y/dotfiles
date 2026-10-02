@@ -9,13 +9,14 @@ This repo is a macOS-focused dotfiles setup. Root-level dotfiles live beside the
 - `./agents/install.sh` symlinks prompts and skills into `~/.codex` and `~/.claude`, and installs the shared plugins from `agents/plugins.yaml` into both CLIs.
 - `./zsh/install.sh` installs oh-my-zsh and links `.zshrc`.
 - `sh workspace/install.sh` links `~/Workspace/AGENTS.md`, clones or fast-forwards the repos in `workspace/github-repos.txt` under `~/Workspace/github.com`, and points the Codex App's projectless folder at `~/Workspace/local/chatgpt`.
+- `sh workspace/repos.sh pull` (alias `ws pull`) fetches every checkout under `~/Workspace` and fast-forwards the clean ones; `sh workspace/repos.sh add <repo>` clones into the remote-derived path. `workspace/install.sh` uses the same update logic.
 
 ## Coding Style & Naming Conventions
 Shell scripts are POSIX `sh` with 2-space indentation. Keep scripts idempotent and prefer symlinks over copies. Use clear, descriptive filenames (hidden dotfiles such as `.vimrc`, `.gitconfig`, `.zshrc`).
 
 ## Testing Guidelines
 There is no automated test suite. Validate changes by running the specific script you touched, or run the full setup on a disposable machine. If available, static checks are useful:
-`shellcheck install.sh macos/*.sh macos/zed/*.sh zsh/*.sh agents/install.sh workspace/install.sh`.
+`shellcheck install.sh macos/*.sh macos/zed/*.sh zsh/*.sh agents/install.sh workspace/*.sh`.
 
 ## Commit & Branching Workflow
 This is a personal, single-maintainer dotfiles repo. **Work directly on `main`** — do not create feature branches or pull requests for routine changes; commit straight to `main` and push. This repo-local rule intentionally overrides the branch-based "Delivery Workflow" in the global `agents/AGENTS.shared.md`, which already defers to repo-local guidance.

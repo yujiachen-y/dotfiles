@@ -50,6 +50,8 @@ alias gbdd='
   | xargs git branch -D
 '
 alias godd="find . -type f -name '*.orig' -delete"
+# ~/Workspace checkouts: `ws pull` updates them all, `ws add <repo>` clones into place.
+alias ws='sh ~/dotfiles/workspace/repos.sh'
 
 # codex
 eval "$(codex completion zsh)"
