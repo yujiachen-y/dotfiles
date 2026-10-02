@@ -22,6 +22,7 @@ brew "zsh-autosuggestions"
 
 # Apps
 cask "alt-tab"
+cask "anki"
 cask "appcleaner"
 cask "chatgpt"
 cask "claude"
