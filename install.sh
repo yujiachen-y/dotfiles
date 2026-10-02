@@ -17,8 +17,7 @@ if [ "$(uname)" = "Darwin" ]; then
 fi
 
 echo "🍉 Setting up mise"
-# shellcheck source=/dev/null
-. "$DOTFILES"/mise/install.sh
+sh "$DOTFILES"/mise/install.sh
 
 echo "🍉 Setting up coding agents"
 # shellcheck source=/dev/null
