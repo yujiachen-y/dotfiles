@@ -17,6 +17,12 @@ huggingface/smolagents
 NousResearch/hermes-agent
 openclaw/openclaw
 ChinaSiro/claude-code-sourcemap
+vercel-labs/agent-skills
+revfactory/harness
+cordiverse/cordis
+headroomlabs-ai/headroom
+xingyaoww/code-act
+shareAI-lab/learn-claude-code
 
 # Archived repositories retained for source reference.
 MoonshotAI/kimi-cli
