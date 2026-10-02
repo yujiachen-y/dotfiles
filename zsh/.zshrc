@@ -5,11 +5,6 @@ fi
 
 export PATH="/usr/local/bin:$PATH"
 
-# pyenv
-export PYENV_ROOT="$HOME/.pyenv"
-command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init -)"
-
 # poetry
 if [ ! -f ~/.zfunc/_poetry ]; then
   mkdir -p ~/.zfunc
@@ -18,7 +13,7 @@ fi
 fpath+=~/.zfunc
 autoload -Uz compinit && compinit
 
-# mise (manages node/pnpm and global npm tools)
+# mise (sole owner of node, python and go; Python CLIs install via `uv tool`)
 command -v mise >/dev/null 2>&1 && eval "$(mise activate zsh)"
 
 # Default editor for terminal tools that use $VISUAL/$EDITOR.
