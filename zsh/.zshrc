@@ -1,3 +1,7 @@
+# Link personal skills from dotfiles into ~/.claude/skills and ~/.agents/skills.
+# Silent unless a link changes; kept above the instant prompt so that output is clean.
+[ -f ~/dotfiles/agents/link-skills.sh ] && sh ~/dotfiles/agents/link-skills.sh
+
 # Enable Powerlevel10k instant prompt. Keep this near the top of ~/.zshrc.
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
