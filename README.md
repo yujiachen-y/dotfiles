@@ -43,9 +43,12 @@ Day to day, `workspace/repos.sh` (aliased as `ws` in `.zshrc`) manages checkouts
   with optional `#` comments. Only add repositories
   you want on every machine; private remotes and machine-specific inventories
   do not belong here.
-- Clones missing repositories into `~/Workspace/github.com/<owner>/<repo>`.
-  Existing matching checkouts fetch `origin`; clean branches tracking `origin`
-  also pull with `--ff-only` when possible. Modified, detached, ahead, and
+- Processes four repositories at a time. Clones missing repositories into
+  `~/Workspace/github.com/<owner>/<repo>` after an anonymous GitHub API check
+  that they are public; existing checkouts skip that check (their `origin` must
+  match the entry) and so are not affected by API rate limits. Existing
+  checkouts fetch `origin`; clean branches tracking `origin` also fast-forward
+  when possible. Modified, detached, ahead, and
   diverged checkouts keep their local state. Removing a list entry does not
   delete its checkout. No repository setup scripts or submodules are executed.
 - Uses the `codex` CLI's native config API to set the App's projectless task
@@ -57,7 +60,7 @@ Day to day, `workspace/repos.sh` (aliased as `ws` in `.zshrc`) manages checkouts
   nonempty source and destination directories are never merged. Reopening the
   App may be needed to refresh cached settings.
 
-GitHub syncing needs `git`, `curl`, and `jq`; App configuration needs `codex`
+GitHub syncing needs `git`, plus `curl` and `jq` for first clones; App configuration needs `codex`
 and `jq` on `PATH`. Missing tools, unavailable public repositories, and network
 failures are reported as skipped steps. Invalid entries, path conflicts, config
 errors, and migration failures return a nonzero exit status. All steps can be

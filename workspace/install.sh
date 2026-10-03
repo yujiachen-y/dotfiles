@@ -19,8 +19,63 @@ relative_path() {
   printf '%s\n' "$rel_up${1#"$rel_base"/}"
 }
 
+# Clone or update one listed repository. sync_repos runs several at once.
+sync_one() {
+  repo=$1
+  checkout="$WORKSPACE_ROOT/github.com/$repo"
+  if [ ! -e "$checkout" ] && [ ! -L "$checkout" ]; then
+    for tool in curl jq; do
+      if ! command -v "$tool" >/dev/null 2>&1; then
+        say "SKIP $repo: $tool is not installed"
+        return 0
+      fi
+    done
+    # Anonymous metadata lookup keeps private repositories out of this public
+    # list. Only a first clone needs it; existing checkouts are matched by origin.
+    if ! metadata=$(curl -q -fsSL --connect-timeout 10 --max-time 30 \
+      "https://api.github.com/repos/$repo") ||
+      ! printf '%s' "$metadata" | jq -e --arg repo "$repo" \
+        '.private == false and .visibility == "public" and
+         (.full_name | ascii_downcase) == ($repo | ascii_downcase)' >/dev/null; then
+      say "SKIP $repo: public repository could not be verified"
+      return 0
+    fi
+    say "cloning $repo"
+    if GIT_TERMINAL_PROMPT=0 git clone -q "https://github.com/$repo.git" "$checkout"; then
+      say "cloned $repo"
+    else
+      say "SKIP $repo: clone failed"
+    fi
+    return 0
+  fi
+  if [ ! -e "$checkout/.git" ]; then
+    say "ERROR: $checkout exists but is not a checkout"
+    return 1
+  fi
+  # A checkout without origin falls through to the mismatch error below.
+  origin=$(git -C "$checkout" config --get remote.origin.url) || origin=
+  case "$origin" in
+    https://github.com/*) origin_repo=${origin#https://github.com/} ;;
+    git@github.com:*) origin_repo=${origin#git@github.com:} ;;
+    ssh://git@github.com/*) origin_repo=${origin#ssh://git@github.com/} ;;
+    *) origin_repo= ;;
+  esac
+  origin_repo=${origin_repo%.git}
+  if [ "$(printf '%s' "$origin_repo" | tr '[:upper:]' '[:lower:]')" != \
+    "$(printf '%s' "$repo" | tr '[:upper:]' '[:lower:]')" ]; then
+    say "ERROR: origin does not match $repo; checkout preserved"
+    return 1
+  fi
+  sh "$WORKSPACE_SOURCE/repos.sh" update "$checkout"
+}
+
 sync_repos() {
+  if ! command -v git >/dev/null 2>&1; then
+    say "SKIP GitHub list: git is not installed"
+    return 0
+  fi
   repo_errors=0
+  repos=
   while IFS= read -r repo_line || [ -n "$repo_line" ]; do
     repo=$(printf '%s\n' "$repo_line" | sed 's/#.*//; s/^[[:space:]]*//; s/[[:space:]]*$//')
     [ -n "$repo" ] || continue
@@ -30,53 +85,13 @@ sync_repos() {
       repo_errors=1
       continue
     fi
-    for tool in git curl jq; do
-      if ! command -v "$tool" >/dev/null 2>&1; then
-        say "SKIP GitHub list: $tool is not installed"
-        return "$repo_errors"
-      fi
-    done
-    # Anonymous metadata lookup keeps private repositories out of this public list.
-    if ! metadata=$(curl -q -fsSL --connect-timeout 10 --max-time 30 \
-      "https://api.github.com/repos/$repo") ||
-      ! printf '%s' "$metadata" | jq -e --arg repo "$repo" \
-        '.private == false and .visibility == "public" and
-         (.full_name | ascii_downcase) == ($repo | ascii_downcase)' >/dev/null; then
-      say "SKIP $repo: public repository could not be verified"
-      continue
-    fi
-    checkout="$WORKSPACE_ROOT/github.com/$repo"
-    url="https://github.com/$repo.git"
-    if [ ! -e "$checkout" ] && [ ! -L "$checkout" ]; then
-      if GIT_TERMINAL_PROMPT=0 git clone "$url" "$checkout"; then
-        say "cloned $repo"
-      else
-        say "SKIP $repo: clone failed"
-      fi
-      continue
-    fi
-    if [ ! -e "$checkout/.git" ]; then
-      say "ERROR: $checkout exists but is not a checkout"
-      repo_errors=1
-      continue
-    fi
-    # A checkout without origin falls through to the mismatch error below.
-    origin=$(git -C "$checkout" config --get remote.origin.url) || origin=
-    case "$origin" in
-      https://github.com/*) origin_repo=${origin#https://github.com/} ;;
-      git@github.com:*) origin_repo=${origin#git@github.com:} ;;
-      ssh://git@github.com/*) origin_repo=${origin#ssh://git@github.com/} ;;
-      *) origin_repo= ;;
-    esac
-    origin_repo=${origin_repo%.git}
-    if [ "$(printf '%s' "$origin_repo" | tr '[:upper:]' '[:lower:]')" != \
-      "$(printf '%s' "$repo" | tr '[:upper:]' '[:lower:]')" ]; then
-      say "ERROR: origin does not match $repo; checkout preserved"
-      repo_errors=1
-      continue
-    fi
-    sh "$WORKSPACE_SOURCE/repos.sh" update "$checkout" || repo_errors=1
+    repos="$repos$repo
+"
   done < "$WORKSPACE_SOURCE/github-repos.txt"
+  # Validated names contain no whitespace, so plain xargs splitting is safe.
+  if [ -n "$repos" ]; then
+    printf '%s' "$repos" | xargs -n 1 -P 4 sh "$0" sync-one || repo_errors=1
+  fi
   return "$repo_errors"
 }
 
@@ -196,6 +211,12 @@ setup_projectless() (
     say "App storage ready: $new_root"
   fi
 )
+
+# Internal entry point for the parallel runs started by sync_repos.
+if [ "${1:-}" = sync-one ]; then
+  sync_one "$2"
+  exit
+fi
 
 mkdir -p "$WORKSPACE_ROOT/local"
 rules="$WORKSPACE_ROOT/AGENTS.md"
