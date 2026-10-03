@@ -6,7 +6,8 @@ if test ! "$(which brew)"; then
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 fi
 brew update
-brew bundle --file "$MACOS_FOLDER"/Brewfile
+# --verbose streams `brew install` to the tty so downloads show progress bars.
+brew bundle --verbose --file "$MACOS_FOLDER"/Brewfile
 
 echo "🍉     Setting up otty"
 # shellcheck source=/dev/null
