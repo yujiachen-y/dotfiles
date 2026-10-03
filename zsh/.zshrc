@@ -5,12 +5,6 @@ fi
 
 export PATH="/usr/local/bin:$PATH"
 
-# poetry
-if [ ! -f ~/.zfunc/_poetry ]; then
-  mkdir -p ~/.zfunc
-  poetry completions zsh > ~/.zfunc/_poetry
-fi
-fpath+=~/.zfunc
 autoload -Uz compinit && compinit
 
 # mise (sole owner of node, python and go; Python CLIs install via `uv tool`)
