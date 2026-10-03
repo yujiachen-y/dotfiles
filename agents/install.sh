@@ -20,22 +20,13 @@ fi
 ln -s "$AGENTS_DIR/prompts" "$PROMPTS_TARGET"
 
 echo "🍉   Setting up skills"
-SKILLS_SOURCE="$AGENTS_DIR/skills"
-SKILLS_TARGET="$HOME/.agents/skills"
-
-mkdir -p "$SKILLS_SOURCE"
-mkdir -p "$(dirname "$SKILLS_TARGET")"
-
 # Old layout symlinked $CODEX_DIR/skills into the repo, so Codex wrote its
 # bundled .system skills straight into dotfiles. Drop the stale link only.
 if [ -L "$CODEX_DIR/skills" ]; then
   rm -f "$CODEX_DIR/skills"
 fi
-
-if [ -e "$SKILLS_TARGET" ] || [ -L "$SKILLS_TARGET" ]; then
-  rm -rf "$SKILLS_TARGET"
-fi
-ln -s "$SKILLS_SOURCE" "$SKILLS_TARGET"
+# Per-skill links into ~/.claude/skills and ~/.agents/skills (Codex).
+sh "$AGENTS_DIR/link-skills.sh"
 
 echo "🍉   Setting up claude cli"
 CLAUDE_DIR="$HOME/.claude"
@@ -55,13 +46,6 @@ if [ -e "$CLAUDE_COMMANDS_TARGET" ] || [ -L "$CLAUDE_COMMANDS_TARGET" ]; then
   rm -rf "$CLAUDE_COMMANDS_TARGET"
 fi
 ln -s "$AGENTS_DIR/prompts" "$CLAUDE_COMMANDS_TARGET"
-
-echo "🍉     Setting up claude skills"
-CLAUDE_SKILLS_TARGET="$CLAUDE_DIR/skills"
-if [ -e "$CLAUDE_SKILLS_TARGET" ] || [ -L "$CLAUDE_SKILLS_TARGET" ]; then
-  rm -rf "$CLAUDE_SKILLS_TARGET"
-fi
-ln -s "$SKILLS_SOURCE" "$CLAUDE_SKILLS_TARGET"
 
 echo "🍉     Setting up claude statusline"
 CLAUDE_STATUSLINE_SOURCE="$AGENTS_DIR/statusline-command.sh"
@@ -130,4 +114,37 @@ else
   else
     echo "⚠️     claude not available, skipped installing claude plugins"
   fi
+fi
+
+echo "🍉   Setting up shared agent skills"
+SKILLS_CONFIG="$AGENTS_DIR/skills.yaml"
+SKILLS_CONFIG_QUERY='
+  (kind == "seq") and (
+    [.[] | select(
+      (.source | tag) != "!!str" or
+      (.skills | kind) != "seq"
+    )] | length == 0
+  )
+'
+# One "source skill" pair per line; $source is a yq variable.
+# shellcheck disable=SC2016
+SKILL_PAIR_QUERY='.[] | .source as $source | .skills[] | $source + " " + .'
+
+if ! command -v skills >/dev/null 2>&1; then
+  echo "⚠️     skills CLI not found, skipped installing shared agent skills"
+elif ! command -v mise >/dev/null 2>&1; then
+  echo "⚠️     mise not found, skipped installing shared agent skills"
+elif ! mise exec -- yq -e "$SKILLS_CONFIG_QUERY" "$SKILLS_CONFIG" >/dev/null; then
+  echo "⚠️     Invalid skill config: $SKILLS_CONFIG"
+else
+  mise exec -- yq -r "$SKILL_PAIR_QUERY" "$SKILLS_CONFIG" |
+    while read -r source skill; do
+      # Global install: copy in ~/.agents/skills (Codex), link in ~/.claude/skills.
+      if DISABLE_TELEMETRY=1 skills add "$source" -g -y -a claude-code -a codex \
+        -s "$skill" </dev/null >/dev/null 2>&1; then
+        echo "🍉     $skill from $source"
+      else
+        echo "⚠️     Failed to install $skill from $source"
+      fi
+    done
 fi

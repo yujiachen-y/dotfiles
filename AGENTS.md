@@ -6,7 +6,7 @@ This repo is a macOS-focused dotfiles setup. Root-level dotfiles live beside the
 ## Build, Test, and Development Commands
 - `./install.sh` sets up vim, macOS defaults and Zed (on Darwin), Codex agents, zsh, Git configuration, and the workspace. Run from the repo root; scripts assume the repo lives at `~/dotfiles`.
 - `./macos/install.sh` installs Homebrew, applies `macos/Brewfile`, links Zed configuration, and runs `macos/system_settings.sh`.
-- `./agents/install.sh` symlinks prompts and skills into `~/.codex` and `~/.claude`, and installs the shared plugins from `agents/plugins.yaml` into both CLIs.
+- `./agents/install.sh` symlinks prompts into `~/.codex` and `~/.claude`, links each skill in `agents/skills` into `~/.claude/skills` and `~/.agents/skills` (via `agents/link-skills.sh`, also runnable alone), and installs the shared plugins from `agents/plugins.yaml` and the third-party skills from `agents/skills.yaml` into both CLIs.
 - `./zsh/install.sh` installs oh-my-zsh and links `.zshrc`.
 - `sh workspace/install.sh` links `~/Workspace/AGENTS.md`, clones or fast-forwards the repos in `workspace/github-repos.txt` under `~/Workspace/github.com`, and points the Codex App's projectless folder at `~/Workspace/local/chatgpt`.
 - `sh workspace/repos.sh pull` (alias `ws pull`) fetches every checkout under `~/Workspace` and fast-forwards the clean ones; `sh workspace/repos.sh add <repo>` clones into the remote-derived path. `workspace/install.sh` uses the same update logic.
@@ -53,6 +53,10 @@ Rules:
   such as `~/Documents`: a symlink there reaches every machine verbatim, so give
   it a relative target and let other machines tolerate it before they have run
   the script.
+- Never link a directory that a tool writes into (`~/.claude/skills`,
+  `~/.agents/skills`, `~/.codex/skills`, plugin caches) to a folder in this
+  repo; link individual entries instead. Whatever the tool writes would reach
+  every machine through iCloud and could end up committed.
 
 ## Security & Configuration Notes
 Install scripts remove existing `~/.vimrc`, `~/.zshrc`, and `~/.non_public_commands.sh` before linking. Git setup replaces an existing `~/.gitconfig` symlink with a writable machine-local file that includes the tracked `~/dotfiles/.gitconfig`; existing regular-file settings are preserved. `workspace/install.sh` replaces an existing `~/Workspace/AGENTS.md` without a backup, and moves the Codex App's projectless folder (default `~/Documents/Codex`) to `~/Workspace/local/chatgpt`, leaving a relative link at the old path. Highlight destructive changes in PRs. `macos/install.sh` uses a Homebrew install script via curl; reviewers should verify the URL and permissions.

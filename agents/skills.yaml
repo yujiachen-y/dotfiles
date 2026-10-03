@@ -1,0 +1,13 @@
+# Third-party skills that are not published as plugins. agents/install.sh
+# installs each listed skill globally for Claude Code and Codex with the
+# `skills` CLI (skills.sh). Prefer plugins.yaml when the source ships a plugin.
+#
+# The CLI keeps its copies in ~/.agents/skills, links them into ~/.claude/skills,
+# and records them in ~/.agents/.skill-lock.json, all machine-local. Nothing it
+# writes lands in this repo, so never hand its lock file to git.
+#
+# Entry format:
+# - source: vercel-labs/agent-skills
+#   skills:
+#     - deploy-to-vercel
+[]
