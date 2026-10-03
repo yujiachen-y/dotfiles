@@ -1,70 +1,47 @@
 #!/bin/sh
-echo "🍉 Setting up codex agents"
 AGENTS_DIR="$HOME/dotfiles/agents"
 CODEX_DIR="$HOME/.codex"
-
-mkdir -p "$CODEX_DIR"
-
-echo "🍉   Setting up shared agent config"
-AGENTS_TARGET="$CODEX_DIR/AGENTS.md"
-if [ -e "$AGENTS_TARGET" ] || [ -L "$AGENTS_TARGET" ]; then
-  rm -rf "$AGENTS_TARGET"
-fi
-ln -s "$AGENTS_DIR/AGENTS.shared.md" "$AGENTS_TARGET"
-
-echo "🍉   Setting up prompts"
-PROMPTS_TARGET="$CODEX_DIR/prompts"
-if [ -e "$PROMPTS_TARGET" ] || [ -L "$PROMPTS_TARGET" ]; then
-  rm -rf "$PROMPTS_TARGET"
-fi
-ln -s "$AGENTS_DIR/prompts" "$PROMPTS_TARGET"
-
-echo "🍉   Setting up skills"
-# Old layout symlinked $CODEX_DIR/skills into the repo, so Codex wrote its
-# bundled .system skills straight into dotfiles. Drop the stale link only.
-if [ -L "$CODEX_DIR/skills" ]; then
-  rm -f "$CODEX_DIR/skills"
-fi
-# Per-skill links into ~/.claude/skills and ~/.agents/skills (Codex).
-sh "$AGENTS_DIR/link-skills.sh"
-
-echo "🍉   Setting up claude cli"
 CLAUDE_DIR="$HOME/.claude"
+# shellcheck source=/dev/null
+. "$HOME"/dotfiles/scripts/ui.sh
 
-mkdir -p "$CLAUDE_DIR"
+# Replace $2 with a link to $1.
+relink() {
+  if [ -e "$2" ] || [ -L "$2" ]; then
+    rm -rf "$2"
+  fi
+  ln -s "$1" "$2"
+}
 
-echo "🍉     Setting up CLAUDE.md"
-CLAUDE_CONFIG="$CLAUDE_DIR/CLAUDE.md"
-if [ -e "$CLAUDE_CONFIG" ] || [ -L "$CLAUDE_CONFIG" ]; then
-  rm -rf "$CLAUDE_CONFIG"
-fi
-ln -s "$AGENTS_DIR/AGENTS.shared.md" "$CLAUDE_CONFIG"
+link_agents() {
+  mkdir -p "$CODEX_DIR" "$CLAUDE_DIR"
+  relink "$AGENTS_DIR/AGENTS.shared.md" "$CODEX_DIR/AGENTS.md"
+  relink "$AGENTS_DIR/prompts" "$CODEX_DIR/prompts"
+  # Old layout symlinked $CODEX_DIR/skills into the repo, so Codex wrote its
+  # bundled .system skills straight into dotfiles. Drop the stale link only.
+  if [ -L "$CODEX_DIR/skills" ]; then
+    rm -f "$CODEX_DIR/skills"
+  fi
+  # Per-skill links into ~/.claude/skills and ~/.agents/skills (Codex).
+  sh "$AGENTS_DIR/link-skills.sh"
+  relink "$AGENTS_DIR/AGENTS.shared.md" "$CLAUDE_DIR/CLAUDE.md"
+  relink "$AGENTS_DIR/prompts" "$CLAUDE_DIR/commands"
+  relink "$AGENTS_DIR/statusline-command.sh" "$CLAUDE_DIR/statusline-command.sh"
+}
 
-echo "🍉     Setting up claude commands"
-CLAUDE_COMMANDS_TARGET="$CLAUDE_DIR/commands"
-if [ -e "$CLAUDE_COMMANDS_TARGET" ] || [ -L "$CLAUDE_COMMANDS_TARGET" ]; then
-  rm -rf "$CLAUDE_COMMANDS_TARGET"
-fi
-ln -s "$AGENTS_DIR/prompts" "$CLAUDE_COMMANDS_TARGET"
+update_claude_settings() {
+  CLAUDE_SETTINGS="$CLAUDE_DIR/settings.json"
+  CLAUDE_SETTINGS_TMP="$CLAUDE_DIR/settings.json.tmp"
+  CLAUDE_STATUSLINE_COMMAND="bash $CLAUDE_DIR/statusline-command.sh"
 
-echo "🍉     Setting up claude statusline"
-CLAUDE_STATUSLINE_SOURCE="$AGENTS_DIR/statusline-command.sh"
-CLAUDE_STATUSLINE_TARGET="$CLAUDE_DIR/statusline-command.sh"
-if [ -e "$CLAUDE_STATUSLINE_TARGET" ] || [ -L "$CLAUDE_STATUSLINE_TARGET" ]; then
-  rm -rf "$CLAUDE_STATUSLINE_TARGET"
-fi
-ln -s "$CLAUDE_STATUSLINE_SOURCE" "$CLAUDE_STATUSLINE_TARGET"
+  if [ ! -f "$CLAUDE_SETTINGS" ]; then
+    echo '{}' > "$CLAUDE_SETTINGS"
+  fi
 
-echo "🍉     Updating claude settings"
-CLAUDE_SETTINGS="$CLAUDE_DIR/settings.json"
-CLAUDE_SETTINGS_TMP="$CLAUDE_DIR/settings.json.tmp"
-CLAUDE_STATUSLINE_COMMAND="bash $CLAUDE_STATUSLINE_TARGET"
-
-if [ ! -f "$CLAUDE_SETTINGS" ]; then
-  echo '{}' > "$CLAUDE_SETTINGS"
-fi
-
-if command -v jq >/dev/null 2>&1; then
+  if ! command -v jq >/dev/null 2>&1; then
+    warn "jq not found, skipped"
+    return 0
+  fi
   if jq \
     --arg command "$CLAUDE_STATUSLINE_COMMAND" \
     '.statusLine = ((.statusLine // {}) + {type: "command", command: $command, padding: 0})' \
@@ -72,13 +49,11 @@ if command -v jq >/dev/null 2>&1; then
     mv "$CLAUDE_SETTINGS_TMP" "$CLAUDE_SETTINGS"
   else
     rm -f "$CLAUDE_SETTINGS_TMP"
-    echo "⚠️     Failed to update $CLAUDE_SETTINGS, please check JSON format"
+    note "could not update $CLAUDE_SETTINGS, check its JSON"
+    return 1
   fi
-else
-  echo "⚠️     jq not found, skipped updating $CLAUDE_SETTINGS"
-fi
+}
 
-echo "🍉   Setting up shared agent plugins"
 PLUGINS_CONFIG="$AGENTS_DIR/plugins.yaml"
 CONFIG_QUERY='
   (kind == "seq") and (
@@ -88,35 +63,73 @@ CONFIG_QUERY='
     )] | length == 0
   )
 '
-MARKETPLACE_QUERY='.[].source'
-PLUGIN_QUERY='.[].plugins[]'
 
-if ! command -v mise >/dev/null 2>&1; then
-  echo "⚠️     mise not found, skipped installing shared agent plugins"
-elif ! mise exec -- yq -e "$CONFIG_QUERY" "$PLUGINS_CONFIG" >/dev/null; then
-  echo "⚠️     Invalid plugin config: $PLUGINS_CONFIG"
-else
-  if command -v codex >/dev/null 2>&1; then
-    mise exec -- yq -r "$MARKETPLACE_QUERY" "$PLUGINS_CONFIG" |
-      xargs -n 1 codex plugin marketplace add
-    mise exec -- yq -r "$PLUGIN_QUERY" "$PLUGINS_CONFIG" |
-      xargs -n 1 codex plugin add
-  else
-    echo "⚠️     codex not found, skipped installing codex plugins"
+# Sets $marketplaces and $plugins from plugins.yaml.
+load_plugins() {
+  if ! mise exec -- yq -e "$CONFIG_QUERY" "$PLUGINS_CONFIG" >/dev/null; then
+    echo "Invalid plugin config: $PLUGINS_CONFIG"
+    return 1
   fi
+  marketplaces=$(mise exec -- yq -r '.[].source' "$PLUGINS_CONFIG")
+  plugins=$(mise exec -- yq -r '.[].plugins[]' "$PLUGINS_CONFIG")
+}
 
-  if command -v claude >/dev/null 2>&1 &&
-    sh -c 'env CLAUDECODE= claude --version >/dev/null 2>&1' 2>/dev/null; then
-    mise exec -- yq -r "$MARKETPLACE_QUERY" "$PLUGINS_CONFIG" |
-      xargs -n 1 env CLAUDECODE= claude plugin marketplace add --scope user
-    mise exec -- yq -r "$PLUGIN_QUERY" "$PLUGINS_CONFIG" |
-      xargs -n 1 env CLAUDECODE= claude plugin install --scope user
-  else
-    echo "⚠️     claude not available, skipped installing claude plugins"
+# Fails the step, naming what failed, when $1 lists anything.
+report_failed() {
+  if [ -n "$1" ]; then
+    note "failed:$1"
+    return 1
   fi
-fi
+}
 
-echo "🍉   Setting up shared agent skills"
+install_codex_plugins() {
+  if ! command -v codex >/dev/null 2>&1; then
+    warn "codex not found, skipped"
+    return 0
+  fi
+  load_plugins
+  failed=
+  for source in $marketplaces; do
+    codex plugin marketplace add "$source" || failed="$failed ${source##*/}"
+  done
+  for plugin in $plugins; do
+    codex plugin add "$plugin" || failed="$failed ${plugin%@*}"
+  done
+  report_failed "$failed"
+}
+
+install_claude_plugins() {
+  if ! command -v claude >/dev/null 2>&1 ||
+    ! sh -c 'env CLAUDECODE= claude --version >/dev/null 2>&1' 2>/dev/null; then
+    warn "claude not available, skipped"
+    return 0
+  fi
+  load_plugins
+  failed=
+  for source in $marketplaces; do
+    env CLAUDECODE= claude plugin marketplace add --scope user "$source" ||
+      failed="$failed ${source##*/}"
+  done
+  for plugin in $plugins; do
+    if ! env CLAUDECODE= claude plugin install --scope user "$plugin"; then
+      failed="$failed ${plugin%@*}"
+      continue
+    fi
+    # No -y: a plugin whose install command changed fails here until a person
+    # approves it with `claude plugin update`.
+    if ! result=$(env CLAUDECODE= claude plugin update --scope user --json "$plugin"); then
+      failed="$failed ${plugin%@*}"
+    fi
+    printf '%s\n' "$result"
+    version=$(printf '%s' "$result" | jq -r 'select(.updateOutcome == "updated") |
+      "\(.oldVersion) → \(.newVersion)"' 2>/dev/null) || version=
+    if [ -n "$version" ]; then
+      note "updated ${plugin%@*} $version"
+    fi
+  done
+  report_failed "$failed"
+}
+
 SKILLS_CONFIG="$AGENTS_DIR/skills.yaml"
 SKILLS_CONFIG_QUERY='
   (kind == "seq") and (
@@ -130,21 +143,35 @@ SKILLS_CONFIG_QUERY='
 # shellcheck disable=SC2016
 SKILL_PAIR_QUERY='.[] | .source as $source | .skills[] | $source + " " + .'
 
-if ! command -v skills >/dev/null 2>&1; then
-  echo "⚠️     skills CLI not found, skipped installing shared agent skills"
-elif ! command -v mise >/dev/null 2>&1; then
-  echo "⚠️     mise not found, skipped installing shared agent skills"
-elif ! mise exec -- yq -e "$SKILLS_CONFIG_QUERY" "$SKILLS_CONFIG" >/dev/null; then
-  echo "⚠️     Invalid skill config: $SKILLS_CONFIG"
+install_skills() {
+  if ! command -v skills >/dev/null 2>&1; then
+    warn "skills CLI not found, skipped"
+    return 0
+  fi
+  if ! mise exec -- yq -e "$SKILLS_CONFIG_QUERY" "$SKILLS_CONFIG" >/dev/null; then
+    echo "Invalid skill config: $SKILLS_CONFIG"
+    return 1
+  fi
+  pairs=$(mise exec -- yq -r "$SKILL_PAIR_QUERY" "$SKILLS_CONFIG")
+  failed=
+  while read -r source skill; do
+    [ -n "$source" ] || continue
+    # Global install: copy in ~/.agents/skills (Codex), link in ~/.claude/skills.
+    DISABLE_TELEMETRY=1 skills add "$source" -g -y -a claude-code -a codex \
+      -s "$skill" </dev/null || failed="$failed $skill"
+  done <<EOF
+$pairs
+EOF
+  report_failed "$failed"
+}
+
+run "agent links" link_agents
+run "claude settings" update_claude_settings
+if command -v mise >/dev/null 2>&1; then
+  run "codex plugins" install_codex_plugins
+  run "claude plugins" install_claude_plugins
+  run "agent skills" install_skills
 else
-  mise exec -- yq -r "$SKILL_PAIR_QUERY" "$SKILLS_CONFIG" |
-    while read -r source skill; do
-      # Global install: copy in ~/.agents/skills (Codex), link in ~/.claude/skills.
-      if DISABLE_TELEMETRY=1 skills add "$source" -g -y -a claude-code -a codex \
-        -s "$skill" </dev/null >/dev/null 2>&1; then
-        echo "🍉     $skill from $source"
-      else
-        echo "⚠️     Failed to install $skill from $source"
-      fi
-    done
+  ui_status warn "agent plugins" "mise not found, skipped plugins and skills"
 fi
+ui_end

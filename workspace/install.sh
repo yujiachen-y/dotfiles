@@ -6,6 +6,8 @@ WORKSPACE_SOURCE=$(CDPATH='' cd -P "$(dirname "$0")" && pwd)
 WORKSPACE_ROOT="$HOME/Workspace"
 
 say() { printf '%s\n' "workspace: $*"; }
+# shellcheck source=/dev/null
+. "$WORKSPACE_SOURCE"/../scripts/ui.sh
 
 # Print absolute path $1 relative to absolute directory $2.
 relative_path() {
@@ -71,10 +73,11 @@ sync_one() {
 
 sync_repos() {
   if ! command -v git >/dev/null 2>&1; then
-    say "SKIP GitHub list: git is not installed"
+    warn "git not installed, skipped"
     return 0
   fi
   repo_errors=0
+  repo_count=0
   repos=
   while IFS= read -r repo_line || [ -n "$repo_line" ]; do
     repo=$(printf '%s\n' "$repo_line" | sed 's/#.*//; s/^[[:space:]]*//; s/[[:space:]]*$//')
@@ -87,18 +90,34 @@ sync_repos() {
     fi
     repos="$repos$repo
 "
+    repo_count=$((repo_count + 1))
   done < "$WORKSPACE_SOURCE/github-repos.txt"
   # Validated names contain no whitespace, so plain xargs splitting is safe.
+  synced=
   if [ -n "$repos" ]; then
-    printf '%s' "$repos" | xargs -n 1 -P 4 sh "$0" sync-one || repo_errors=1
+    synced=$(printf '%s' "$repos" | xargs -n 1 -P 4 sh "$0" sync-one) || repo_errors=1
+    printf '%s\n' "$synced"
   fi
+  note "$repo_count repos"
+  for verb in updated cloned SKIP; do
+    # Repo names from the "workspace: <verb> <owner/repo or path>..." lines.
+    names=$(printf '%s\n' "$synced" | sed -n "s|^workspace: $verb \([^ :;]*\).*|\1|p" |
+      sed 's|.*/||' | paste -sd , - | sed 's/,/, /g')
+    if [ -z "$names" ]; then
+      continue
+    elif [ "$verb" = SKIP ]; then
+      warn "skipped $names"
+    else
+      note "$verb $names"
+    fi
+  done
   return "$repo_errors"
 }
 
 setup_projectless() (
   for tool in codex jq; do
     if ! command -v "$tool" >/dev/null 2>&1; then
-      say "SKIP App storage: $tool is not installed"
+      warn "$tool not installed, skipped"
       return 0
     fi
   done
@@ -200,7 +219,7 @@ setup_projectless() (
       [ -d "$new_root" ] && [ ! -e "$source_root" ]
       # Relative, so the link still resolves if its directory syncs to another user.
       ln -s "$(relative_path "$target_root" "${source_root%/*}")" "$source_root"
-      say "moved App files to $new_root; kept the old path as a compatibility link"
+      note "moved App files to $new_root; kept the old path as a compatibility link"
     else
       write_root "$old_value" || say "ERROR: restore the previous App storage setting manually"
       say "ERROR: App file migration failed; inspect $old_root and $new_root"
@@ -218,21 +237,23 @@ if [ "${1:-}" = sync-one ]; then
   exit
 fi
 
-mkdir -p "$WORKSPACE_ROOT/local"
-rules="$WORKSPACE_ROOT/AGENTS.md"
-if [ -L "$rules" ] && [ "$(readlink "$rules")" = "$WORKSPACE_SOURCE/AGENTS.workspace.md" ]; then
-  say "AGENTS.md already linked"
-else
+link_rules() {
+  rules="$WORKSPACE_ROOT/AGENTS.md"
+  if [ -L "$rules" ] && [ "$(readlink "$rules")" = "$WORKSPACE_SOURCE/AGENTS.workspace.md" ]; then
+    return 0
+  fi
   # dotfiles is authoritative for this one managed file; never remove a directory.
   if [ -d "$rules" ] && [ ! -L "$rules" ]; then
     say "ERROR: $rules is a directory"
-    exit 1
+    return 1
   fi
   rm -f "$rules"
   ln -s "$WORKSPACE_SOURCE/AGENTS.workspace.md" "$rules"
-  say "linked AGENTS.md"
-fi
-result=0
-sync_repos || result=1
-setup_projectless
-exit "$result"
+  note "linked AGENTS.md"
+}
+
+mkdir -p "$WORKSPACE_ROOT/local"
+run "workspace rules" link_rules
+run "workspace repos" sync_repos
+run "app storage" setup_projectless
+ui_end

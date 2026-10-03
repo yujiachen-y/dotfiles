@@ -1,12 +1,12 @@
 # Repository Guidelines
 
 ## Project Structure & Module Organization
-This repo is a macOS-focused dotfiles setup. Root-level dotfiles live beside the main `install.sh` orchestrator (for example, `.vimrc` and `.gitconfig`). Platform and tool-specific content is grouped under subfolders: `macos/` (Homebrew, Zed configuration, and system settings), `zsh/` (shell config), `agents/` (Codex prompts/skills plus `agents/AGENTS.shared.md`, with all agent sync handled in `agents/install.sh`), and `workspace/` (the `~/Workspace` layout rules, the public GitHub repo list, and their installer). The `screenshot/` directory stores documentation images, and `scripts/` is currently empty.
+This repo is a macOS-focused dotfiles setup. Root-level dotfiles live beside the main `install.sh` orchestrator (for example, `.vimrc` and `.gitconfig`). Platform and tool-specific content is grouped under subfolders: `macos/` (Homebrew, Zed configuration, and system settings), `zsh/` (shell config), `agents/` (Codex prompts/skills plus `agents/AGENTS.shared.md`, with all agent sync handled in `agents/install.sh`), and `workspace/` (the `~/Workspace` layout rules, the public GitHub repo list, and their installer). The `screenshot/` directory stores documentation images, and `scripts/ui.sh` holds the output helpers every installer sources: each step shows its latest output lines in a small rolling window while it runs and then collapses to one status line, its full output goes to a log under `${XDG_STATE_HOME:-~/.local/state}/dotfiles/`, and the outermost script ends with a summary and a non-zero exit when any step failed. Wrap new installer steps in `run` (or `live` when the output must reach the terminal) instead of echoing progress.
 
 ## Build, Test, and Development Commands
 - `./install.sh` sets up vim, macOS defaults and Zed (on Darwin), Codex agents, zsh, Git configuration, and the workspace. Run from the repo root; scripts assume the repo lives at `~/dotfiles`.
 - `./macos/install.sh` installs Homebrew, applies `macos/Brewfile`, links Zed configuration, and runs `macos/system_settings.sh`.
-- `./agents/install.sh` symlinks prompts into `~/.codex` and `~/.claude`, links each skill in `agents/skills` into `~/.claude/skills` and `~/.agents/skills` (via `agents/link-skills.sh`, which `.zshrc` also runs at every shell start so a skill added on another machine gets linked here), and installs the shared plugins from `agents/plugins.yaml` and the third-party skills from `agents/skills.yaml` into both CLIs.
+- `./agents/install.sh` symlinks prompts into `~/.codex` and `~/.claude`, links each skill in `agents/skills` into `~/.claude/skills` and `~/.agents/skills` (via `agents/link-skills.sh`, which `.zshrc` also runs at every shell start so a skill added on another machine gets linked here), installs the shared plugins from `agents/plugins.yaml` and the third-party skills from `agents/skills.yaml` into both CLIs, updating the Claude plugins to their latest versions.
 - `./zsh/install.sh` installs oh-my-zsh and links `.zshrc`.
 - `sh workspace/install.sh` links `~/Workspace/AGENTS.md`, clones or fast-forwards the repos in `workspace/github-repos.txt` under `~/Workspace/github.com`, and points the Codex App's projectless folder at `~/Workspace/local/chatgpt`.
 - `sh workspace/repos.sh pull` (alias `ws pull`) fetches every checkout under `~/Workspace` and fast-forwards the clean ones; `sh workspace/repos.sh add <repo>` clones into the remote-derived path. `workspace/install.sh` uses the same update logic.
@@ -16,7 +16,7 @@ Shell scripts are POSIX `sh` with 2-space indentation. Keep scripts idempotent a
 
 ## Testing Guidelines
 There is no automated test suite. Validate changes by running the specific script you touched, or run the full setup on a disposable machine. If available, static checks are useful:
-`shellcheck install.sh macos/*.sh macos/zed/*.sh zsh/*.sh agents/install.sh workspace/*.sh`.
+`shellcheck install.sh scripts/ui.sh macos/*.sh macos/zed/*.sh mise/install.sh zsh/*.sh agents/install.sh workspace/*.sh`.
 
 ## Commit & Branching Workflow
 This is a personal, single-maintainer dotfiles repo. **Work directly on `main`** — do not create feature branches or pull requests for routine changes; commit straight to `main` and push. This repo-local rule intentionally overrides the branch-based "Delivery Workflow" in the global `agents/AGENTS.shared.md`, which already defers to repo-local guidance.
