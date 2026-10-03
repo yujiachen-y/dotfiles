@@ -6,3 +6,5 @@ macos/otty/fonts/
 .DS_Store
 zsh/.non_public_commands.sh
 .env
+# claude.ai skill sync writes here through the ~/.claude/skills link; not repo-maintained.
+agents/skills/synced/
