@@ -56,7 +56,7 @@ update() {
     say "fetched $name; kept local commits (fast-forward unavailable)"
     return 0
   fi
-  if git -C "$checkout" merge -q --ff-only "$upstream"; then
+  if git -C "$checkout" merge -q --ff-only --no-progress "$upstream"; then
     say "updated $name"
   else
     say "ERROR: fast-forward failed for $name"
