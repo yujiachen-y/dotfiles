@@ -5,7 +5,7 @@ This repo is a macOS-focused dotfiles setup. Root-level dotfiles live beside the
 
 ## Build, Test, and Development Commands
 - `./install.sh` sets up vim, macOS defaults and Zed (on Darwin), Codex agents, zsh, Git configuration, and the workspace. Run from the repo root; scripts assume the repo lives at `~/dotfiles`.
-- `./macos/install.sh` installs Homebrew, applies `macos/Brewfile`, links Zed configuration, and runs `macos/system_settings.sh`.
+- `./macos/install.sh` installs Homebrew, applies `macos/Brewfile` (plus `~/.Brewfile.local` when present, for packages only that machine wants), links Zed configuration, and runs `macos/system_settings.sh`.
 - `./agents/install.sh` symlinks prompts into `~/.codex` and `~/.claude`, links each skill in `agents/skills` into `~/.claude/skills` and `~/.agents/skills` (via `agents/link-skills.sh`, which `.zshrc` also runs at every shell start so a skill added on another machine gets linked here), installs the shared plugins from `agents/plugins.yaml` and the third-party skills from `agents/skills.yaml` into both CLIs, updating the Claude plugins to their latest versions.
 - `./zsh/install.sh` installs oh-my-zsh and links `.zshrc`.
 - `sh workspace/install.sh` links `~/Workspace/AGENTS.md`, clones or fast-forwards the repos in `workspace/github-repos.txt` under `~/Workspace/github.com`, and points the Codex App's projectless folder at `~/Workspace/local/chatgpt`.
