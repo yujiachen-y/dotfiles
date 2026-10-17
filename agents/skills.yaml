@@ -10,4 +10,9 @@
 # - source: vercel-labs/agent-skills
 #   skills:
 #     - deploy-to-vercel
-[]
+- source: adao-max/agent-skills
+  skills:
+    - chinese-writing-style
+- source: larashero3-dotcom/lieflat-less-ai-tone
+  skills:
+    - lieflat-less-ai-tone
