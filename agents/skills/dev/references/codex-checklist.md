@@ -29,7 +29,7 @@ Do not replace a listed provider with an inline imitation.
 | 3. Build vs. buy | `managing-dependencies:managing-dependencies` |
 | 3. Library docs | `context7:context7-mcp` when a library is chosen; follow its resolve-then-query workflow |
 | 4. Test scenarios | `pm-execution:test-scenarios` with `PRODUCT`, `USER_STORY`, and `CONTEXT` |
-| 5. Reviewable proposal, if selected | `mattpocock-skills:to-spec`, then `content-creation` |
+| 5. Reviewable proposal, if selected | `mattpocock-skills:to-spec`, then `making-content` |
 | 6. Implement via subagent | Current Codex subagent workflow plus `mattpocock-skills:tdd` in the implementation subagent prompt |
 | 7. Review | Current Codex subagent workflow plus `mattpocock-skills:code-review` |
 | 8. Manual E2E acceptance | Orchestrator-authored — no external provider; write the verification guide per SKILL.md step 8 |

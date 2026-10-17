@@ -20,7 +20,7 @@ python3 -m playwright install chromium
 # also needed: ffmpeg + ffprobe on PATH, and a CJK system font (PingFang SC on macOS, Noto Sans CJK SC on Linux)
 ```
 
-If this skill's directory has no `scripts/` (the copy is partial), the full package is in the user's skills folder, `dotfiles/agents/skills/content-creation`: reach it through the linked computer or ask the user to attach it.
+If this skill's directory has no `scripts/` (the copy is partial), the full package is in the user's skills folder, `dotfiles/agents/skills/making-content`: reach it through the linked computer or ask the user to attach it.
 
 One directory per video; run every script from it. `S` is this skill's `scripts/` directory (this file lives in `references/`, so from here `../scripts`).
 
