@@ -1,5 +1,5 @@
 ---
-last-synced: 2026-05-25
+last-synced: 2026-10-17
 source-url: https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices
 ---
 
@@ -279,6 +279,24 @@ analyze_form.py to extract fields') or Read it as reference ('See analyze_form.p
 extraction algorithm')."*
 Severity: **should-consider**.
 How to check: when SKILL.md references a script, is the verb explicit (run vs read)?
+
+
+### C7.5 Verifiable intermediate outputs (plan-validate-execute)
+
+Rule from doc: *"When Claude performs complex, open-ended tasks, it can make mistakes. The
+'plan-validate-execute' pattern catches errors early by having Claude first create a plan in a
+structured format, then validate that plan with a script before executing it."*
+Severity: **should-consider** (recommended for batch / destructive / high-stakes operations).
+How to check: for multi-step scripted workflows, is there an intermediate artifact (plan json,
+changes file) that a script validates before execution?
+
+### C7.6 Visual analysis for renderable inputs
+
+Rule from doc: *"When inputs can be rendered as images, have Claude analyze them"* (Claude's
+vision helps analyze layouts and structures).
+Severity: **should-consider**.
+How to check: for skills handling visual artifacts (PDFs, pages, video frames), does the workflow
+include a render-to-image + look step instead of trusting text alone?
 
 ---
 
