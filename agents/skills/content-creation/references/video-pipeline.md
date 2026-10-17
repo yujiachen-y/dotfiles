@@ -2,6 +2,14 @@
 
 Turns source material into a 60–180 s vertical explainer that reads as hand-edited rather than generated. The pipeline is deterministic: `script.json` → one TTS clip per line with word timestamps → `timeline.json` + `mix.wav` → an HTML compositor that Playwright renders frame by frame → ffmpeg. Each default below fixed a real viewer complaint; the table at the end says which. The voice rules live in this skill's `SKILL.md`.
 
+
+## Contents
+
+- Setup
+- Workflow: 1. Decide with the user first · 2. Write script.json · 3. Fetch assets · 4. Voice · 5. Timeline and mix · 6. Review stills and lint until clean · 7. Render and deliver
+- Why the defaults are what they are
+- Files
+
 ## Setup
 
 Once per machine:
@@ -12,7 +20,7 @@ python3 -m playwright install chromium
 # also needed: ffmpeg + ffprobe on PATH, and a CJK system font (PingFang SC on macOS, Noto Sans CJK SC on Linux)
 ```
 
-If this skill's directory has no `scripts/` (an app copy holds only this file), the full package is in the user's skills folder, `dotfiles/agents/skills/content-creation`: reach it through the linked computer or ask the user to attach it.
+If this skill's directory has no `scripts/` (the copy is partial), the full package is in the user's skills folder, `dotfiles/agents/skills/content-creation`: reach it through the linked computer or ask the user to attach it.
 
 One directory per video; run every script from it. `S` is this skill's `scripts/` directory (this file lives in `references/`, so from here `../scripts`).
 
@@ -52,13 +60,13 @@ The user's taste moves the result more than any script, so ask in one round (Ask
 | Music | One incompetech track (CC BY, credited in the description); offer 2–3 that fit the tone. |
 | Keep out | What is private: employer, colleagues, internal project names, personal details. Strip them before writing anything else. |
 
-Put everything only the user can do into this first message, not at the end: creating a voice clone and API key in the Volcengine console (steps in [voice-and-music.md](voice-and-music.md)), choosing music, supplying private logos or footage. Build with the Edge voice meanwhile.
+Put everything only the user can do into this first message, not at the end: creating a voice clone and API key in the Volcengine console (steps in `references/voice-and-music.md`), choosing music, supplying private logos or footage. Build with the Edge voice meanwhile.
 
 Later, stop and ask whenever a choice changes the result a lot (voice, hook, cutting a section); decide smaller things yourself and say what you decided.
 
 ### 2. Write script.json
 
-Read [layouts.md](layouts.md) for the schema and the ten layouts, and start from `templates/script.example.json`. Editorial rules:
+Read `references/layouts.md` for the schema and the ten layouts, and start from `templates/script.example.json`. Editorial rules:
 
 - **Hook within 3 s.** Line 0 says the hook as a question; `meta.hook` shows it as a big overlay for the first 1.6 s. The first shot is the most striking real evidence, such as the source page saying "$0 in revenue".
 - **Conclusion by about 15 s.** Line 2 or 3 starts with 先说结论 and states it in one short sentence; everything after is evidence.
@@ -94,7 +102,7 @@ VOLC_TTS_API_KEY=... VOLC_TTS_SPEAKER=S_... python3 $S/tts.py --engine volc --ou
 - `tts.py` speaks `_` and `-` between letters or digits as a space (rusty_v8 → "rusty v8"); listen for other symbols and respell them in `n`.
 - Behind a TLS-inspecting proxy, Edge needs `SSL_CERT_FILE` pointed at the proxy's CA bundle.
 
-Console steps, parameters and error codes: [voice-and-music.md](voice-and-music.md).
+Console steps, parameters and error codes: `references/voice-and-music.md`.
 
 ### 5. Timeline and mix
 
@@ -120,7 +128,7 @@ python3 $S/lint.py                 # exits 1 while anything fails
 ```
 
 1. Open `sheet.jpg` with the Read tool and look: one focal point per frame, nothing clipped, no run of one layout, Chinese larger than English. Open single stills for detail; `render.py --stills 0.5 12.3` grabs exact times.
-2. Fix every lint issue with the table in [text-density-lint.md](text-density-lint.md) — usually shorter text, a second shot, or context dimmed to texture — and re-run both commands until lint prints `0 issue(s)`.
+2. Fix every lint issue with the table in `references/text-density-lint.md` — usually shorter text, a second shot, or context dimmed to texture — and re-run both commands until lint prints `0 issue(s)`.
 3. If a frame feels empty after thinning the text, add motion (logo stickers, a counter, bars), not words.
 
 ### 7. Render and deliver
@@ -175,6 +183,6 @@ Each row is a complaint from a real review of this pipeline and the default that
 | `scripts/compositor.html` | Read when adding or changing a layout. The first `render.py`/`lint.py` run copies it into the project; edit that copy for one video, the skill's copy for all of them. |
 | `templates/script.example.json` | Copy: one example of every layout |
 | `templates/cover.html` | Copy and edit: the cover |
-| [layouts.md](layouts.md) | Read while writing `script.json` |
-| [voice-and-music.md](voice-and-music.md) | Read when setting up the cloned voice, hitting a TTS error, or choosing music |
-| [text-density-lint.md](text-density-lint.md) | Read when lint fails |
+| `references/layouts.md` | Read while writing `script.json` |
+| `references/voice-and-music.md` | Read when setting up the cloned voice, hitting a TTS error, or choosing music |
+| `references/text-density-lint.md` | Read when lint fails |
