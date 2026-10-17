@@ -1,8 +1,8 @@
 font-blending = "linear"
 theme-dark = "Glass Dark"
-foreground = "#303030"
-background = "#f7fbfd"
-palette-0 = "#303030"
+foreground = "#5c6166"
+background = "#fcfcfc"
+palette-0 = "#010101"
 open-with-app = "Zed|dev.zed.Zed"
 
 quit-after-last-window-closed = true
@@ -15,34 +15,34 @@ editor-vim = true
 
 editor-visible-whitespace = true
 
-# unfocused-split-opacity = 0.55 (reset to default)
+palette-1 = "#e7666a"
+palette-2 = "#80ab24"
+palette-3 = "#eba54d"
+palette-4 = "#4196df"
+palette-5 = "#9870c3"
+palette-6 = "#51b891"
+palette-7 = "#44474b"
+palette-8 = "#84878b"
+palette-9 = "#ee9295"
+palette-10 = "#9fd32f"
+palette-11 = "#f0bc7b"
+palette-12 = "#6daee6"
+palette-13 = "#b294d2"
+palette-14 = "#75c7a8"
 
-palette-1 = "#a31700"
-palette-2 = "#0a7f3d"
-palette-3 = "#af551d"
-palette-4 = "#006cd8"
-palette-5 = "#583cac"
-palette-6 = "#00798a"
-palette-7 = "#494949"
-palette-8 = "#8c8c8c"
-palette-9 = "#a31700"
-palette-10 = "#0a7f3d"
-palette-11 = "#af551d"
-palette-12 = "#006cd8"
-palette-13 = "#583cac"
-palette-14 = "#00798a"
-
-palette-15 = "#1c1c1c"
+palette-15 = "#2d2f32"
 
 dock-icon-animate-progress = true
 
 font-size = 15
 
-window-layout = "tabs-bottom"
+# window-layout = "tabs-bottom" (reset to default)
 
-theme = "Glass Light"
+theme = "Ayu Light"
 
-selection-foreground = "#fafaff"
-selection-background = "#ad95e9"
-cursor-color = "#303030"
-cursor-text = "#565656"
+# selection-foreground = "#fafaff" (reset to default)
+# selection-background = "#ad95e9" (reset to default)
+# cursor-color = "#303030" (reset to default)
+# cursor-text = "#565656" (reset to default)
+
+# unfocused-split-opacity = 0.65 (reset to default)
