@@ -15,7 +15,7 @@
         "Invokes pm-execution:test-scenarios with PRODUCT, USER_STORY, and CONTEXT before writing code, then writes the approved scenarios next to the ADR as <adr-stem>.test-scenarios.md, or to <target-project-root>/docs/dev/<run-slug>/test-scenarios.md when no ADR exists",
         "Delegates implementation to a subagent; the orchestrator itself does not write the feature code",
         "Passes the exact scenario contract path and the TDD skill edge to the implementation subagent, and asks it to update scenario status/evidence",
-        "Before implementation, asks whether to use mattpocock-skills:to-spec and personal-voice for a collaborator-facing proposal; if accepted, asks for the destination path in the next turn, writes Before vs. After and Pros and Cons sections plus workflow and architecture diagrams, and waits for approval",
+        "Before implementation, asks whether to use mattpocock-skills:to-spec and content-creation for a collaborator-facing proposal; if accepted, asks for the destination path in the next turn, writes Before vs. After and Pros and Cons sections plus workflow and architecture diagrams, and waits for approval",
         "Stops instead of continuing when required dependencies such as subagent delegation or ponytail are missing",
         "Delegates review to a separate review subagent; the review subagent must invoke the review skill edge and may run controlled validation but must not edit source files",
         "Spawns a separate fix subagent only for findings the orchestrator judges valid and worth fixing now",

@@ -36,7 +36,7 @@ this run, record the waiver before the orchestrator covers that step itself.
 | 3. Build vs. buy | `managing-dependencies` |
 | 3. Library docs | Context7 MCP tools when a library is chosen; follow the resolve-then-query workflow. Fall back to `web_search`/`web_fetch` |
 | 4. Test scenarios | `test-scenarios` with `PRODUCT`, `USER_STORY`, and `CONTEXT` |
-| 5. Reviewable proposal, if selected | `mattpocock-skills:to-spec`, then `personal-voice` |
+| 5. Reviewable proposal, if selected | `mattpocock-skills:to-spec`, then `content-creation` |
 | 6. Implement via subagent | `task` with `agent_name: "worker"`, with `mattpocock-skills:tdd` and explicit /dev TDD instructions in the subagent prompt |
 | 7. Review | `task` with `agent_name: "verifier"`, with `mattpocock-skills:code-review` in the subagent prompt |
 | 8. Manual E2E acceptance | Orchestrator-authored — no external provider; write the verification guide per SKILL.md step 8 |

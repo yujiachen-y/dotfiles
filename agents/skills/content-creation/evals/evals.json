@@ -1,5 +1,5 @@
 {
-  "skill_name": "making-short-videos",
+  "skill_name": "content-creation",
   "note": "expected_behavior describes a good run of the whole pipeline or of one revision step, not a single file. Prompts are in Chinese, as the user writes them.",
   "evals": [
     {

@@ -159,7 +159,7 @@ This is the last required design artifact before the proposal decision.
 
 ### 5. Offer a reviewable proposal document
 Before implementation, ask one question: whether the user wants to use
-`mattpocock-skills:to-spec` and `personal-voice` to write the final proposal for
+`mattpocock-skills:to-spec` and `content-creation` to write the final proposal for
 collaborators or colleagues to review.
 
 If the user declines, record "proposal document skipped by user" and continue to
@@ -185,7 +185,7 @@ Structure the document for readers who did not participate in the discussion:
 - avoid volatile file paths and code snippets except when a small prototype
   excerpt is the clearest durable statement of a decision
 
-Then invoke `personal-voice` to remove AI-style phrasing without adding facts,
+Then invoke `content-creation` to remove AI-style phrasing without adding facts,
 changing decisions, or weakening the technical content.
 
 **Gate:** the user approves the saved document before implementation starts.
