@@ -1,5 +1,9 @@
 {
-  "attribution": { "commit": "", "pr": "", "sessionUrl": false },
+  "attribution": {
+    "commit": "",
+    "pr": "",
+    "sessionUrl": false
+  },
   "env": {
     "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1",
     "DISABLE_TELEMETRY": "1",
@@ -12,5 +16,8 @@
   },
   "enableArtifact": false,
   "feedbackDrafts": "off",
-  "remoteControlAtStartup": false
+  "remoteControlAtStartup": false,
+  "preferredNotifChannel": "notifications_disabled",
+  "inputNeededNotifEnabled": false,
+  "agentPushNotifEnabled": false
 }
