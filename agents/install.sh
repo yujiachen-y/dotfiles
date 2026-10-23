@@ -42,9 +42,13 @@ update_claude_settings() {
     warn "jq not found, skipped"
     return 0
   fi
+  # Privacy and attribution switches live in the tracked claude-settings.json;
+  # deep-merge them over the machine-local file so other keys survive.
   if jq \
     --arg command "$CLAUDE_STATUSLINE_COMMAND" \
-    '.statusLine = ((.statusLine // {}) + {type: "command", command: $command, padding: 0})' \
+    --slurpfile managed "$AGENTS_DIR/claude-settings.json" \
+    '. * $managed[0]
+      | .statusLine = ((.statusLine // {}) + {type: "command", command: $command, padding: 0})' \
     "$CLAUDE_SETTINGS" > "$CLAUDE_SETTINGS_TMP"; then
     mv "$CLAUDE_SETTINGS_TMP" "$CLAUDE_SETTINGS"
   else
