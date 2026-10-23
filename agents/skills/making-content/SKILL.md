@@ -19,14 +19,15 @@ yujiachen 的内容生产：把 AI 写的稿子改成他的写作风格、从零
 
 ## 语法层参照（同级安装的 skill）
 
-改写和图文模式动笔前，先读本 skill 同级安装的两个第三方 skill（在 `~/.claude/skills/` 或 `~/.agents/skills/` 下，和本 skill 并排）：
+改写和图文模式动笔前，先读本 skill 同级安装的第三方 skill（在 `~/.claude/skills/` 或 `~/.agents/skills/` 下，和本 skill 并排）：
 
 - **lieflat-less-ai-tone/SKILL.md**：11 条有语料实测依据的去 AI 味规则——顿号罗列过密、相邻句结构同款、冒号滥用、起手式、五种翻译腔、段首零回指评论等，本文件没覆盖的语法层都靠它。改完后用它文末的「最终验收」清单复查一遍。
 - **chinese-writing-style/SKILL.md**：说人话的通用中文写作规则（长难句、名词化、数字口径、写给 Agent 的文字），主要服务文档 / 报告类稿子。
+- **humanizer/SKILL.md**：英文稿专用（X 英文帖和回复），写英文前先读。26 类英文 AI 腔，Not X but Y、硬凑三点、破折号、一句话收尾、套话词等，改完按它的条目逐条复查。中文稿不用读它。
 
-两个 skill 与本文件规则冲突时，以本文件为准——lieflat 自己规定"风格文档优先于本规则"，本文件就是那个风格文档。重叠的规则（对举句式、破折号、拟人化喻体）按本文件版本执行；正文设问不是 AI 味（实测人类用得比 AI 多得多），不要顺手删。
+这几个 skill 与本文件规则冲突时，以本文件为准——lieflat 自己规定"风格文档优先于本规则"，本文件就是那个风格文档。重叠的规则（对举句式、破折号、拟人化喻体）按本文件版本执行；正文设问不是 AI 味（实测人类用得比 AI 多得多），不要顺手删。
 
-任一 skill 不存在时，先问用户是否安装；同意就缺哪个装哪个：`skills add adao-max/agent-skills -g -y -a claude-code -a codex -s chinese-writing-style`、`skills add larashero3-dotcom/lieflat-less-ai-tone -g -y -a claude-code -a codex -s lieflat-less-ai-tone`（在 dotfiles 机器上跑 `~/dotfiles/agents/install.sh` 也可以）；用户拒绝或装不了就只按本文件的规则改写，并在结尾提一句少了语法层参照。
+任一 skill 不存在时，先问用户是否安装；同意就缺哪个装哪个：`skills add adao-max/agent-skills -g -y -a claude-code -a codex -s chinese-writing-style`、`skills add larashero3-dotcom/lieflat-less-ai-tone -g -y -a claude-code -a codex -s lieflat-less-ai-tone`、`skills add blader/humanizer -g -y -a claude-code -a codex -s humanizer`（在 dotfiles 机器上跑 `~/dotfiles/agents/install.sh` 也可以）；用户拒绝或装不了就只按本文件的规则改写，并在结尾提一句少了语法层参照。
 
 ## 先看 test cases（如果有）
 
@@ -308,11 +309,11 @@ yujiachen 不方便讲个人和工作上的经历。需要活人感又没有圈�
 ````
 改写进度：
 - [ ] 1. 读 test-cases（如果有，至少 1 个）建立 calibration
-- [ ] 2. 读「语法层参照」里的两个同级 skill，带着它们的规则标记问题点；缺哪个就按上文先问用户是否安装
+- [ ] 2. 读「语法层参照」里的同级 skill（英文稿加读 humanizer），带着它们的规则标记问题点；缺哪个就按上文先问用户是否安装
 - [ ] 3. 通读用户的 AI 草稿，按上面的规则逐条标记问题点（装饰性 emoji / 情绪词 / 绝对化 / 机械分层 / 过渡句 / AI 对比句式 / 悬空抽象词 / 自我评论 / 文学化收束 / meta 开场 / hashtag / 公式独立成块 / 比喻没带技术名词 / 判断没标出来）
 - [ ] 4. 改写：每条标记到的规则都对照修一遍
 - [ ] 5. 回看：自己读一遍，问"这段读起来像 AI 还是像 yujiachen？" 还有 AI 味就再改
-- [ ] 6. 用 lieflat-less-ai-tone 文末的「最终验收」清单复查一遍；未安装时按第 2 步的处理来
+- [ ] 6. 用 lieflat-less-ai-tone 文末的「最终验收」清单复查一遍，英文稿改用 humanizer 的条目复查；未安装时按第 2 步的处理来
 - [ ] 7. 边界检查：用户原稿已经写得不错的地方不要重写——只改有问题的地方
 - [ ] 8. 如果是新场景且 test-cases/ 没覆盖，邀请用户保留为新样本（见上文「没有 test case 或场景没覆盖时」）
 ````

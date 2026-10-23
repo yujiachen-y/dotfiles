@@ -16,3 +16,6 @@
 - source: larashero3-dotcom/lieflat-less-ai-tone
   skills:
     - lieflat-less-ai-tone
+- source: blader/humanizer
+  skills:
+    - humanizer
