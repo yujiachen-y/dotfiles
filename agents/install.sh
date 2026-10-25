@@ -2,6 +2,7 @@
 AGENTS_DIR="$HOME/dotfiles/agents"
 CODEX_DIR="$HOME/.codex"
 CLAUDE_DIR="$HOME/.claude"
+MINIMAX_DIR="$HOME/.minimax"
 # shellcheck source=/dev/null
 . "$HOME"/dotfiles/scripts/ui.sh
 
@@ -27,6 +28,15 @@ link_agents() {
   relink "$AGENTS_DIR/AGENTS.shared.md" "$CLAUDE_DIR/CLAUDE.md"
   relink "$AGENTS_DIR/prompts" "$CLAUDE_DIR/commands"
   relink "$AGENTS_DIR/statusline-command.sh" "$CLAUDE_DIR/statusline-command.sh"
+  # MiniMax Code reads its global instructions from $MINIMAX_DIR/AGENTS.md. Its
+  # settings page saves by rename, turning the link into a file; keep such edits.
+  if [ -d "$MINIMAX_DIR" ]; then
+    if [ -f "$MINIMAX_DIR/AGENTS.md" ] && [ ! -L "$MINIMAX_DIR/AGENTS.md" ]; then
+      warn "$MINIMAX_DIR/AGENTS.md is a file; move its edits into AGENTS.shared.md and delete it"
+    else
+      relink "$AGENTS_DIR/AGENTS.shared.md" "$MINIMAX_DIR/AGENTS.md"
+    fi
+  fi
 }
 
 update_claude_settings() {
