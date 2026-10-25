@@ -2,6 +2,11 @@ When maintaining dotfiles, keep third-party agent plugins in `agents/plugins.yam
 and install them through `agents/install.sh`. Keep `agents/skills` for
 repo-maintained skills; do not clone or link third-party skill trees into it.
 
+Write new skills in English, including SKILL.md, reference files, and script
+messages. Text a skill produces for the user still follows the user's language.
+When editing an existing skill, keep its language unless the user asks to
+translate it. Do not apply chinese-writing-style to skill files.
+
 ## Advice and decisions
 
 - When you give advice or propose a plan, lead with the option you would pick
