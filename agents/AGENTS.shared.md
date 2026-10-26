@@ -6,6 +6,9 @@ Write new skills in English, including SKILL.md, reference files, and script
 messages. Text a skill produces for the user still follows the user's language.
 When editing an existing skill, keep its language unless the user asks to
 translate it. Do not apply chinese-writing-style to skill files.
+Keep skills general enough for someone else to install: write "the user" or
+"the author", not a name, and keep personal samples, accounts, and
+machine-specific paths in a gitignored folder inside the skill.
 
 ## Advice and decisions
 
