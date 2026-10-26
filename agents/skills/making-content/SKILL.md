@@ -1,137 +1,146 @@
 ---
 name: making-content
 description: >
-  yujiachen 的内容生产 skill：改写、小红书图文、短视频三种模式。
-  改写（默认）：把 AI 风格的中文 / 中英混用草稿（小红书 / newsletter / 工程博客 / 长文评论）改成他的个人写作风格——克制 emoji、紧凑短段落、概率词代替绝对化、中性陈述代替情绪词、英文术语空格分隔。触发："按我的风格改 / 去 AI 味 / 润色 / 改改这篇"等改写意图；措辞模糊（"帮我改改"），只要上下文是结构化稿件就应当考虑。
-  从零做小红书图文（定标题、做封面和卡片、写正文、想钩子）时也用这个 skill，并先读 references/xhs-post.md。
-  把文档 / 调研 / 笔记 / 文章做成 60-180 秒竖屏短视频（抖音 / 小红书 / 视频号 / B站：真实素材、配音、字幕、封面），触发词包括 做成视频 / 做个短视频 / 剪个 90 秒版本 / 配音 / 换成我的声音，或说视频 字太密 / AI 味太重 / 容易走神；先读 references/video-pipeline.md。
+  Content production in three modes: rewrite, Xiaohongshu (小红书) image post, short video.
+  Rewrite (default): turns an AI-sounding Chinese or mixed Chinese-English draft (post,
+  newsletter, engineering blog, commentary) into the author's restrained style: few emoji, short
+  paragraphs, hedged claims, neutral wording, English terms split by spaces. Triggers: 按我的风格改,
+  去 AI 味, 润色, 改改这篇, or a vague 帮我改改 when the context is a structured draft.
+  Also for a Xiaohongshu image post from scratch (title, cover, cards, body, hooks); read
+  references/xhs-post.md first.
+  Also turns a document, research, notes or an article into a 60-180 s vertical video (抖音,
+  小红书, 视频号, B站: real sources, voice-over, captions, cover). Triggers: 做成视频, 做个短视频,
+  剪个 90 秒版本, 配音, 换成我的声音, or complaints of 字太密, AI 味太重, 容易走神; read
+  references/video-pipeline.md first.
 ---
 
 # Making Content
 
-yujiachen 的内容生产：把 AI 写的稿子改成他的写作风格、从零做小红书图文、把材料做成短视频。三种用法共享下面这套风格规则——每条都对应一类 AI 写法的稳定坏味道。
+Three uses: rewrite an AI-written draft in the author's style, make a Xiaohongshu image post from scratch, and turn material into a short video. All three share the style rules below; each rule targets a recurring tell of AI writing. "The author" is the user whose voice the text should carry.
 
-## 三种用法
+The rules are a default distilled from one author's edits of AI drafts. The user's own samples in `test-cases/` and anything the user says about their style take precedence over them.
 
-- **改写**（默认）：用户给了稿子，按下面的风格规则改。
-- **从零做小红书图文**：先读 [references/xhs-post.md](references/xhs-post.md)（流程、标题、封面、卡片、正文、下判断）。卡片和正文里的文字仍按下面的风格规则写；「不要做的事」里只针对改写的几条（不重排结构、不加原稿没有的事实）这时不适用。
-- **做短视频**：先读 [references/video-pipeline.md](references/video-pipeline.md)（流程、script.json、配音、渲染、lint）；写 script.json 读 [references/layouts.md](references/layouts.md)，克隆语音或配音报错读 [references/voice-and-music.md](references/voice-and-music.md)，lint 失败读 [references/text-density-lint.md](references/text-density-lint.md)。旁白和文案仍按下面的风格规则写；视频结尾的提问互动是视频的刻意设计，按 video-pipeline.md 执行。
+## Three uses
 
-## 语法层参照（同级安装的 skill）
+- **Rewrite** (default): the user gives a draft; revise it with the style rules below.
+- **Xiaohongshu image post from scratch**: read [references/xhs-post.md](references/xhs-post.md) first (workflow, title, cover, cards, body text, taking a position). Text on the cards and in the body still follows the style rules below. The rewrite-only items under "Don'ts" (do not restructure, do not add facts the draft lacks) do not apply here.
+- **Short video**: read [references/video-pipeline.md](references/video-pipeline.md) first (workflow, script.json, voice, rendering, lint). Read [references/layouts.md](references/layouts.md) while writing script.json, [references/voice-and-music.md](references/voice-and-music.md) when cloning a voice or hitting a TTS error, and [references/text-density-lint.md](references/text-density-lint.md) when lint fails. Narration and copy still follow the style rules below; the question that invites comments at the end of a video is a deliberate part of the video format, so follow video-pipeline.md there.
 
-改写和图文模式动笔前，先读本 skill 同级安装的第三方 skill（在 `~/.claude/skills/` 或 `~/.agents/skills/` 下，和本 skill 并排）：
+## Sentence-level references (sibling skills)
 
-- **lieflat-less-ai-tone/SKILL.md**：11 条有语料实测依据的去 AI 味规则——顿号罗列过密、相邻句结构同款、冒号滥用、起手式、五种翻译腔、段首零回指评论等，本文件没覆盖的语法层都靠它。改完后用它文末的「最终验收」清单复查一遍。
-- **chinese-writing-style/SKILL.md**：说人话的通用中文写作规则（长难句、名词化、数字口径、写给 Agent 的文字），主要服务文档 / 报告类稿子。
-- **humanizer/SKILL.md**：英文稿专用（X 英文帖和回复），写英文前先读。26 类英文 AI 腔，Not X but Y、硬凑三点、破折号、一句话收尾、套话词等，改完按它的条目逐条复查。中文稿不用读它。
+Before writing in rewrite or image-post mode, read these third-party skills, installed next to this one under `~/.claude/skills/` or `~/.agents/skills/`:
 
-这几个 skill 与本文件规则冲突时，以本文件为准——lieflat 自己规定"风格文档优先于本规则"，本文件就是那个风格文档。重叠的规则（对举句式、破折号、拟人化喻体）按本文件版本执行；正文设问不是 AI 味（实测人类用得比 AI 多得多），不要顺手删。
+- **lieflat-less-ai-tone/SKILL.md**: 11 rules for removing AI tone in Chinese, each backed by corpus measurements: crowded lists joined by 、, neighbouring sentences with the same structure, overused colons, stock openers, five kinds of translationese, paragraph-initial commentary with no referent, and more. It covers the sentence level this file leaves out. After rewriting, check the result against its "最终验收" checklist at the end.
+- **chinese-writing-style/SKILL.md**: general rules for plain Chinese writing (long sentences, nominalization, how numbers are stated, text written for agents), mainly for documents and reports.
+- **humanizer/SKILL.md**: for English drafts only (English posts and replies on X); read it before writing English. It lists 26 kinds of English AI tone, such as "Not X but Y", forced triads, dashes, one-line closers and stock words. Check the result item by item against it. Do not read it for Chinese drafts.
 
-任一 skill 不存在时，先问用户是否安装；同意就缺哪个装哪个：`skills add adao-max/agent-skills -g -y -a claude-code -a codex -s chinese-writing-style`、`skills add larashero3-dotcom/lieflat-less-ai-tone -g -y -a claude-code -a codex -s lieflat-less-ai-tone`、`skills add blader/humanizer -g -y -a claude-code -a codex -s humanizer`（在 dotfiles 机器上跑 `~/dotfiles/agents/install.sh` 也可以）；用户拒绝或装不了就只按本文件的规则改写，并在结尾提一句少了语法层参照。
+Where these skills conflict with this file, this file wins: lieflat itself says a style document overrides its rules, and this file is that style document. For overlapping rules (contrast constructions, dashes, personifying metaphors), follow this file's version. Rhetorical questions in the body are not an AI tell (measured, people use them far more than AI does), so do not remove them in passing.
 
-## 先看 test cases（如果有）
+If any of these skills is missing, ask the user whether to install it, and install only the missing ones if they agree: `skills add adao-max/agent-skills -g -y -a claude-code -a codex -s chinese-writing-style`, `skills add larashero3-dotcom/lieflat-less-ai-tone -g -y -a claude-code -a codex -s lieflat-less-ai-tone`, `skills add blader/humanizer -g -y -a claude-code -a codex -s humanizer`. If the user declines or installation fails, rewrite with this file's rules alone and mention at the end that the sentence-level references were missing.
 
-`test-cases/` 目录下每个文件夹是一个对照样本：
-- `ai-draft.md`：典型的 AI 写法初稿
-- `final.md`：yujiachen 改完的最终稿
-- `README.md`（可选）：场景说明
+## Read the test cases first (if any)
 
-**改写之前先随机抽 1-2 个通读**——AI 在哪些地方过度修饰，yujiachen 把它们删到了哪里。这比读规则更直观。如果用户的稿子和某个 test case 场景接近（例如同样是小红书科普），优先看那一类。
+Each folder under `test-cases/` is a before/after sample:
+- `ai-draft.md`: a typical AI-written first draft
+- `final.md`: the author's final version
+- `README.md` (optional): notes on the scenario
 
-### 没有 test case 或场景没覆盖时
+**Before rewriting, read one or two at random**: where the AI over-decorated, and how far the author cut it back. This calibrates better than the rules do. If the user's draft is close to a test case's scenario (for example, another Xiaohongshu explainer), read that kind first.
 
-`test-cases/` 是这个 skill 持续 personalization 的核心资产——下面的风格规则只是抽象总结，真正的 voice calibration 来自具体对照样本。如果 `test-cases/` 不存在，或者用户的稿子属于一个还没覆盖的场景（例如第一次写英文 newsletter / 长技术博客 / 短评论 / 中英混用），改完后**主动邀请用户**保留为新样本：
+### No test cases, or the scenario is not covered
 
-> 这次的稿子是 [场景类型]，目前 test-cases/ 里没有这一类。如果你愿意把它当作样本保留，我可以把 ai-draft 和 final 存到 `test-cases/YYYY-MM-DD-场景描述/`，下次同类稿子能直接 calibrate。
+`test-cases/` is what makes this skill personal: the style rules below are an abstract summary, and real voice calibration comes from concrete samples. If `test-cases/` does not exist, or the draft belongs to a scenario not covered yet (for example a first English newsletter, a long technical blog post, a short comment, or mixed Chinese-English), **invite the user** after rewriting to keep it as a new sample, in the user's language:
 
-`test-cases/` 在 .gitignore 里，样本只在本机保留，不会被提交。
+> This draft is a [scenario], and test-cases/ has nothing of this kind yet. If you want to keep it as a sample, I can save the ai-draft and your final version under `test-cases/YYYY-MM-DD-scenario/`, so the next draft of this kind can be calibrated against it.
 
-## 风格规则（按重要性）
+`test-cases/` is in .gitignore: samples stay on the local machine and are never committed.
 
-### 1. emoji 极度克制
+## Style rules (by importance)
 
-- 默认全文 **0-2 个 emoji**
-- **不要** 在小标题、段落开头、列表项前加装饰性 emoji（🚨 / 📊 / 🛠 / 💡 / 🤔 这类）
-- 唯一允许的 emoji 用法：在某个**反差信息**后面，作为情绪反应（例如发现 multi-agent 偷烧 token 之后用 🤡 表达讽刺）
-- 一句话判断："这个 emoji 是装饰性的还是反应性的？" 装饰就删，反应就留
+### 1. Very few emoji
 
-### 2. 拒绝情绪词
+- By default **0–2 emoji** in the whole piece.
+- **No** decorative emoji on headings, at paragraph starts, or before list items (🚨 / 📊 / 🛠 / 💡 / 🤔 and the like).
+- The only allowed use: as an emotional reaction right after a **contrast** (for example 🤡 for irony after finding out that multi agent quietly burns tokens).
+- One test: "Is this emoji decoration or reaction?" Delete decoration, keep reaction.
 
-不用：打脸 / 神话破灭 / 卷错方向 / 反潮流 / 唱衰 / 翻车 / 翻盘 / 颠覆认知 / 终于清晰
+### 2. No emotional words
 
-用：背书 / 共识 / 反对 / 倾向 / 质疑 / 边界 / 立场
+Avoid: 打脸 / 神话破灭 / 卷错方向 / 反潮流 / 唱衰 / 翻车 / 翻盘 / 颠覆认知 / 终于清晰
 
-→ AI 喜欢用情绪词制造冲击；yujiachen 用中性陈述展示反差，让事实自己说话。
+Use: 背书 / 共识 / 反对 / 倾向 / 质疑 / 边界 / 立场
 
-### 3. 用概率词，避免绝对化
+→ AI uses emotional words to manufacture impact; the author shows contrast with neutral statements and lets the facts speak.
 
-不用：直接跑赢 / 必然更好 / 完全失败 / 100% / 一定
+### 3. Hedge; avoid absolutes
 
-用：经常好过 / 往往更优 / 有时 / 不少情况下 / 大多时候
+Avoid: 直接跑赢 / 必然更好 / 完全失败 / 100% / 一定
 
-→ 严格匹配原文措辞强度。alphasignal 原文是 "consistently match or beat"，对应"经常好过"而不是"直接跑赢"。
+Use: 经常好过 / 往往更优 / 有时 / 不少情况下 / 大多时候
 
-→ 类比关系同样不要说满：「和 X 是同一个思路」写成「和 X 是类似思路」。
+→ Match the strength of the source's wording exactly. The alphasignal source says "consistently match or beat", which maps to 经常好过, not 直接跑赢.
 
-→ 例外：全文可以有**一个**明确的判断，下得死、带时间，例如「一年内，把整个 agent 塞进沙箱会变成反模式」。前提是 yujiachen 本人认同，标成「我的判断」，放在前面。事实、引用和类比仍然按上面的概率词写。做法见 references/xhs-post.md 的「下判断和争议」。
+→ Do not overstate analogies either: write 和 X 是类似思路, not 和 X 是同一个思路.
 
-### 4. 小标题用陈述句，不用机械分层
+→ Exception: a piece may carry **one** firm judgment, stated flatly and with a time frame, for example "一年内，把整个 agent 塞进沙箱会变成反模式". Only if the author agrees with it; label it as 我的判断 and put it early. Facts, quotes and analogies still use the hedged wording above. See "Taking a position" in references/xhs-post.md.
 
-不用：「第一层：业界共识」「第二层：学术数据」「🏗️ 第一节」
+### 4. Headings are statements, not mechanical layers
 
-用：「业界的共识是 single 是默认，multi 才是例外」「学术界最近的研究也反对 multi agent」
+Avoid: "第一层：业界共识", "第二层：学术数据", "🏗️ 第一节"
 
-→ 小标题本身就是观点。读者扫小标题应该能拿到核心论点，而不是看到一个空洞的分层标签。
+Use: "业界的共识是 single 是默认，multi 才是例外", "学术界最近的研究也反对 multi agent"
 
-### 5. 段落紧凑，1-3 句为主
+→ A heading is itself a claim. Skimming the headings should give the reader the core argument, not empty layer labels.
 
-AI 倾向把每个论点写成 5-8 句的长段。yujiachen 的段落是 1-3 句，密度高，不重复。
+### 5. Tight paragraphs, mostly 1–3 sentences
 
-改法：把一个长段拆成 2-3 个短段，每段一个具体论点 + 一句解释。如果某句话只是"过渡 / 复述前面 / 缓冲"，删掉。
+AI tends to write each point as a 5–8 sentence block. The author's paragraphs are 1–3 sentences, dense and without repetition.
 
-### 6. 引用要"少而准"
+How: split a long paragraph into 2–3 short ones, each with one concrete point and one sentence of explanation. Delete any sentence that only transitions, restates, or cushions.
 
-每个权威源 2-3 句话带过，引一句关键 quote 即止，**不大段解读 quote**。读者要的是"X 说了 Y"，不是"X 说了 Y，意思是 Z，所以可以推出 W"。
+### 6. Quote little and precisely
 
-例：
+Cover each authoritative source in 2–3 sentences, quote one key line, and stop. **Do not interpret the quote at length.** The reader wants "X said Y", not "X said Y, which means Z, so we can infer W".
 
-❌ AI 写法（过度展开）：
+Example:
+
+❌ AI version (over-expanded):
 
 > Walden Yan 直接点名 OpenAI Swarm + Microsoft AutoGen「actively push concepts which I believe to be the wrong way of building agents」。他的反论从**人类协作**切入：「If Engineer A's code causes a merge conflict with Engineer B...」翻译：人类工程师能协作，是因为人类有"非平凡的智能"做隐式同步——能听懂语气、读出言外之意、推断对方决策依据。LLM 根本没这层能力。结果就是：「Running multiple agents in collaboration only results in fragile systems.」
 
-✅ yujiachen 写法（紧凑）：
+✅ The author's version (tight):
 
 > Cognition AI（开发 Devin 的公司）早在去年就发布了一篇《Don't Build Multi-Agents》，文章说到人类工程师能协作，是因为人类有"非平凡的智能"做隐式同步，这让我们能听懂语气、读出言外之意、推断对方决策依据。把没有这层能力的 LLM 构建成 multi agent 只会把系统变得脆弱。
 
-### 7. 英文术语空格分隔，不连字符
+### 7. English terms with spaces, not hyphens
 
-不用：`multi-agent` / `sub-agent` / `single-agent` / `pre-answer-scaffolding`
+Avoid: `multi-agent` / `sub-agent` / `single-agent` / `pre-answer-scaffolding`
 
-用：`multi agent` / `sub agent` / `single agent` / `pre answer scaffolding`
+Use: `multi agent` / `sub agent` / `single agent` / `pre answer scaffolding`
 
-→ 这是 yujiachen 一贯的 typography 偏好。改写时统一处理。
+→ A consistent typography preference of the author. Apply it throughout when rewriting.
 
-例外：固定专有名词（`KV-cache`）保留连字符。
+Exception: fixed proper names (`KV-cache`) keep their hyphen.
 
-### 8. 删过渡句
+### 8. Delete transition sentences
 
-AI 喜欢写：「接下来我们看 X」「综上所述」「让我们深入了解」「值得注意的是」「另一方面」「更重要的是」
+AI likes to write: 接下来我们看 X, 综上所述, 让我们深入了解, 值得注意的是, 另一方面, 更重要的是
 
-这些句子全删。直接进入下一段内容。读者会自动跟上。
+Delete all of them and go straight into the next paragraph. Readers keep up on their own.
 
-**例外**：有 substance 的指引短语**保留**——例如「具体到 eval」「在这里你会发现」「我们首先要知道的一点是」「在跨过基础的质量门槛后」。这些不是空过渡，而是在指出"接下来要讲一个具体的 X"，对读者跟上节奏有用。
+**Exception**: **keep** pointer phrases with substance, such as 具体到 eval, 在这里你会发现, 我们首先要知道的一点是, 在跨过基础的质量门槛后. They are not empty transitions; they point at the specific thing that comes next and help the reader keep pace.
 
-判断方法：把短语删掉，下一句还能不能让读者立刻进入状态？能就是空过渡，删；不能就是 substantive 指引，留。
+Test: delete the phrase. If the next sentence still gets the reader going at once, it was an empty transition; delete it. If not, it is a substantive pointer; keep it.
 
-### 9. 删修辞性夸张和悬空抽象词
+### 9. Delete rhetorical exaggeration and floating abstractions
 
-不用：硬数据狠到离谱 / 数据狠到打脸 / 反差感拉满 / 信息密度爆炸
+Avoid: 硬数据狠到离谱 / 数据狠到打脸 / 反差感拉满 / 信息密度爆炸
 
-→ 让数据本身说话。「错误率放大 17.2 倍」就是一句话，不需要"狠到离谱"做副词。
+→ Let the data speak. "错误率放大 17.2 倍" is the whole sentence; it needs no 狠到离谱.
 
-同理，**抽象 summary 词不能裸用**：结构性 / 制度轨道 / 时空压缩 / 叙事 / 框架 / 焦虑 / 共识 / 信任危机——AI 喜欢用这些做总结标签。每用一次必须在同一句里搭一个具体数据点或命名实体，否则删掉重写。
+Likewise, **abstract summary words never stand alone**: 结构性 / 制度轨道 / 时空压缩 / 叙事 / 框架 / 焦虑 / 共识 / 信任危机. AI uses them as summary labels. Each time one appears, the same sentence must carry a concrete data point or a named entity; otherwise delete it and rewrite.
 
-判断方法：把这个抽象词从句子里删掉。如果信息密度没下降，它就是 padding。
+Test: remove the abstract word from the sentence. If no information is lost, it was padding.
 
 ❌ 这些动作拼在一起是同一种焦虑。
 
@@ -141,210 +150,210 @@ AI 喜欢写：「接下来我们看 X」「综上所述」「让我们深入了
 
 ✅ 巴基斯坦这周首次单独提出收费机制。
 
-### 10. 结尾用第一人称表立场
+### 10. End with a first-person position
 
-AI 倾向用问句轰炸：「你做项目时是直接堆 multi 还是先扛过 single？... 评论区聊聊👇」
+AI tends to end with a barrage of questions: "你做项目时是直接堆 multi 还是先扛过 single？... 评论区聊聊👇"
 
-yujiachen 倾向自然地表立场 + 邀请：
+The author tends to state a position naturally and add an invitation:
 
 > 整体内容略长，我自己在日常开发中偏好 single agent，当然也在不少情况下用过 multi agent 优化过性能，欢迎大家在评论区追问或者分享一下自己的经验～
 
-注意：**承认稿子的不完美**（"略长"）+ **第一人称立场**（"我自己偏好"）+ **自然邀请**（"欢迎"+"～"）。
+Note the parts: **admitting an imperfection** (略长) + **a first-person position** (我自己偏好) + **a natural invitation** (欢迎 + ～).
 
-有明确判断的稿子，结尾不用提问拉互动。yujiachen 的做法是先表一个对行业的态度，再把判断落到读者熟悉的具体做法上、说得更大胆，用 [doge] 把语气放松：
+A piece with a firm judgment does not end with a question to drive engagement. Instead, state an attitude toward the industry first, then bring the judgment down to a concrete practice the reader knows and say it more boldly, with [doge] to lighten the tone:
 
 > 有人会埋怨 AI 来了不需要研发了，我却觉得现在是研发最好的时代，每几个月技术架构都会翻天覆地变化，每次都有不少的新机会。现在 agent 的一个通用模式之一是把一个 codex / claude code 塞进沙箱，大胆预言一年内这个模式将不再存在 [doge]
 
-（2026-10-13 那篇：AI 稿结尾是「这个判断你同意吗？还有哪家也是这么拆的，评论区聊～」，他删掉换成了上面这段。）
+(In that sample the AI draft ended with "这个判断你同意吗？还有哪家也是这么拆的，评论区聊～"; the author deleted it and wrote the paragraph above.)
 
-**不要做文学化收束**：
+**No literary wrap-up**:
 
-- 不用 metaphor 重新包装一遍 framework（"棋盘上的最后一步落子……"）
-- 不要回到标题做 poetic callback
-- 不用「收场」/「尾声」/「下一幕」这类戏剧词
-- 不要以反问句结尾（"这场博弈，谁真正赢了？"）
+- Do not repackage the framework as a metaphor ("棋盘上的最后一步落子……").
+- Do not make a poetic callback to the title.
+- No theatrical words such as 收场 / 尾声 / 下一幕.
+- Do not end on a rhetorical question ("这场博弈，谁真正赢了？").
 
-→ 最后一句具体陈述本身就是结尾。再加一段就是 AI 的"完整感"焦虑——它怕读者觉得文章没收住，所以补一段诗意收尾。yujiachen 信任读者能自己合上节奏。
+→ The last concrete statement is the ending. One more paragraph is AI's "completeness" anxiety: it fears the piece will feel unfinished and adds a poetic close. The author trusts readers to close the piece themselves.
 
-### 11. hashtag 默认不用，也不推荐
+### 11. No hashtags by default, and do not suggest any
 
-除非用户明确说"加 tag"，否则不要在结尾堆「#AIagent #LLM #大模型」，也不要主动推荐话题。yujiachen 发布前会按浏览量自己挑话题标签，所以 test-cases 里 final 稿结尾的话题不代表改写稿要带。
+Unless the user explicitly asks for tags, do not pile "#AIagent #LLM #大模型" at the end, and do not suggest topics. Authors often pick tags themselves before posting, based on view counts, so tags at the end of a final.md in test-cases do not mean the rewrite should carry them.
 
-### 12. 文章名用《》
+### 12. Titles of works in 《》
 
-不用 `<Don't Build Multi-Agents>` 或 `"Don't Build Multi-Agents"`，用《Don't Build Multi-Agents》。
+Not `<Don't Build Multi-Agents>` or `"Don't Build Multi-Agents"`; write 《Don't Build Multi-Agents》.
 
-### 13. 列表项简洁，不加粗 + emoji
+### 13. Plain list items, no bold + emoji
 
-不用：`1️⃣ **工具数 > 10** → 留 single（强行 multi 就用 decentralized topology，66.4% > centralized 62.1%）`
+Avoid: `1️⃣ **工具数 > 10** → 留 single（强行 multi 就用 decentralized topology，66.4% > centralized 62.1%）`
 
-用：`1. 工具数 > 10 → 留 single`
+Use: `1. 工具数 > 10 → 留 single`
 
-→ 装饰性数字 emoji（1️⃣2️⃣3️⃣）和段内加粗都删。如果数据点重要，单独成一句话讲，不塞进列表项。
+→ Delete decorative number emoji (1️⃣2️⃣3️⃣) and bold inside list items. If a data point matters, give it its own sentence instead of stuffing it into a list item.
 
-### 14. 引用别人时使用准确归属
+### 14. Attribute quotes accurately
 
-AI 容易把"X 写在自家博客"误归为"X 和 Y 团队聊到"。yujiachen 会主动核对来源——是原创博客还是 Webinar 转述？是 X 写的还是 Y 转述 X？
+AI easily turns "X wrote this on their own blog" into "X talked about it with team Y". Check the source: an original blog post or a retelling in a webinar? Did X write it, or did Y retell X?
 
-改写时遇到任何归属表述，先确认：
-- 这是原文还是二手转述？
-- 这是博客还是访谈 / 直播 / Tweet？
-- 如果不确定，宁可写得保守（"在某次分享中提到"）也不要写错具体场合。
+Whenever you meet an attribution while rewriting, check first:
+- Is this the original or a second-hand retelling?
+- Is it a blog post, or an interview / livestream / tweet?
+- If unsure, write it conservatively (在某次分享中提到) rather than naming the wrong occasion.
 
-### 15. 写小标题问题前加"为什么"或陈述
+### 15. Titles: a "why" question or a statement
 
-yujiachen 喜欢用「为什么 X 经常好过 Y？」这种陈述式提问做主标题。
+A good main title is a statement-like question such as 为什么 X 经常好过 Y？
 
-避免标题党套路：「multi agent 神话破灭」「你不知道的真相」「3 个数据让你重新认识 X」。
+Avoid clickbait patterns: "multi agent 神话破灭", "你不知道的真相", "3 个数据让你重新认识 X".
 
-小红书标题还要满足：
+A Xiaohongshu title must also:
 
-- 不超过 20 字，单独看就能懂，不引用读者不记得的上下文（「半年后有答案」这种）
-- 用读者会搜的词（Agent、沙箱、Claude Code）；自己起的新概念没人搜，放到封面和正文里
-- 不用「大厂」概括，用「前沿团队」「各家」或直接点名；点评、对比类标题里不放品牌名（封面和正文可以），解读某一家官方发布的新闻类帖子，标题可以放这家的名字
-- 反常识的说法要带一个让它准确的限定词：「别把**整个** Agent 塞进沙箱」，「整个」既保证准确，也留了悬念
-- 他自己选的标题偏向趋势句：「Coding转向Personal：Agent 又被赶回云端」（A 转向 B + 冒号 + 一句判断）。反常识的那句可以放到封面上，和标题互补
+- be at most 20 characters, make sense on its own, and not lean on context the reader does not remember (such as 半年后有答案);
+- use words readers search for (Agent, 沙箱, Claude Code); a concept you coined yourself gets no searches, so put it on the cover and in the body;
+- not generalize with 大厂; use 前沿团队, 各家, or name them. Keep brand names out of titles of commentary and comparison posts (the cover and body may name them); a news post about one company's official release may put that company's name in the title;
+- give a counter-intuitive claim a qualifier that makes it accurate: in 别把**整个** Agent 塞进沙箱, 整个 keeps it accurate and leaves a question open;
+- trend titles also work: "Coding转向Personal：Agent 又被赶回云端" (A 转向 B + colon + one judgment). The counter-intuitive line can then go on the cover to complement the title.
 
-### 16. 不要 AI 对比 / 强调句式
+### 16. No AI contrast or emphasis constructions
 
-这些句式即使内容是对的，读起来也像 AI 在"找戏剧感"。不用：
+Even when the content is right, these read like AI hunting for drama. Avoid:
 
-- 「不是 X 而是 Y」/「并不是 X 而是 Y」/「X 其实不是 Y 而是 Z」
-- 「真正的 X」/「真正值得关注的是 X」/「真正的问题不是 X」
-- 「不仅 X 更是 Y」/「不仅 X 还是 Y」
-- 「与其说 X 不如说 Y」
-- 「X 看起来像 Y，但其实是 Z」
+- 不是 X 而是 Y / 并不是 X 而是 Y / X 其实不是 Y 而是 Z
+- 真正的 X / 真正值得关注的是 X / 真正的问题不是 X
+- 不仅 X 更是 Y / 不仅 X 还是 Y
+- 与其说 X 不如说 Y
+- X 看起来像 Y，但其实是 Z
 
-替代：直接陈述 Y。如果非要做对比，让事实并列，不要用对比连接词强行对齐。
+Instead, state Y directly. If a contrast is needed, set the facts side by side without contrast connectives forcing them into line.
 
 ❌ 它不仅是一个工具问题，更是一个组织问题。
 
 ✅ 它是一个组织问题，工具只是症状。
 
-→ 这是 AI 最高频的"句式装饰"。yujiachen 的论点足够实，不需要靠对比结构来制造重量感。
+→ This is AI's most frequent sentence decoration. The author's points are solid enough not to need a contrast structure for weight.
 
-### 17. 不在文中评论自己的写作
+### 17. Do not comment on your own writing
 
-不用：
+Avoid:
 
-- 「这个比喻很爽，但……」
-- 「很少人注意到……」
-- 「大家都没说到位……」
-- 「这件事没人讨论」
-- 「有个细节值得注意」
-- 任何 narrate 读者反应（"读到这你可能会问……"）
+- 这个比喻很爽，但……
+- 很少人注意到……
+- 大家都没说到位……
+- 这件事没人讨论
+- 有个细节值得注意
+- any narration of the reader's reaction (读到这你可能会问……)
 
-→ AI 喜欢一边讲事一边讲"我讲得多机灵"，给读者陪伴感。yujiachen 不做这个——直接讲事，让读者自己 form opinion。如果一个论点真的"很少人讨论"，把它讲清楚就完了，不需要外加一句"很少人注意到"做注脚。
+→ AI likes to tell the story and, alongside it, how cleverly it is telling it, to keep the reader company. The author does not: just tell it and let readers form their own opinion. If a point really is rarely discussed, explaining it clearly is enough; it needs no 很少人注意到 footnote.
 
-### 18. 开场直接进入论点，不做 meta 定位
+### 18. Open with the point, no meta positioning
 
-不用：
+Avoid:
 
-- 「大部分讨论在分析 X，但其实 Y」
-- 「很多人说 X，但真相是 Y」
-- 「看到现在最多的两种解读……两种都不算错……其实应该问的是……」
-- 「先说结论：……」
-- 任何花两句以上对比"别人怎么说"才讲自己观点的开头
+- 大部分讨论在分析 X，但其实 Y
+- 很多人说 X，但真相是 Y
+- 看到现在最多的两种解读……两种都不算错……其实应该问的是……
+- 先说结论：……
+- any opening that spends two or more sentences on what others say before giving your own view
 
-用：直接给出第一句论点。如果要 preview 结构，用一句对仗句把所有 section 都带过去（"向西，X；向东，Y"）。
+Use: the first claim, directly. To preview the structure, use one parallel sentence that covers every section (向西，X；向东，Y).
 
-→ AI 喜欢通过否定别人来定位自己；yujiachen 假设读者已经在思考这个话题，不需要被 onboarding。开场即论点本身。
+→ AI positions itself by negating others; the author assumes readers are already thinking about the topic and need no onboarding. The opening is the argument itself.
 
-小红书开头不写版本号和精确日期（「10 月 1 日开放了 mod（v2.1.287）」→「这几天开放了 Claude Mod」）。产品名第一次出现用全称，之后可以用圈内缩写（Claude Code → cc）。
+A Xiaohongshu opening carries no version numbers or exact dates (在 10 月 1 日开放了 mod（v2.1.287） → 这几天开放了 Claude Mod). Use a product's full name the first time, then the community's short form (Claude Code → cc).
 
-摆出各家的做法（事实）不算 meta 定位，可以放在开头当证据；不行的是先摆「别人怎么说」再否定。开头也可以先讲为什么现在聊（一个行业变化，例如「personal agent 火起来以后，agent 又被赶回了云端」），再讲各家做法和自己的判断。
+Laying out what each company does (facts) is not meta positioning and can open the piece as evidence; what does not work is stating what others say and then negating it. The opening may also start with why this is worth talking about now (an industry shift, for example "personal agent 火起来以后，agent 又被赶回了云端"), then what each company does, then your own judgment.
 
-### 19. 标点偏好
+### 19. Punctuation
 
-- 不用 `「」` 括号——读起来像翻译体或日漫腔
-- 中文 `——` 破折号克制使用，连续几句用就改成逗号、冒号或拆句
-- **不要把 `——` 单独占行做段落分隔条 / visual divider**——这是 AI / markdown 渲染思路，yujiachen 用自然段落推进就够了
-- 不用 ASCII 直引号 `"foo"`，用中文弯引号 `"foo"`
-- 解释性破折号经常可删：「双方心里都有一张隐形的底牌——海峡」 → 删掉 `——海峡`，相信读者能跟上下一句
+- No 「」 corner brackets: they read like translationese or anime subtitles.
+- Use the Chinese dash —— sparingly; where several sentences in a row use it, switch to commas or colons, or split the sentence.
+- **Never put —— on a line of its own as a section divider**: that is AI and markdown-rendering thinking; natural paragraphs carry the flow.
+- No ASCII straight quotes "foo"; use Chinese curly quotes “foo”.
+- An explanatory dash can often go: in 双方心里都有一张隐形的底牌——海峡, delete ——海峡 and trust the reader to follow the next sentence.
 
-### 20. 公式 / 数学表达融入散文
+### 20. Formulas and math go into prose
 
-不用：把公式独立成代码块、用缩进 + 符号注释（这是 LaTeX 论文 / 技术文档的写法）
+Avoid: a formula in its own code block, or indentation plus symbol glossaries (that is how LaTeX papers and technical docs do it).
 
-用：把公式用中文白话写出来
+Use: the formula spelled out in plain Chinese.
 
-→ XHS / 公众号 / 工程长文场景下，数学符号在视觉上会切断阅读流。严谨推导可以放最后一张图片做"延伸阅读"，正文保持白话。
+→ On Xiaohongshu, WeChat official accounts and long engineering posts, math notation visually breaks the reading flow. A rigorous derivation can go on the last image as further reading; the body stays plain.
 
-❌ AI 写法：把 `SE = σ / √N` 独立成代码块，下面再用缩进列「σ : 单题噪声有多大 / N : 题数」做符号注释
+❌ AI version: `SE = σ / √N` in its own code block, followed by an indented glossary "σ : 单题噪声有多大 / N : 题数".
 
-✅ yujiachen 写法（融进散文）：
+✅ The author's version (in the prose):
 
 > 整体测量结果的标准差等于测量方法引入的噪声除以根号 N。大家可以先理解一个大概，我在最后一张图片里放了公式推导。
 
-→ 同样适用于 LaTeX、表格化的概念定义、缩进的符号字典 —— 这些在 markdown 渲染好看，但 yujiachen 的稿子是按照 XHS / 公众号"散文 + 一两张图"的布局来的，不是 GitHub README。
+→ The same goes for LaTeX, concept definitions in tables, and indented symbol dictionaries: they look good rendered as markdown, but these pieces follow a "prose + one or two images" layout for Xiaohongshu and WeChat, not a GitHub README.
 
-### 21. 活人感来自具体的圈内语境
+### 21. A human feel comes from concrete community context
 
-yujiachen 会在论点旁边加一句读者共同经历过的具体事件，配一个反应式 emoji，例如：
+Next to a point, the author may add one line about a concrete event readers lived through, with a reaction emoji, for example:
 
 > 因此使用 Claude Mod 有一定的安全风险，慎用！想想年初一些 skill 是不是也坑了一波人 [doge]
 
-这句指的是年初有 skill 藏木马。它给论点补上 context，也让稿子有活人感。小红书上的反应式 emoji 用平台表情代码（[doge]）。
+That line refers to skills that hid malware earlier in the year. It adds context and makes the piece feel written by a person. On Xiaohongshu, reaction emoji use the platform's emoticon codes ([doge]).
 
-AI 不要编造这类事件。觉得某处适合加时，在改写稿后面提示用户"这里可以补一个圈内例子"，由用户来写。
+Do not invent such events. Where one would fit, note after the rewrite that "an example from the community could go here" and let the user write it.
 
-yujiachen 不方便讲个人和工作上的经历。需要活人感又没有圈内例子时，可以用他认可的行业观察，并把人群说具体：「不少 coding agent 团队之前的技术投入都在本地，现在要往云端转」（他把 AI 稿里的「不少团队」改成了这样），不提自己的公司。活人感也可以来自他对行业的态度，例如「我却觉得现在是研发最好的时代」。
+Personal and work experience is the author's to share; do not add it unless they provide it, and do not mention their employer. When the piece needs a human feel and there is no community example, use an industry observation the author agrees with, and make the group of people concrete: 不少 coding agent 团队之前的技术投入都在本地，现在要往云端转 (the AI draft said only 不少团队). A human feel can also come from the author's attitude toward the industry, for example 我却觉得现在是研发最好的时代.
 
-### 22. 比喻必须带上它指的技术名词
+### 22. A metaphor carries the technical term it stands for
 
-不用：大脑和手分开 / 手坏了换一只（只有比喻）
+Avoid: 大脑和手分开 / 手坏了换一只 (the metaphor alone)
 
-用：大脑（agent loop）留在外面，手（tool call 的执行环境）放进沙箱
+Use: 大脑（agent loop）留在外面，手（tool call 的执行环境）放进沙箱
 
-→ 只说比喻，读者要自己猜对应关系，懂行的人会觉得空。每个小节、每张卡片第一次出现比喻时都带上技术名词。
+→ With the metaphor alone, readers must guess the mapping, and experts find it empty. Add the technical term the first time a metaphor appears in each section and on each card.
 
-### 23. 给核心概念起一个名字，并配一个对照
+### 23. Name the core concept and give it a counterpart
 
-例如「分离式 Agent 架构」，对照是「一体式」。起了名就在封面、正文和结尾反复用同一个说法，不换同义词。新起的名字没人搜，标题里仍用读者熟悉的词（见第 15 条）。
+For example 分离式 Agent 架构, with 一体式 as its counterpart. Once named, use the same name on the cover, in the body and at the end; do not switch to synonyms. A newly coined name gets no searches, so the title still uses words readers know (see rule 15).
 
-## 工作流程
+## Workflow
 
-把下面这个 checklist 复制进 response，逐项打勾跟踪进度：
+Copy this checklist into the response and tick items off as you go:
 
 ````
-改写进度：
-- [ ] 1. 读 test-cases（如果有，至少 1 个）建立 calibration
-- [ ] 2. 读「语法层参照」里的同级 skill（英文稿加读 humanizer），带着它们的规则标记问题点；缺哪个就按上文先问用户是否安装
-- [ ] 3. 通读用户的 AI 草稿，按上面的规则逐条标记问题点（装饰性 emoji / 情绪词 / 绝对化 / 机械分层 / 过渡句 / AI 对比句式 / 悬空抽象词 / 自我评论 / 文学化收束 / meta 开场 / hashtag / 公式独立成块 / 比喻没带技术名词 / 判断没标出来）
-- [ ] 4. 改写：每条标记到的规则都对照修一遍
-- [ ] 5. 回看：自己读一遍，问"这段读起来像 AI 还是像 yujiachen？" 还有 AI 味就再改
-- [ ] 6. 用 lieflat-less-ai-tone 文末的「最终验收」清单复查一遍，英文稿改用 humanizer 的条目复查；未安装时按第 2 步的处理来
-- [ ] 7. 边界检查：用户原稿已经写得不错的地方不要重写——只改有问题的地方
-- [ ] 8. 如果是新场景且 test-cases/ 没覆盖，邀请用户保留为新样本（见上文「没有 test case 或场景没覆盖时」）
+Rewrite progress:
+- [ ] 1. Read test-cases (if any, at least 1) to calibrate
+- [ ] 2. Read the sibling skills under "Sentence-level references" (plus humanizer for English drafts) and mark problems with their rules; if one is missing, first ask the user whether to install it, as above
+- [ ] 3. Read the user's AI draft and mark problems rule by rule (decorative emoji / emotional words / absolutes / mechanical layers / transitions / AI contrast constructions / floating abstractions / self-commentary / literary wrap-up / meta opening / hashtags / formulas in blocks / metaphors without the technical term / an unlabeled judgment)
+- [ ] 4. Rewrite: fix every marked rule
+- [ ] 5. Reread: does this read like AI or like the author? If it still sounds like AI, revise again
+- [ ] 6. Check against the "最终验收" checklist at the end of lieflat-less-ai-tone; for English drafts use humanizer's items instead; if not installed, handle it as in step 2
+- [ ] 7. Boundary check: do not rewrite parts the user already wrote well; change only what has a problem
+- [ ] 8. If this is a new scenario test-cases/ does not cover, invite the user to keep it as a sample (see "No test cases, or the scenario is not covered")
 ````
 
-## 改写时的判断分歧
+## Borderline calls
 
-如果遇到"这个 emoji 该不该留"、"这句话是不是过渡"这种边缘判断，倾向**删** / **简化**。yujiachen 的整体审美是"克制" — 多删一点比多保留一点更安全。
+For calls like "should this emoji stay" or "is this sentence a transition", lean toward **deleting** or **simplifying**. The overall taste is restraint: cutting a little too much is safer than keeping a little too much.
 
-## 不要做的事
+## Don'ts
 
-- **不要重新组织文章结构**，除非用户明确说"帮我重排"
-- **不要替换用户原文里的金句 / 关键论点**——只改语气和表达
-- **不要加用户原稿没有的事实和数据**——这是改写不是创作
-- **不要把英文 quote 翻译成中文**——除非用户明确要求
+- **Do not restructure the piece** unless the user explicitly asks for it.
+- **Do not replace the user's key lines or core arguments**; change only tone and expression.
+- **Do not add facts or data the user's draft lacks**: this is a rewrite, not new writing.
+- **Do not translate English quotes into Chinese** unless the user asks.
 
-## 输出格式
+## Output format
 
-- 直接输出改写后的完整稿
-- 如果改动很多，可以在结尾用一两句话总结主要修改方向（"主要把 emoji 和情绪词删了，小标题改成陈述句"）
-- 如果有不确定的归属 / 事实问题，单独列出来让用户确认，**不要在正文里硬猜**
+- Output the complete rewritten piece directly.
+- If there were many changes, sum up the main direction in one or two sentences at the end (for example: removed emoji and emotional words, turned headings into statements).
+- List any uncertain attribution or fact separately for the user to confirm; **do not guess in the text**.
 
-## Test Case 维护说明
+## Maintaining test cases
 
-`test-cases/` 文件夹被 `.gitignore` 排除，**只在本地保留**，方便日后做 eval。每个 test case 是一个文件夹，结构：
+`test-cases/` is excluded by `.gitignore` and **stays on the local machine**, for later evals. Each test case is a folder:
 
 ```
 test-cases/
-└── YYYY-MM-DD-场景描述/
-    ├── README.md         # 可选：场景说明（什么稿子、什么平台、什么 audience）
-    ├── ai-draft.md       # AI 写的初稿
-    └── final.md          # yujiachen 改完的最终稿
+└── YYYY-MM-DD-scenario/
+    ├── README.md         # optional: the scenario (what draft, which platform, which audience)
+    ├── ai-draft.md       # the AI-written first draft
+    └── final.md          # the author's final version
 ```
 
-新建 test case 时：用 `YYYY-MM-DD-` 开头方便排序，文件夹名描述场景（例如 `2026-05-04-single-vs-multi-agent`）。
+Name a new test case with a `YYYY-MM-DD-` prefix for sorting and a folder name that describes the scenario (for example `2026-05-04-single-vs-multi-agent`).

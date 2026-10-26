@@ -1,77 +1,75 @@
-# 从零做一篇小红书图文
+# Making a Xiaohongshu image post from scratch
 
-2026-10 做《别把整个 Agent 塞进沙箱》时总结的，适用于技术类图文（多张卡片 + 正文）。卡片和正文里的文字仍按 SKILL.md 的风格规则写。
+Distilled from making technical image posts (several cards plus body text). Text on the cards and in the body still follows the style rules in SKILL.md.
 
-## 目录
+## Contents
 
-- 流程
-- 标题
-- 封面
-- 卡片
-- 正文
-- 下判断和争议
-- 参考作者给的启发
+- Workflow
+- Title
+- Cover
+- Cards
+- Body text
+- Taking a position
+- Lessons from reference accounts
 
-## 流程
+## Workflow
 
-1. 先定主线和证据，再写卡片和正文，**标题最后定**：写完后对照参考作者的爆款标题，给 2–3 个候选和各自的理由，让他选。
-2. 他要「从最大点击量出发」时，只给一个推荐并讲清理由；他有身份上的顾虑（例如标题里不点名某个品牌）就立刻换，不争。
-3. 引用的原文在发布前再打开核对一次，截图里的话要逐字对得上；推测和概括要标出来。
-4. 卡片写成 HTML 再渲染成 PNG。每改一次就重新渲染，并逐张看图：有没有溢出画布、有没有一两个字单独占一行、底部是不是空了一大块。
-5. 发布前他把正文改成自己的话，并决定要不要勾 AI 辅助声明。话题标签他自己按浏览量挑（SKILL.md 第 11 条）。
+1. Settle the storyline and the evidence first, then write the cards and the body; **decide the title last**. Once the post is written, compare against hit titles from the reference accounts the author follows (ask which, if you do not know), and offer 2–3 candidates, each with its reason, for the author to choose.
+2. When the author asks to optimize for clicks, give one recommendation and explain it. If the author has a reason not to use a wording (for example, not wanting to name a brand), change it at once without arguing.
+3. Before publishing, open every quoted source again; words in a screenshot must match it exactly. Mark guesses and summaries as such.
+4. Write the cards as HTML and render them to PNG (headless Chrome or Playwright; reuse the author's card template if they have one from earlier posts). Re-render after every change and look at each card: nothing overflowing the canvas, no line with only one or two characters, no large empty block at the bottom.
+5. Before publishing, the author rewrites the body in their own words and decides whether to tick the AI-assisted label. The author picks the topic tags (SKILL.md rule 11).
 
-如果本机有 harness-study 仓库，`notes/diagrams/xhs-*/` 下有可复用的 `cards.html`（卡片模板）、`render.sh`（Chrome headless 渲染）和 `lint.sh`（封面密度检查）。
+## Title
 
-## 标题
+- At most 20 characters and understandable on its own: no references to context readers do not remember, such as 半年前那篇 or 上一条.
+- Use words readers search for and click (Agent, 沙箱, Claude Code). A concept you coined gets no searches; explain it on the cover and in the body.
+- Counter-intuitive imperatives or judgments get clicks, but keep a qualifier that makes them accurate: in 别把整个 Agent 塞进沙箱, 整个 keeps it accurate and leaves a question open (so which part belongs in the sandbox?).
+- Do not generalize with 大厂: many teams building agents are new and sharp. Use 前沿团队, 各家, or name them.
+- Keep brand names out of titles of commentary and comparison posts (naming a competitor in a title can look like an attack); brands and logos may appear on the cover and in the body. A news post about one company's official release (for example an engineering blog post from Anthropic) may put that company's name in the title: the brand is the biggest hook.
+- Freshness is how readers feel, not how old the news is. A point readers already find stale (for example 密钥不进沙箱) becomes evidence in the body; the title uses a newer framing.
+- Title and cover can carry two different hooks. For example, a trend title "Coding转向Personal：Agent 又被赶回云端" with the counter-intuitive "别把整个 Agent 塞进沙箱" on the cover.
 
-- 不超过 20 字，单独看就能懂：不引用「半年前那篇」「上一条」这类读者不记得的上下文。
-- 用读者会搜、会点的词（Agent、沙箱、Claude Code）。自己起的新概念没人搜，放到封面和正文里讲。
-- 反常识的祈使句或判断句点击率高，但要留一个让它准确的限定词：「别把整个 Agent 塞进沙箱」里的「整个」既保证准确，也留了悬念（那哪部分该进沙箱？）。
-- 不用「大厂」概括：做 agent 的很多是新而聪明的团队，用「前沿团队」「各家」或直接点名。
-- 点评、对比类帖子标题里不放品牌名（他有身份上的顾虑，例如点名竞品）；品牌和 logo 可以出现在封面和正文。解读某一家官方发布的新闻类帖子（例如 Anthropic 的 Scion 工程博客），标题可以放这家的名字，品牌就是最大的钩子（2026-10-14 他的反馈）。
-- 新鲜感看读者的感觉，不看实际时间：读者觉得旧的点（例如「密钥不进沙箱」）降为正文里的证据，标题用更新的框架。
-- 标题和封面可以用两个不同的钩子。那篇他发布时用的标题是趋势句「Coding转向Personal：Agent 又被赶回云端」，反常识的「别把整个 Agent 塞进沙箱」放在封面上。
+## Cover
 
-## 封面
+- **It must not look like an AI template at a glance.** Dark background + huge white bold title + keywords highlighted in yellow + tag pills + a block of code or a diagram underneath is the generic AI cover, and posts using it look interchangeable. Instead, build the cover around real material (official images, page screenshots), make annotations look hand-made (circles, arrows, marker strokes), and keep the text sparse and plain. Change the composition and colours for every post; before starting, put the previous cover and hit covers from the same niche side by side and compare.
+- A clean solid background. No blurred screenshot as the background: that is a video-cover technique and distracts on an image post. No decorative emoji either; they look cheap.
+- The main element is one large diagram or architecture chart; metaphors in it also carry their technical terms (大脑 · Agent loop, 手 · 沙箱).
+- Text density passes the lint: at most 4 text blocks, a reading load of at most 36 (汉字 count 1, Latin letters 0.5), at most 3 font-size levels. The rules come from this skill's `references/text-density-lint.md`. If it is over, cut secondary text such as arrow labels and logo captions first.
+- At the top, the hot term readers are following, as the most prominent tag (Personal Agent 火了, or Coding → Personal to echo the title); the core concept (分离式 Agent 架构) can be the heading of the architecture chart.
+- Use logo tiles instead of a list of names: more eye-catching, and they cost no characters.
+- For a news post about one company's official release, put that company's real logo on the cover; the big text can reuse the title's words (title Anthropic换掉Git, cover Anthropic 抛弃了 Git). The brand and the action are the biggest click hooks. Do not add a logo for a brand the big text already names. Logos go without tile frames. One layout that worked: the new brand's mark enlarged and bleeding off one corner behind the big text, and a hand-drawn cross over the replaced product's logo in the opposite corner on the plain background, not overlapping marks of a similar colour. When the cross and the logo are similar in colour, draw the cross in ink so the logo stays recognizable.
 
-- **不能一眼看出是 AI 模板**（2026-10-14 他的反馈，“雷点”）：深色底 + 超大白色粗体标题 + 关键词黄色高亮 + 标签胶囊 + 下面一块代码或示意图，这一套是 AI 封面的通用样子。他在小红书刷到别人一篇《Claude 提交署名终于能关了》，封面和《别把整个 Agent 塞进沙箱》几乎一样。做法：主体优先用真实素材（官方原图、页面截图），标注做得像人手加的（圈、箭头、马克笔划线），字少而朴素；每篇换构图和配色，动手前先和上一篇封面、同领域爆款封面并排比一下。
-- 干净的纯色底。不要用虚化的截图当背景，那是视频封面的做法，放在图文上会分散注意力；也不用装饰性 emoji，看起来土。
-- 主体是一张大的示意图或架构图，图里的比喻也带上技术名词（大脑 · Agent loop，手 · 沙箱）。
-- 文字密度过 lint：最多 4 个文字块，可读字数不超过 36（汉字算 1，拉丁字母算 0.5），字号最多 3 级。规则来自本 skill 的 `references/text-density-lint.md`。超了先删箭头标注、logo 说明这类次要文字。
-- 最上面放读者正在追的热词，做成最醒目的标签（「Personal Agent 火了」，或者和标题呼应的「Coding → Personal」）；核心概念（「分离式 Agent 架构」）可以做成架构图的小标题。
-- 用 logo 方块代替文字名单：更醒目，也不占字数。
-- 解读某一家官方发布的新闻类帖子，封面放这家的真实 logo（他叫 RWA，real world asset），大字可以和标题用同一组词（例如标题“Anthropic换掉Git”，封面“Anthropic 抛弃了 Git”，配一个不加底框、放大的 Claude logo 和一个被手画叉掉的 Git logo），品牌和动作是最大的点击钩子（2026-10-14 他的反馈）。大字里已经有的品牌不再放 logo，免得重复；logo 都不加底框。他最后定的做法：Claude 星芒放大到约 860px，从右上角出血，压在大字后面当背景（黑色宋体压在橙色上照样清楚）；Git logo 去框、墨色手画叉，放在左上角米色底上，不和同色系的星芒重叠。叉和 logo 颜色相近时改用墨色，保证 logo 认得出来。
+## Cards
 
-## 卡片
+- 3:4 portrait (1200×1600). 3:5 fills the screen only when edited and published in the Xiaohongshu app; other routes leave white bars.
+- Many people look at the images and skip the body: every card has a paragraph of explanation, and one sentence at the bottom leads naturally to the next card, with no 下一页 label. Keep the share of text in the images high, so the images alone tell the whole story.
+- Structure of each card: small tag, big heading, a paragraph of explanation, one image or table, one-sentence conclusion.
+- For side-by-side comparisons, one summary table (companies × key dimensions), with a one-line "the most X" characterization per company, marked as your own summary. This card earns most of the saves.
+- Use real material: team or project logos, official page screenshots (box the key original text, with a larger Chinese translation underneath). No photos or names of real private individuals in screenshots.
+- When naming competitors for comparison, add a fairness note (for example: Anthropic's own hosted offering is also split), so it does not read as putting others down.
+- Every card states its sources and an as-of date at the bottom.
 
-- 3:4 竖图（1200×1600）。3:5 只有在小红书 App 里编辑发布才铺满，其他方式会留白边。
-- 很多人只看图不看正文：每张图都有一段解释，底部一句话自然过渡到下一张，不加「下一页」这类标签；图里文字比例要高，只看图也能读完整件事。
-- 每张的结构：小标签、大标题、一段解释、一张图或表、一句结论。
-- 横向对比类放一张总表（各家 × 关键维度），每家配一句「最 X 的」定性，并标明这是自己的概括。收藏主要靠这一张。
-- 多用真实素材：团队或项目的 logo、官方页面截图（框出关键原文，下面配字号更大的中文对照）。截图里不放真实个人的照片和名字。
-- 点名对比竞品时补一句公平说明（例如「Anthropic 自家的托管方案其实也是分离式」），免得读起来像在踩人。
-- 每张底部写资料来源和截至日期。
+## Body text
 
-## 正文
+- Xiaohongshu caps the body at 1,000 characters, tags included, so keep the body under 900. Details go into the images; the body carries only the storyline and points to them (看图 N 那张表).
+- Order of the first two paragraphs: why this is worth talking about now (an industry shift) → what each company does → my judgment. Do not open with 很多人以为……其实…… (SKILL.md rule 18).
+- Do not add personal or work experience the author has not provided, and do not mention their employer. For a human feel, use an industry observation the author agrees with, and make the group concrete (不少 coding agent 团队之前的技术投入都在本地，现在要往云端转) (SKILL.md rule 21).
+- Do not end with a question to drive engagement; close with a first-person attitude plus a more concrete, bolder judgment (SKILL.md rule 10). No topic tags in the body.
+- If `test-cases/` has Xiaohongshu image-post samples, read them first.
 
-- 他的账号正文上限 1,000 字，标签也算在内，所以正文控制在 900 字以内。细节放进图里，正文只讲主线，并提示「看图 N 那张表」。
-- 开头两段的顺序：为什么现在聊（一个行业变化）→ 各家怎么做 → 我的判断。不用「很多人以为……其实……」开头（SKILL.md 第 18 条）。
-- 他不方便讲个人和工作上的经历。需要活人感时，用他认可的行业观察，并把人群说具体（「不少 coding agent 团队之前的技术投入都在本地，现在要往云端转」），不提自己的公司（SKILL.md 第 21 条）。
-- 结尾不用提问拉互动，用第一人称的态度加一个更具体、更大胆的判断收尾（SKILL.md 第 10 条）。正文里不放话题标签。
-- 他的定稿和 AI 稿的对照在 `test-cases/2026-10-13-xhs-brain-hands/`（只在本机）。
+## Taking a position
 
-## 下判断和争议
+A clear judgment is what gets discussed and shared most: in one niche, a sharply worded judgment post drew 5 to over 20 times the comments of other posts from the same period. Research agrees that moderate controversy increases discussion while too much makes people unwilling to join in (Chen & Berger, 2013, *Journal of Consumer Research*). So aim for a technical judgment peers will argue about, not a flame war. This section applies to posts on X as well.
 
-明确的判断最容易被讨论和转发：同领域里一条很冲的判断帖，评论数是同期其他几篇的 5 到 20 多倍。研究也说明，适度的争议会增加讨论，争议过头反而让人不愿参与（Chen & Berger, 2013, *Journal of Consumer Research*）。所以要的是同行会争的技术判断，不是骂战。这一节对 X 的帖子同样适用。
+- The judgment must be falsifiable, ideally with a time frame or a number: 一年内，把整个 agent 塞进沙箱会变成反模式 beats 一体式不太好.
+- Put it early (title, cover or first paragraph) and come back to it at the end; the evidence in between must hold it up.
+- It must be a judgment the author agrees with, labeled 我的判断; facts, quotes and analogies still use hedged wording (SKILL.md rule 3).
+- Argue a technical position. Do not target specific people or companies, use no emotional words, and do not court controversy for its own sake. Do not write a judgment the evidence cannot support.
+- At the end, state the judgment once more, brought down to a practice readers know (把一个 codex / claude code 塞进沙箱，大胆预言一年内这个模式将不再存在 [doge]). Do not invite engagement with questions such as 你同意吗 (SKILL.md rule 10).
+- Reply seriously to people who push back; the replies themselves spread the post.
 
-- 判断要能被证伪，最好带时间或数字：「一年内，把整个 agent 塞进沙箱会变成反模式」比「一体式不太好」强。
-- 放在前面（标题、封面或正文第一段），结尾再收一次；后面的证据要撑得住。
-- 必须是他本人认同的判断，标「我的判断」；事实、引用、类比照样用概率词（SKILL.md 第 3 条）。
-- 争技术立场，不针对具体的人或公司，不用情绪词，不为争议而争议。没有证据撑的判断不写。
-- 结尾把判断再说一次，落到一个读者熟悉的具体做法上（「把一个 codex / claude code 塞进沙箱，大胆预言一年内这个模式将不再存在 [doge]」）。不用「你同意吗」这类提问拉互动（SKILL.md 第 10 条）。
-- 有人反驳时认真回，回复本身就是传播。
+## Lessons from reference accounts
 
-## 参考作者给的启发
-
-- 同量级的小号，爆款往往只有 1–2 张图（纯文字封面，或一张对比表），内容全在正文；用 9 张卡片把内容讲全的是大号。两条路都能走，卡片路线要做到只看图也能读完。
-- 几个爆款的共性：一张信息最密的总表负责收藏；第一人称；标题里有数字或明确的判断；有争议的判断带来的评论远多于其他帖子。
+- Among small accounts of similar size, hit posts often have only 1–2 images (a text-only cover or one comparison table) with everything in the body; telling the whole story across 9 cards is what large accounts do. Both routes work; on the card route, the images alone must tell the whole story.
+- What several hit posts share: one dense summary table that earns the saves; first person; a number or a clear judgment in the title; controversial judgments drawing far more comments than other posts.
