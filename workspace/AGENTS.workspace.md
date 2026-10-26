@@ -46,6 +46,13 @@ Clone new repositories directly into their remote-derived paths, creating
 parent directories as needed. Keep repositories without a known `origin` in
 `local/<project>` rather than inventing an organization or group.
 
+These operations need no confirmation: `git fetch`, `git pull --ff-only` on a
+clean default or `dev` branch, and cloning a repository the task needs into its
+remote-derived path. To read another branch or version, use `git show`,
+`git log`, or a worktree instead of switching a checkout. Ask before pushing,
+rewriting history, deleting branches, worktrees, or checkouts, or changing a
+checkout that has local changes.
+
 `sh ~/dotfiles/workspace/repos.sh add <repo>` does the clone and derives the
 path for you; `<repo>` is `owner/repo` (GitHub), `host/group/repo`, or a git
 URL. `sh ~/dotfiles/workspace/repos.sh pull` applies the update rule above to

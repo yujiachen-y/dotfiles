@@ -19,7 +19,7 @@ There is no automated test suite. Validate changes by running the specific scrip
 `shellcheck install.sh scripts/ui.sh macos/*.sh macos/zed/*.sh mise/install.sh zsh/*.sh agents/install.sh workspace/*.sh`.
 
 ## Commit & Branching Workflow
-This is a personal, single-maintainer dotfiles repo. **Work directly on `main`** — do not create feature branches or pull requests for routine changes; commit straight to `main` and push. This repo-local rule intentionally overrides the branch-based "Delivery Workflow" in the global `agents/AGENTS.shared.md`, which already defers to repo-local guidance.
+This is a personal, single-maintainer dotfiles repo. **Work directly on `main`** — do not create feature branches or pull requests. Commit or push only when the user asks. Before committing, list the planned commits (files and message for each) and wait for the user's approval; push only after the user confirms.
 
 Commit messages follow Conventional Commits, scoped by area (examples in history: `feat(mise): ...`, `chore(macos): ...`, `fix(zsh): ...`, and date-stamped `chore: YY-MM-DD`). Split unrelated changes into separate semantic commits; in the body, note impacted areas, any manual steps, and OS-specific effects. Add screenshots only when updating `screenshot/` assets.
 
