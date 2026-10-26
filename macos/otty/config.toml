@@ -36,8 +36,6 @@ dock-icon-animate-progress = true
 
 font-size = 15
 
-# window-layout = "tabs-bottom" (reset to default)
-
 theme = "Ayu Light"
 
 # selection-foreground = "#fafaff" (reset to default)
@@ -46,3 +44,5 @@ theme = "Ayu Light"
 # cursor-text = "#565656" (reset to default)
 
 # unfocused-split-opacity = 0.65 (reset to default)
+
+window-layout = "tabs-bottom"
