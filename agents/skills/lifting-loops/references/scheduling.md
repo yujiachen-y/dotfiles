@@ -1,33 +1,34 @@
-# 设置每周定时任务
+# Setting up the weekly scheduled task
 
-在 Claude 桌面端的会话里执行，`scheduled-tasks` 工具只在桌面端提供。会话记录只存在本机，所以每台要扫描的机器各设一次。
+Do this in a Claude desktop app session; only the desktop app provides the `scheduled-tasks` tools. Transcripts exist only on the machine that wrote them, so set the task up once on every machine you want scanned.
 
-1. 确认当前会话的工作目录不是 Obsidian vault。定时任务没有工作目录参数，会沿用创建它的会话的目录；vault 的 AGENTS.md 默认只读问答，会和本任务冲突。如果在 vault 里，请用户换到 dotfiles 仓库或 `~/Workspace` 下的会话再做。
-2. 运行 `python3 scripts/digest.py status`（在本 skill 目录下），确认脚本能跑、`config: found`。如果缺配置，先按 SKILL.md「准备」补上。
-3. 问用户周日几点运行。如果用户没有偏好，建议排在其他周复盘任务之后，这样那些任务的会话能进入本周的扫描。用 `list_scheduled_tasks` 查已有任务的时间。
-4. 调用 `create_scheduled_task`：
-   - `taskId`：`lifting-loops-weekly`
-   - `title`：`Lifting Loops 周复盘`
-   - `description`：`每周日扫描本机会话、vault 和记忆，更新 loop 台账，写周报和提议`
-   - `cronExpression`：`<分> <时> * * 0`，按本机时区
-   - `notifyOnCompletion`：`true`
-   - `prompt`：下面的全文
-5. 调用 `run_scheduled_task` 试跑一次，再用 `list_task_runs` 确认运行完成。
-6. 打开运行目录里的 `report.md`，确认报告已经生成、`private/state.json` 里本机的游标已经推进。
+1. Make sure the session's working directory has no AGENTS.md or CLAUDE.md that conflicts with this task, for example a notes vault whose rules make it read-only. Scheduled tasks take no working-directory parameter and keep the directory of the session that created them. If it conflicts, ask the user to switch to a session in a neutral project directory first.
+2. Run `python3 scripts/digest.py status` (from this skill's directory) and confirm the script runs and shows `config: found`. If the config is missing, fill it in first as SKILL.md "Setup" says.
+3. Ask the user what time on Sunday to run. If they have no preference, suggest a time after their other weekly review tasks, so those sessions fall into this week's scan. Use `list_scheduled_tasks` to see the existing tasks' times.
+4. Call `create_scheduled_task`:
+   - `taskId`: `lifting-loops-weekly`
+   - `title`: `Lifting Loops weekly review`
+   - `description`: `Every Sunday, scan this machine's sessions, vault and memory, update the loop ledger, and write the weekly report and proposals`
+   - `cronExpression`: `<minute> <hour> * * 0`, in the machine's time zone
+   - `notifyOnCompletion`: `true`
+   - `prompt`: the full text below
+5. Call `run_scheduled_task` for a trial run, then confirm with `list_task_runs` that it finished.
+6. Open `report.md` in the run directory and confirm the report exists and this machine's cursor in `private/state.json` has advanced.
 
 ## prompt
 
 ```
-使用 lifting-loops skill，按批量模式运行。
+Use the lifting-loops skill in batch mode.
 
-- 这是无人值守的定时运行。不要停下来提问，也不要等确认。
-- 用户已授权你直接写这个 skill 目录下 private/ 里的文件。其他文件一律只读：git 跟踪的文件只写提议，Obsidian vault 不改。
-- 如果某个数据源读不到，跳过它，在报告开头写明原因，继续其余步骤。
-- 结束时用三四句话总结：本周最值得处理的 loop、需要用户决定的提议编号、报告路径。
+- This is an unattended scheduled run. Do not stop to ask questions or wait for confirmation.
+- The user has authorized you to write files under private/ in this skill's directory. Treat every other file as read-only: for git-tracked files write proposals only, and do not change the Obsidian vault.
+- If a data source cannot be read, skip it, say why at the top of the report, and continue with the other steps.
+- Write the report and proposals in the user's language.
+- Finish with a three- or four-sentence summary: the loop most worth handling this week, the proposal numbers that need the user's decision, and the report path.
 ```
 
-## 修改或停用
+## Changing or stopping
 
-- 改时间：`update_scheduled_task`，传 `taskId` 和新的 `cronExpression`。
-- 停用：`update_scheduled_task`，传 `taskId` 和 `enabled: false`。
-- 改 prompt 时，同步更新本文件。
+- Change the time: `update_scheduled_task` with `taskId` and a new `cronExpression`.
+- Stop: `update_scheduled_task` with `taskId` and `enabled: false`.
+- When you change the prompt, update this file to match.

@@ -69,6 +69,11 @@ BUILTIN_COMMANDS = {
 }
 
 
+# Notes whose first lines match this were written by an agent; override with
+# vault_ai_marker in config.json.
+AI_NOTE_DEFAULT = r"^>.*(Author:.*\(AI\)|\(AI generated\))"
+
+
 def host():
     return socket.gethostname().split(".")[0]
 
@@ -85,6 +90,7 @@ def load_config():
         "vault": None,
         "vault_exclude": [],
         "vault_full_history": [],
+        "vault_ai_marker": AI_NOTE_DEFAULT,
         "claudeai_backup": None,
         "first_run_days": 90,
     }
@@ -134,7 +140,7 @@ def clean_turn(text):
     """Turn a raw user message into a digest line, or None to drop it."""
     text = re.sub(r"<system-reminder>.*?</system-reminder>", "", text, flags=re.DOTALL)
     # Context the user attached by hand is a sign of carrying context, keep a marker.
-    text = re.sub(r"<user-provided-context>.*?</user-provided-context>", " [附加了上下文]",
+    text = re.sub(r"<user-provided-context>.*?</user-provided-context>", " [attached context]",
                   text, flags=re.DOTALL)
     text = text.strip()
     if not text or text.startswith(SKIP_PREFIXES):
@@ -459,24 +465,24 @@ def opening_key(text):
 
 
 def session_block(s):
-    tags = [f"追问 {len(s.followups)}"]
+    tags = [f"follow-ups {len(s.followups)}"]
     if s.retries:
-        tags.append(f"重试 {s.retries}")
+        tags.append(f"retries {s.retries}")
     if s.interrupts:
-        tags.append(f"中断 {s.interrupts}")
+        tags.append(f"interrupts {s.interrupts}")
     if s.tool_errors:
-        tags.append(f"工具报错 {s.tool_errors}")
+        tags.append(f"tool errors {s.tool_errors}")
     if s.kind != "interactive":
         tags.append(s.kind)
     lines = [f"- {day(s.first)} · {s.id[:8]} · {' · '.join(tags)}"]
     if s.title:
-        lines.append(f"  标题：{clip(s.title, 80)}")
+        lines.append(f"  title: {clip(s.title, 80)}")
     lines.append(f"  file: {tilde(s.path)}")
     lines.append(f"  > {clip(s.opening, FIRST_PROMPT_CHARS)}")
     for turn in s.followups[:MAX_TURNS]:
         lines.append(f"  - {clip(turn, TURN_CHARS)}")
     if len(s.followups) > MAX_TURNS:
-        lines.append(f"  - …另有 {len(s.followups) - MAX_TURNS} 条")
+        lines.append(f"  - … {len(s.followups) - MAX_TURNS} more")
     return lines
 
 
@@ -489,31 +495,31 @@ def render_sessions(source, sessions, since, until):
     kinds = {}
     for s in sessions:
         kinds[s.kind] = kinds.get(s.kind, 0) + 1
-    kind_text = "，".join(f"{k} {n}" for k, n in sorted(kinds.items()))
+    kind_text = ", ".join(f"{k} {n}" for k, n in sorted(kinds.items()))
     followups = sum(len(s.followups) for s in sessions)
     retries = sum(s.retries for s in sessions)
     interrupts = sum(s.interrupts for s in sessions)
     out = [
-        f"# {source} 会话摘要 · {day(since)} 至 {day(until)} · {host()}",
+        f"# {source} sessions · {day(since)} to {day(until)} · {host()}",
         "",
-        (f"共 {len(sessions)} 个会话（{kind_text}），人工追问 {followups} 条，"
-         f"重试 {retries}，中断 {interrupts}。"),
+        (f"{len(sessions)} sessions ({kind_text}), {followups} human follow-ups, "
+         f"{retries} retries, {interrupts} interrupts."),
         "",
     ]
     if recurring:
-        out += [f"## 重复出现的开场（≥{RECURRING_MIN} 次）", ""]
+        out += [f"## Recurring openings (≥{RECURRING_MIN} times)", ""]
         for items in sorted(recurring.values(), key=len, reverse=True):
             touched = [s for s in items if s.followups]
-            projects = "、".join(sorted({tilde(s.cwd or "?") for s in items}))
-            out.append(f"### 「{clip(items[0].opening, 80)}」× {len(items)}，"
-                       f"有人工追问 {len(touched)}，最近 {day(items[-1].first)}")
-            out.append(f"项目：{projects}")
+            projects = ", ".join(sorted({tilde(s.cwd or "?") for s in items}))
+            out.append(f"### \"{clip(items[0].opening, 80)}\" × {len(items)}, "
+                       f"{len(touched)} with human follow-ups, latest {day(items[-1].first)}")
+            out.append(f"projects: {projects}")
             for s in touched:
                 out += session_block(s)
             out.append("")
     rest = [s for k, v in groups.items() if k not in recurring for s in v]
     if rest:
-        out += ["## 其他会话（按项目）", ""]
+        out += ["## Other sessions (by project)", ""]
         by_project = {}
         for s in rest:
             by_project.setdefault(tilde(s.cwd or "?"), []).append(s)
@@ -530,7 +536,7 @@ def mtime_of(path):
 
 
 def render_memory():
-    out = [f"# 记忆条目 · {host()}", ""]
+    out = [f"# Memories · {host()}", ""]
     count = 0
     for mem_dir in sorted((HOME / ".claude/projects").glob("*/memory")):
         files = sorted(p for p in mem_dir.glob("*.md") if p.name != "MEMORY.md")
@@ -541,7 +547,7 @@ def render_memory():
             text = path.read_text(errors="replace")
             desc = re.search(r"^description:\s*(.+)$", text, re.MULTILINE)
             kind = re.search(r"^\s*type:\s*(\S+)", text, re.MULTILINE)
-            desc_text = clip(desc.group(1), 160) if desc else "无 description"
+            desc_text = clip(desc.group(1), 160) if desc else "no description"
             kind_text = kind.group(1) if kind else "?"
             out.append(f"- {path.name} · {kind_text} · {day(mtime_of(path))} · {desc_text}")
             count += 1
@@ -549,19 +555,18 @@ def render_memory():
     codex = HOME / ".codex/memories/MEMORY.md"
     if codex.exists():
         size = len(codex.read_text(errors="replace"))
-        out += ["## Codex 记忆（Codex 自己维护，只读）",
-                f"- {tilde(codex)} · {size} 字符 · {day(mtime_of(codex))}", ""]
+        out += ["## Codex memory (maintained by Codex, read-only)",
+                f"- {tilde(codex)} · {size} chars · {day(mtime_of(codex))}", ""]
     return "\n".join(out) + "\n", count
 
 
-# The vault marks agent-written notes with a quote line under the title.
-AI_NOTE_RE = re.compile(r"^>.*(Author:.*\(AI\)|\(AI generated\))", re.MULTILINE)
 
 
 def render_vault(cfg, since, until, first_run):
     root = cfg["vault"]
     exclude = [e.strip("/") for e in cfg["vault_exclude"]]
     full = [f.strip("/") for f in cfg["vault_full_history"]] if first_run else []
+    ai_note = re.compile(cfg["vault_ai_marker"], re.MULTILINE)
 
     def under(rel_dir, prefixes):
         return any(rel_dir == p or rel_dir.startswith(p + "/") for p in prefixes)
@@ -584,18 +589,18 @@ def render_vault(cfg, since, until, first_run):
             if not whole and not since <= mtime < until:
                 continue
             text = path.read_text(errors="replace")
-            ai = " · AI" if AI_NOTE_RE.search(text[:800]) else ""
-            top = rel_dir.split("/")[0] or "(根目录)"
+            ai = " · AI" if ai_note.search(text[:800]) else ""
+            top = rel_dir.split("/")[0] or "(root)"
             by_dir.setdefault(top, []).append(
-                f"- {os.path.join(rel_dir, name)} · {day(mtime)} · {len(text)} 字符{ai}")
+                f"- {os.path.join(rel_dir, name)} · {day(mtime)} · {len(text)} chars{ai}")
     count = sum(len(v) for v in by_dir.values())
-    out = [f"# Vault 笔记 · {day(since)} 至 {day(until)}", "",
-           f"根目录：{tilde(root)}。共 {count} 篇；标 AI 的是 agent 写的。"]
+    out = [f"# Vault notes · {day(since)} to {day(until)}", "",
+           f"root: {tilde(root)}. {count} notes; those marked AI were written by an agent."]
     if full:
-        out.append(f"首次运行，这些目录列出全部历史：{'、'.join(full)}。")
+        out.append(f"First run, so these folders list their full history: {', '.join(full)}.")
     out.append("")
     for top in sorted(by_dir):
-        out += [f"## {top}（{len(by_dir[top])}）"] + sorted(by_dir[top]) + [""]
+        out += [f"## {top} ({len(by_dir[top])})"] + sorted(by_dir[top]) + [""]
     return "\n".join(out) + "\n", count
 
 
