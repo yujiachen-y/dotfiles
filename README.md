@@ -1,4 +1,45 @@
-# Jiachen's Dotfiles
+# Jiachen's Dotfiles and Agent Skills
+
+[![skills.sh](https://skills.sh/b/yujiachen-y/dotfiles)](https://skills.sh/yujiachen-y/dotfiles)
+
+macOS dotfiles, plus agent skills for Claude Code, Codex, and any agent that
+reads `SKILL.md`. The skills live in [`agents/skills`](agents/skills).
+
+## Agent Skills
+
+| Skill | What it does |
+| --- | --- |
+| [lifting-loops](agents/skills/lifting-loops) | Finds the loops where you keep acting as a manual step for your agents (retrying, approving, carrying context) and proposes fixes: skill edits, scripts, scheduled tasks. Reads your local Claude Code and Codex sessions. |
+| [making-flashcards](agents/skills/making-flashcards) | Turns a conversation, your notes, or a research topic into Anki flashcards, checked for duplicates against your local Anki collection. |
+| [review-skill](agents/skills/review-skill) | Audits a skill against Anthropic's Agent Skills best practices and reports Must Fix / Should Consider items with file:line fixes. |
+| [making-content](agents/skills/making-content) | Rewrites AI-sounding Chinese drafts in a restrained style, and makes Xiaohongshu (小红书) image posts and short vertical videos. |
+
+### Install
+
+Any agent, with the [skills CLI](https://skills.sh):
+
+```sh
+npx skills add yujiachen-y/dotfiles --skill review-skill
+```
+
+Claude Code:
+
+```sh
+claude plugin marketplace add yujiachen-y/dotfiles
+claude plugin install review-skill@jiachen-skills
+```
+
+Codex:
+
+```sh
+codex plugin marketplace add yujiachen-y/dotfiles
+codex plugin add review-skill@jiachen-skills
+```
+
+Replace `review-skill` with any skill above. Installed as a plugin, a skill
+runs as `/review-skill:review-skill` in Claude Code.
+
+## Dotfiles
 
 ![delta-diff](screenshot/delta-diff.png)
 

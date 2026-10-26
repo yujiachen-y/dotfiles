@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "jiachen-skills",
+  "description": "Agent skills for Claude Code and Codex: find repeated manual work, write Anki flashcards, review skills, produce Chinese content.",
+  "owner": { "name": "jiachen", "url": "https://github.com/yujiachen-y" },
+  "plugins": [
+    {
+      "name": "lifting-loops",
+      "source": "./agents/skills",
+      "skills": ["./lifting-loops"],
+      "description": "Find the loops where you keep acting as a manual step for your agents (retrying, approving, carrying context) and get concrete fixes: skill edits, scripts, scheduled tasks.",
+      "keywords": ["retro", "automation", "agent-workflow", "self-improvement"]
+    },
+    {
+      "name": "making-content",
+      "source": "./agents/skills",
+      "skills": ["./making-content"],
+      "description": "Rewrite AI-sounding Chinese drafts in a restrained style, and produce Xiaohongshu (小红书) image posts and short vertical videos.",
+      "keywords": ["writing", "chinese", "xiaohongshu", "video", "humanize"]
+    },
+    {
+      "name": "making-flashcards",
+      "source": "./agents/skills",
+      "skills": ["./making-flashcards"],
+      "description": "Turn a conversation, your notes, or a research topic into Anki flashcards, deduplicated against your local Anki collection.",
+      "keywords": ["anki", "flashcards", "spaced-repetition", "learning"]
+    },
+    {
+      "name": "review-skill",
+      "source": "./agents/skills",
+      "skills": ["./review-skill"],
+      "description": "Audit an Agent Skill against Anthropic's official best practices and get a Must Fix / Should Consider report with file:line fixes.",
+      "keywords": ["skills", "review", "best-practices", "claude-code"]
+    }
+  ]
+}

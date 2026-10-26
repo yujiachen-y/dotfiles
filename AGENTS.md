@@ -63,3 +63,5 @@ Install scripts remove existing `~/.vimrc`, `~/.zshrc`, and `~/.non_public_comma
 
 ## Agent-Specific Instructions
 When changing Codex or Claude agent behavior, update `agents/AGENTS.shared.md` and related prompt/skill files. `agents/install.sh` symlinks these into `~/.codex`, `~/.claude`, and `~/.minimax` (MiniMax Code only gets `AGENTS.shared.md`).
+
+The skills in `agents/skills` are also published: `.claude-plugin/marketplace.json` lists each one as a Claude Code and Codex plugin, and the `skills` CLI finds them on its own. When you add, rename, or remove a skill, update its marketplace entry (keep `"source": "./agents/skills"` and `"skills": ["./<name>"]`; Codex loads no other per-skill layout) and the skills table in `README.md`, then run `claude plugin validate .`.
