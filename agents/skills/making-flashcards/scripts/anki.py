@@ -24,6 +24,16 @@ import tempfile
 
 TYPES = {"原文", "综合"}
 MAX_ANSWER = 120
+# Card shapes the user deleted far more often than others; each is a warning, not an error.
+FRONT_CHECKS = [
+    (re.compile(r"谁提出|提出者|由谁|最早由|哪个团队|哪一年|成立于|创始人|全称|量表|多大规模|比较了哪"
+                r"|who (first )?(proposed|coined|introduced)|in what year|which (scale|dataset)|sample size", re.I),
+     "asks for provenance; move it to the source"),
+    (re.compile(r"效应量|效果量|证据(强度|状态|质量)|有多硬|元分析|缓解率|effect size|meta-analy|how strong is the evidence", re.I),
+     "asks about evidence strength; note it in the source"),
+    (re.compile(r"^\s*(什么是\S{1,14}[？?]|what is (an? |the )?[\w -]{1,30}\?)\s*$", re.I),
+     "bare definition; ask why, when, or how it differs unless the name is worth recalling"),
+]
 HEADER = ["#separator:tab", "#html:true", "#notetype:Basic", "#deck:{deck}", "#tags column:3"]
 
 
@@ -82,7 +92,7 @@ def cmd_decks(args):
 
 def cmd_search(args):
     _, db = open_copy()
-    pattern = re.compile(args.pattern)
+    pattern = re.compile(args.pattern, re.IGNORECASE)
     hits = 0
     for deck, fields, tags in notes_with_deck(db):
         if args.deck and deck != args.deck:
@@ -129,6 +139,9 @@ def validate(cards, existing):
         seen.add(front)
         if len(str(card.get("answer", ""))) > MAX_ANSWER:
             warnings.append(f"card {i}: answer has {len(card['answer'])} characters, consider splitting: {front}")
+        for pattern, message in FRONT_CHECKS:
+            if pattern.search(front):
+                warnings.append(f"card {i}: {message}: {front}")
     return errors, warnings
 
 
