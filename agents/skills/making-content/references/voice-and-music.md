@@ -91,5 +91,5 @@ Set in `timeline.py`; the loudness target in `render.py`.
 | Music in pauses | ×0.26 | fills gaps without pumping |
 | Speech detection | 0.25 s envelope, 0.3 s gain smoothing | ducking moves smoothly, not word by word |
 | Fades | 0.4 s in, 2.5 s out | no hard start or stop |
-| Transition whoosh | ×0.18, only when the layout type changes | per-element pop sounds distracted viewers |
+| Transition whoosh | 0 (off) | pop sounds distracted viewers, and a softer whoosh still felt odd |
 | Loudness | -14 LUFS integrated, -1.5 dBTP | the common short-video target |

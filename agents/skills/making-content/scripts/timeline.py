@@ -6,7 +6,7 @@
 * Shot cuts land on the word named by a shot's "anchor" (word timestamps from tts.py).
 * Captions come from each line's "cap" ('/' and punctuation mark the breaks), re-split to one
   short line each, and merged when a piece would flash by too fast. Punctuation is dropped.
-* Audio = voice + music ducked under speech + a soft whoosh whenever the layout type changes.
+* Audio = voice + music ducked under speech (whoosh on layout changes, off by default).
   No per-element "pop" sounds (viewers found them distracting).
 """
 import argparse, json, os, re, subprocess, sys
@@ -19,7 +19,7 @@ CAP_MIN_DUR, CAP_MAX_CPS = 0.6, 9   # s on screen / chars per second (Netflix ad
 CUT_LEAD = 0.12                     # s: cut slightly before the anchor word so the picture lands with the word
 DUCK_SPEECH, DUCK_GAP = 0.11, 0.26  # music gain under speech / in pauses (~14 dB / ~6 dB below the voice)
 DUCK_ON = 0.03                      # envelope level that counts as speech (envelope normalised to 1)
-WHOOSH_GAIN = 0.18                  # peak of the transition whoosh: audible under the voice, never on top of it
+WHOOSH_GAIN = 0.0                   # transition whoosh off: viewers found sound effects odd; 0.18 was audible under the voice
 
 
 def load(s):

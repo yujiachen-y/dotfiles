@@ -26,6 +26,16 @@ The rules are a default distilled from one author's edits of AI drafts. The user
 - **Xiaohongshu image post from scratch**: read [references/xhs-post.md](references/xhs-post.md) first (workflow, title, cover, cards, body text, taking a position). Text on the cards and in the body still follows the style rules below. The rewrite-only items under "Don'ts" (do not restructure, do not add facts the draft lacks) do not apply here.
 - **Short video**: read [references/video-pipeline.md](references/video-pipeline.md) first (workflow, script.json, voice, rendering, lint). Read [references/layouts.md](references/layouts.md) while writing script.json, [references/voice-and-music.md](references/voice-and-music.md) when cloning a voice or hitting a TTS error, and [references/text-density-lint.md](references/text-density-lint.md) when lint fails. Narration and copy still follow the style rules below; the question that invites comments at the end of a video is a deliberate part of the video format, so follow video-pipeline.md there.
 
+## Before a post or video from scratch: check the topic can win
+
+Do this before any outline, and again whenever new data arrives (numbers from a published version, search results the user sends). Rewrite mode skips it.
+
+1. State the goal in one line: reach (likes, saves and plays from strangers) or a named audience. Ask if it is unclear.
+2. Measure heat and saturation from raw search results, not from memory. Search the topic on the target platform, or on the web when the platform cannot be read; ask the user for screenshots only as a last resort. For the top 10 results, note age, likes and saves, angle, and whether the creator shows their face. Note how many days have passed since the news broke and whether the planned angle is already among the top results.
+3. Compare with the account: the author's median and best numbers for this kind of content. Read the account data if the project keeps it; otherwise ask.
+4. Give a probability that the piece beats the author's median, with the reasons and the check that would change it.
+5. If the result is decided by conditions that editing cannot change (news past its peak, every angle already taken by bigger accounts, a topic outside what the author's audience follows, a format the author will not do), call the topic a dead end. List those conditions, say what would have to change for it to work, and stop. Do not polish hooks, pacing or visuals inside a dead topic, and do not cycle through new angles on it; the user picks the next topic.
+
 ## Sentence-level references (sibling skills)
 
 Before writing in rewrite or image-post mode, read these third-party skills, installed next to this one under `~/.claude/skills/` or `~/.agents/skills/`:

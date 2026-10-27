@@ -37,6 +37,7 @@ my-video/
 Copy into the task list and tick off:
 
 ```text
+- [ ] 0. Check the topic can win (SKILL.md); stop if it is a dead end
 - [ ] 1. Decide with the user: platform + length, voice, hook, music, what to keep out
 - [ ] 2. Write script.json and sources.json
 - [ ] 3. Fetch assets: fonts, logos, music, page captures
@@ -110,7 +111,7 @@ Console steps, parameters and error codes: `references/voice-and-music.md`.
 python3 $S/timeline.py --script script.json --tts tts-volc --music music/Digital_Lemonade.mp3
 ```
 
-Writes `timeline.json` (shots, caption cues, chapters) and `mix.wav` (voice, music ducked under speech, a soft whoosh when the layout type changes). It stops with `anchor ... not found in narration` when an `anchor` is not a literal substring of that line's `n`.
+Writes `timeline.json` (shots, caption cues, chapters) and `mix.wav` (voice and music ducked under speech; no sound effects). It stops with `anchor ... not found in narration` when an `anchor` is not a literal substring of that line's `n`.
 
 A second cut in the same project shares captures, logos and music; give its script, voice clips and outputs their own names and pass them to every later step:
 
@@ -163,7 +164,10 @@ Each row is a complaint from a real review of this pipeline and the default that
 | Keyword sticker too close to captions | Stickers sit in the top zone (y ≈ 330); captions at y 1420. |
 | Wants more real-world bits | Logo tiles, mascots and drifting shapes, all animated. |
 | rusty_v8 read as "rusty 杠 v8" | `_` and `-` between letters are spoken as spaces. |
-| A "biu" sound on every pop-in | Only a soft whoosh when the layout type changes. |
+| A "biu" sound on every pop-in, then the whoosh felt odd too | No sound effects: `WHOOSH_GAIN = 0`. |
+| The whole frame bouncing on the beat looked ugly | No whole-frame periodic zoom or shake; only elements inside a shot move. |
+| Half the viewers gone by 20 s: the opening re-showed numbers and narrated how the material was read | The first frame is content, not a still cover; no "we read X" process lines. |
+| The hook confused people who had not seen the earlier episode | The first 15 s make sense to a stranger, in units a stranger knows. |
 | Too much English on screen | Chinese translation large, original small. |
 | 字太密，眼花 | Lint gate: at most 4 text blocks and 36 字 per screen; captions one line of at most 16 字, low on screen. |
 | Too empty after cutting text | Ambient motion instead of more words. |
