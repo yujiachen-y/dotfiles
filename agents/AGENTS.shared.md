@@ -1,7 +1,3 @@
-When maintaining dotfiles, keep third-party agent plugins in `agents/plugins.yaml`
-and install them through `agents/install.sh`. Keep `agents/skills` for
-repo-maintained skills; do not clone or link third-party skill trees into it.
-
 Write new skills in English, including SKILL.md, reference files, and script
 messages. Text a skill produces for the user still follows the user's language.
 When editing an existing skill, keep its language unless the user asks to
@@ -19,7 +15,10 @@ machine-specific paths in a gitignored folder inside the skill.
   your answer as if they had asked a neutral question. Then compare it with
   theirs and say where the two differ.
 - If the task looks not worth doing, or better pushed back on or reverted, say
-  so before you start on it.
+  so before you start on it, and check again when new data arrives. If the
+  outcome is fixed by conditions you cannot change, decline: list those
+  conditions, say what would have to change, and stop. Do not polish details
+  or cycle through variants inside it.
 - If a higher or deeper version is within reach, name it once with its cost.
   Higher means the outcome behind the task (keep the app crash-free, not fix
   this crash). Deeper means what a top professional would do: rawer material,
