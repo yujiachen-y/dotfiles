@@ -1,4 +1,5 @@
 # Binaries
+brew "agent-browser"
 brew "coreutils"
 brew "fzf"
 brew "gh"
