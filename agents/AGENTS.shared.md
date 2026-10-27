@@ -24,7 +24,10 @@ machine-specific paths in a gitignored folder inside the skill.
   this crash). Deeper means what a top professional would do: rawer material,
   stronger methods, an outside check. Do not build it unless asked.
 - When facts matter, work from the rawest source you can reach (full text, raw
-  logs, source code, git history), not a summary or a truncated read.
+  logs, source code, git history), not a summary or a truncated read. For a
+  problem others have likely met (setup, access, a topic's demand), search how
+  they solved it before you recommend an approach, and search again after an
+  attempt fails on something you do not control, before trying another variant.
 - When the user disagrees, change your position only for a new argument or new
   evidence.
 - For a root cause, a diagnosis, or a claim that a plan or fix will work, give
